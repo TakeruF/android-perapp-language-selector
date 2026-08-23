@@ -124,6 +124,14 @@ release notes.
 
 4. Tap an app, pick a language, tap **Apply & Restart**.
 
+> **After setup:** Android keeps the applied language setting even if Shizuku stops, the device
+> reboots, or Developer options are turned off. Developer options and debugging are only needed to
+> start and keep Shizuku available; turn them back on and start Shizuku whenever you want to change
+> or reset a language. On non-rooted devices, that startup step is required after every reboot. If
+> you want Shizuku to remain continuously available, its
+> [troubleshooting guide](https://shizuku.rikka.app/guide/setup/#start-via-wireless-debugging-start-by-connecting-to-a-computer-shizuku-randomly-stops)
+> recommends leaving Developer options and USB debugging enabled.
+
 ---
 
 ## How a locale change is applied
