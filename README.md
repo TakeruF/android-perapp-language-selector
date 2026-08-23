@@ -12,6 +12,31 @@ and Google Maps stays Japanese.
 
 ---
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/list.png" alt="App list with per-app locales" width="100%"><br>
+      <sub><b>Every installed app</b><br>Overridden apps are marked and can be floated to the top</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/picker.png" alt="Language picker" width="100%"><br>
+      <sub><b>Pick a language</b><br>Presets, your own languages, or any BCP 47 tag you type</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/setup.png" alt="Shizuku setup guide" width="100%"><br>
+      <sub><b>Shizuku setup</b><br>Four steps, no root, no computer required</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/help.png" alt="Help screen" width="100%"><br>
+      <sub><b>Help</b><br>What it does, and where it stops</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
 ## What it actually does
 
 Android 13 introduced **per-app locales**. The system keeps a per-package `LocaleList` override and
@@ -65,6 +90,15 @@ All three are `signature|privileged`, so a normal app can never be granted them.
 Shizuku runs a small service as that same shell uid and lets an app route binder transactions
 through it. So this app does not gain any permission itself; it asks the shell uid to make the
 call on its behalf. That is also the reason nothing here needs root.
+
+---
+
+## Download
+
+Grab the signed APK from the
+[latest release](https://github.com/TakeruF/android-perapp-language-selector/releases/latest).
+Every release is signed with the same key; the certificate fingerprint is published in the
+release notes.
 
 ---
 
@@ -218,12 +252,26 @@ configured apps instantly before the (per-package) binder scan finishes.
 ## Building
 
 ```
-git clone <this repo>
+git clone https://github.com/TakeruF/android-perapp-language-selector.git
 cd android-perapp-language-selector
 ./gradlew assembleDebug
 ```
 
 Requires JDK 17 and Android SDK 36. Open in Android Studio and it should just import.
+
+### Release builds
+
+`assembleRelease` signs the APK when a `keystore.properties` sits in the project root; without
+it the build still succeeds and produces an unsigned APK.
+
+```properties
+storeFile=/absolute/path/to/release.jks
+storePassword=…
+keyAlias=…
+keyPassword=…
+```
+
+The file and the keystore are both gitignored.
 
 ---
 
