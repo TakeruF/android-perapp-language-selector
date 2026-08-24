@@ -102,6 +102,8 @@ Grab the signed APK from the
 Every release is signed with the same key; the certificate fingerprint is published in the
 release notes.
 
+Privacy details are available in the [Privacy Policy](PRIVACY_POLICY.md).
+
 ---
 
 ## Setup
