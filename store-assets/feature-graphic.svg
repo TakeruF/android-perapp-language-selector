@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3156C8"/>
+      <stop offset="1" stop-color="#6D8CF0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="500" fill="url(#bg)"/>
+  <circle cx="230" cy="250" r="152" fill="#FFFFFF" fill-opacity="0.12"/>
+  <g transform="translate(122 142) scale(2)">
+    <path fill="#FFFFFF" d="M54 10 A44 44 0 1 0 54 98 A44 44 0 1 0 54 10 Z M54 18 C60 26 64 40 64 54 C64 68 60 82 54 90 C48 82 44 68 44 54 C44 40 48 26 54 18 Z"/>
+    <path fill="#FFFFFF" d="M14 50 H94 V58 H14 Z"/>
+  </g>
+  <text x="445" y="225" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="58" font-weight="700">Per-App Language</text>
+  <text x="448" y="292" fill="#FFFFFF" fill-opacity="0.9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="400">Choose the locale each app sees</text>
+</svg>

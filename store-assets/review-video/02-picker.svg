@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="720" viewBox="0 0 920 720">
+  <rect width="920" height="720" fill="#F9F7FF"/>
+  <circle cx="86" cy="153" r="36" fill="#3F6BE0"/>
+  <text x="86" y="166" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="white">2</text>
+  <text x="148" y="168" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="#23242C">Select any app and locale</text>
+  <text x="70" y="272" font-family="Arial, sans-serif" font-size="27" fill="#4E5261">Package names are not known in advance.</text>
+  <text x="70" y="315" font-family="Arial, sans-serif" font-size="27" fill="#4E5261">The user chooses the target app.</text>
+  <rect x="70" y="378" width="770" height="146" rx="24" fill="#E1E8FF"/>
+  <text x="105" y="431" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#354C8A">Why broad visibility is required</text>
+  <text x="105" y="475" font-family="Arial, sans-serif" font-size="25" fill="#4E5261">A restricted queries list cannot support arbitrary</text>
+  <text x="105" y="511" font-family="Arial, sans-serif" font-size="25" fill="#4E5261">installed apps, which is the app's core feature.</text>
+</svg>
