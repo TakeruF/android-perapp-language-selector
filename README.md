@@ -1,5 +1,7 @@
 # Per-App Language
 
+English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
+
 An Android utility that forces a specific **locale** on individual apps — even apps that have no
 in-app language setting and never show up under *Settings → Apps → App language*.
 
