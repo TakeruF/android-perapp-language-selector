@@ -4,7 +4,8 @@
 
 Una utilidad para Android que fuerza una **configuración regional** concreta en cada aplicación, incluso si la app no tiene un ajuste de idioma y no aparece en *Ajustes → Aplicaciones → Idioma de la aplicación*.
 
-El teléfono puede seguir en español mientras WeChat y Taobao usan 简体中文, ChatGPT usa inglés y Google Maps se mantiene en español.
+El teléfono puede seguir en español mientras WeChat y Taobao usan chino simplificado, ChatGPT usa
+inglés y Google Maps se mantiene en español.
 
 > **No es un traductor.**
 > Cambia la configuración regional que la app *ve*. Si la app no incluye recursos para ese idioma, nada visible cambiará. Consulta [Lo que no puede hacer](#lo-que-no-puede-hacer).
@@ -57,7 +58,8 @@ void setApplicationLocales(String packageName, int userId, in LocaleList locales
 LocaleList getApplicationLocales(String packageName, int userId);
 ```
 
-`LocaleManagerService` permite esas llamadas si el proceso posee el paquete de destino o tiene:
+`LocaleManagerService` permite esas llamadas si el proceso que las invoca es el propio paquete de
+destino o cuenta con:
 
 * `android.permission.CHANGE_CONFIGURATION` — escribir una configuración regional
 * `android.permission.READ_APP_SPECIFIC_LOCALES` — leerla
@@ -137,7 +139,8 @@ Elegir **Predeterminado del sistema** envía un `LocaleList` vacío, la forma de
 * **Las apps que solo vuelven a leer la configuración al iniciar** necesitan *Aplicar y reiniciar*.
 * **El contenido web dentro de una app** (WebView o pantallas generadas por servidor) suele seguir la cuenta o `Accept-Language`.
 * Algunos sistemas de fabricantes pueden rechazar la **detención forzada**. La configuración se escribe igualmente; basta con cerrar la app. La interfaz lo indica.
-* **Perfiles de trabajo y usuarios secundarios:** la app actúa sobre el usuario donde está instalada.
+* **Perfiles de trabajo y usuarios secundarios:** la app solo actúa dentro del perfil o usuario en
+  el que está instalada; no admite la gestión entre perfiles.
 * Algunas ROM muy modificadas pueden limitar más los permisos shell que AOSP. La app muestra la `SecurityException` en lugar de fallar en silencio.
 
 ---
@@ -150,7 +153,10 @@ Todo pasa por interfaces AOSP estándar: los servicios `"locale"` y `"activity"`
 
 ## Verificación
 
-La capa privilegiada se ha comprobado sin mocks. `app/src/debug/.../LocaleGatewayProbe.kt` ejecuta las clases reales `LocaleGateway` y `ProcessGateway` como uid 2000 mediante `app_process`, directamente contra `LocaleManagerService` y sin Shizuku:
+El comportamiento de la capa con privilegios se ha verificado directamente contra servicios reales
+de Android, sin depender de simulaciones (mocks). `app/src/debug/.../LocaleGatewayProbe.kt` ejecuta
+las clases reales `LocaleGateway` y `ProcessGateway` como uid 2000 mediante `app_process` y se
+conecta al `LocaleManagerService` del sistema sin pasar por Shizuku:
 
 ```
 ./gradlew assembleDebug

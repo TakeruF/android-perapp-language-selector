@@ -5,8 +5,8 @@ English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국�
 An Android utility that forces a specific **locale** on individual apps — even apps that have no
 in-app language setting and never show up under *Settings → Apps → App language*.
 
-Your phone can stay in Japanese while WeChat and Taobao run in 简体中文, ChatGPT runs in English,
-and Google Maps stays Japanese.
+Your phone can stay in Japanese while WeChat and Taobao run in Simplified Chinese, ChatGPT runs
+in English, and Google Maps stays in Japanese.
 
 > **This is not a translator.**
 > It changes the locale an app *sees*. If the app does not ship resources for that language,
@@ -79,7 +79,8 @@ void setApplicationLocales(String packageName, int userId, in LocaleList locales
 LocaleList getApplicationLocales(String packageName, int userId);
 ```
 
-`LocaleManagerService` allows those calls when the caller either owns the target package or holds:
+`LocaleManagerService` allows those calls only when the caller is the target package itself or
+holds:
 
 * `android.permission.CHANGE_CONFIGURATION` — to write a locale
 * `android.permission.READ_APP_SPECIFIC_LOCALES` — to read one
@@ -191,7 +192,8 @@ Selecting **System Default** sends an empty `LocaleList`, which is how the frame
   `Accept-Language`, not the per-app locale.
 * **Force-stop may be refused** on some OEM builds. The locale is still written; you just have to
   close the app yourself. The UI says so when this happens.
-* **Work profiles / secondary users**: the app operates on the user it is installed in.
+* **Work profiles / secondary users**: the app only affects the user profile it is installed in;
+  cross-profile management is not supported.
 * Some heavily modified OEM ROMs may restrict shell permissions further than AOSP does. In that
   case the app reports the `SecurityException` instead of silently failing.
 
@@ -200,18 +202,19 @@ Selecting **System Default** sends an empty `LocaleList`, which is how the frame
 ## Compatibility
 
 Everything here goes through standard AOSP interfaces — the `"locale"` and `"activity"` system
-services, `PackageManager`, and Shizuku. There is no per-OEM branching and no device
-model allowlist, which is what should let it work on AOSP, Pixel, One UI, ColorOS, OriginOS and
-HyperOS alike. Where a vendor restricts something (most commonly force-stop), the app surfaces the
-failure rather than working around it with device-specific hacks.
+services, `PackageManager`, and Shizuku. There is no per-OEM branching and no device model
+allowlist. This design is intended to maximize compatibility across AOSP, Pixel, One UI, ColorOS,
+OriginOS, and HyperOS. Where a vendor restricts something (most commonly force-stop), the app
+surfaces the failure rather than working around it with device-specific hacks.
 
 ---
 
 ## Verification
 
-The privileged layer is not taken on trust. `app/src/debug/.../LocaleGatewayProbe.kt` runs the real
-`LocaleGateway` and `ProcessGateway` classes as uid 2000 via `app_process`, straight against the
-live `LocaleManagerService` — no Shizuku, no mocks:
+The privileged layer is verified against live Android system services rather than assumptions or
+mocks. `app/src/debug/.../LocaleGatewayProbe.kt` runs the real `LocaleGateway` and `ProcessGateway`
+classes as uid 2000 via `app_process`, straight against the live `LocaleManagerService` — no
+Shizuku, no mocks:
 
 ```
 ./gradlew assembleDebug

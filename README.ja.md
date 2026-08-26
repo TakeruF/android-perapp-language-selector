@@ -3,7 +3,7 @@
 [English](README.md) | [简体中文](README.zh-CN.md) | 日本語 | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md)
 
 アプリごとに特定の**ロケール**を強制適用する Android ユーティリティです。アプリ内に言語設定がなく、
-「設定 → アプリ → アプリの言語」に表示されないアプリにも適用できます。
+「設定 → アプリ → アプリの言語」に表示されないアプリにも対応しています。
 
 端末自体は日本語のまま、WeChat と淘宝は简体中文、ChatGPT は英語、Google マップは日本語、
 というように使い分けられます。
@@ -82,7 +82,7 @@ void setApplicationLocales(String packageName, int userId, in LocaleList locales
 LocaleList getApplicationLocales(String packageName, int userId);
 ```
 
-`LocaleManagerService` がこれらの呼び出しを許可するのは、呼び出し元が対象パッケージを所有するか、
+`LocaleManagerService` がこれらの呼び出しを許可するのは、呼び出し元が対象パッケージ自身であるか、
 次の権限を持っている場合です。
 
 * `android.permission.CHANGE_CONFIGURATION` — ロケールの書き込み
@@ -194,8 +194,8 @@ LocaleManagerService  →  パッケージ単位の LocaleList 上書き  →  �
   アプリごとのロケールではなく、アカウント設定や `Accept-Language` に従います。
 * **一部の OEM ビルドでは強制停止が拒否される場合があります。**ロケール自体は書き込まれるので、
   アプリを手動で閉じれば適用できます。この場合は UI にその旨が表示されます。
-* **仕事用プロファイル / セカンダリユーザー：**このアプリは、インストールされているユーザーだけを
-  操作します。
+* **仕事用プロファイル / セカンダリユーザー：**本アプリは、インストールされたユーザー領域
+  （プロファイル）の設定のみを変更します。プロファイルをまたいだ一括適用には対応していません。
 * 大幅に変更された OEM ROM では、shell 権限がさらに制限されている場合があります。その場合、
   アプリは黙って失敗せず、`SecurityException` を表示します。
 
@@ -213,7 +213,8 @@ HyperOS などで動作することが期待できます。ベンダーが何ら
 
 ## 検証
 
-特権レイヤーの動作は推測で済ませていません。`app/src/debug/.../LocaleGatewayProbe.kt` は
+特権レイヤーの動作は、推測ではなく実際の Android 環境で検証しています。
+`app/src/debug/.../LocaleGatewayProbe.kt` は
 実際の `LocaleGateway` と `ProcessGateway` クラスを `app_process` により uid 2000 で
 実行し、端末上の `LocaleManagerService` に直接接続します。Shizuku もモックも使いません。
 

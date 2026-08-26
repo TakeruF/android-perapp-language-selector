@@ -123,7 +123,7 @@ Android 的定向软件包查询无法生成这份列表，因此本应用声明
    ```
 
    Shizuku 会在设备重启后停止，因此每次重启后都需要重复此步骤。
-   已 root 的用户可以改装 **Sui**，它会自动启动。
+   已 root 的用户可以安装 **Sui**，它会自动启动。
 
 3. **打开 Per-App Language**，并在弹出的 Shizuku 权限对话框中授权。
 
@@ -163,7 +163,7 @@ LocaleManagerService  →  按软件包保存的 LocaleList 覆盖  →  下次�
 并重新启动应用，因为运行中的应用只会把语言区域变化当作配置变化，而许多应用会在启动时缓存字符串，
 从而忽略这一变化。
 
-选择**系统默认**会发送一个空的 `LocaleList`，这是框架中“移除覆盖设置”的表示方式。
+选择**系统默认**会发送一个空的 `LocaleList`，这是系统框架中“清除覆盖设置”的机制。
 
 ---
 
@@ -178,7 +178,7 @@ LocaleManagerService  →  按软件包保存的 LocaleList 覆盖  →  下次�
   而不是单应用语言区域。
 * **某些 OEM 系统可能拒绝强制停止。**语言区域仍会成功写入；你只需自行关闭应用。
   发生这种情况时，界面会明确提示。
-* **工作资料 / 次要用户：**本应用只操作其安装所在的用户。
+* **工作资料 / 次要用户：**本应用仅对其当前安装所在的用户环境生效，无法跨工作资料或次要用户操作。
 * 一些深度修改的 OEM ROM 可能会进一步限制 shell 权限。此时，本应用会报告
   `SecurityException`，而不是静默失败。
 
@@ -196,9 +196,9 @@ LocaleManagerService  →  按软件包保存的 LocaleList 覆盖  →  下次�
 
 ## 验证
 
-特权层并非凭假设实现。`app/src/debug/.../LocaleGatewayProbe.kt` 会通过 `app_process`
-以 uid 2000 运行真实的 `LocaleGateway` 和 `ProcessGateway` 类，直接连接设备上的
-`LocaleManagerService`——不使用 Shizuku，也不使用 mock：
+特权层功能均经过实际验证，而非仅基于推测。`app/src/debug/.../LocaleGatewayProbe.kt`
+会通过 `app_process` 以 uid 2000 运行真实的 `LocaleGateway` 和 `ProcessGateway` 类，
+直接连接设备上的 `LocaleManagerService`——不使用 Shizuku，也不使用 mock：
 
 ```
 ./gradlew assembleDebug
@@ -286,7 +286,7 @@ keyPassword=…
 ## 致谢
 
 * **[VegaBobo/Language-Selector](https://github.com/VegaBobo/Language-Selector)**——
-  该先行项目证明了通过 Shizuku 控制单应用语言区域是可行的。本项目将其总体思路作为参考，
+  该先驱项目证明了通过 Shizuku 控制单应用语言区域是可行的。本项目将其总体思路作为参考，
   但依据 AOSP 源码和 Shizuku API 独立实现，不包含其任何代码。（若将来引用其代码，
   会在此正式添加 Apache-2.0 署名。）
 * **[RikkaApps/Shizuku](https://github.com/RikkaApps/Shizuku)** 及 Shizuku API。

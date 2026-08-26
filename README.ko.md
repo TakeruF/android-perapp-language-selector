@@ -4,7 +4,8 @@
 
 앱 내부에 언어 설정이 없고 *설정 → 앱 → 앱 언어*에 표시되지 않는 앱에도 특정 **로캘**을 강제로 적용하는 Android 유틸리티입니다.
 
-휴대전화는 한국어로 유지하면서 WeChat과 Taobao는 简体中文, ChatGPT는 영어, Google 지도는 한국어로 사용할 수 있습니다.
+기기 시스템 언어는 한국어로 유지하면서 WeChat과 Taobao는 중국어 간체(简体中文),
+ChatGPT는 영어, Google 지도는 한국어로 각각 설정해 사용할 수 있습니다.
 
 > **번역 앱이 아닙니다.**
 > 앱에 전달되는 로캘만 변경합니다. 앱에 해당 언어 리소스가 없으면 화면은 바뀌지 않습니다. [지원하지 않는 기능](#지원하지-않는-기능)을 참고하세요.
@@ -57,7 +58,7 @@ void setApplicationLocales(String packageName, int userId, in LocaleList locales
 LocaleList getApplicationLocales(String packageName, int userId);
 ```
 
-`LocaleManagerService`는 호출자가 대상 패키지를 소유하거나 다음 권한을 가진 경우에만 이를 허용합니다.
+`LocaleManagerService`는 호출자가 대상 패키지 자체이거나 다음 권한을 보유한 경우에만 이 호출을 허용합니다.
 
 * `android.permission.CHANGE_CONFIGURATION` — 로캘 쓰기
 * `android.permission.READ_APP_SPECIFIC_LOCALES` — 로캘 읽기
@@ -94,7 +95,8 @@ Shizuku는 같은 shell uid로 작은 서비스를 실행하고 앱의 Binder �
    adb shell sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh
    ```
 
-   Shizuku는 재부팅하면 중지되므로 이 단계를 다시 수행해야 합니다. 루팅된 사용자는 자동 시작되는 **Sui**를 대신 설치할 수 있습니다.
+   Shizuku는 재부팅하면 중지되므로 이 단계를 다시 수행해야 합니다. 루팅된 기기에서는 Shizuku 대신
+   자동으로 시작되는 **Sui**를 설치해 사용할 수 있습니다.
 
 3. **Per-App Language를 열고** Shizuku 권한 요청을 허용합니다.
 
@@ -137,7 +139,7 @@ LocaleManagerService  →  패키지별 LocaleList 재정의  →  다음 앱 �
 * **프로세스 시작 시에만 로캘을 읽는 앱**에는 *적용 후 다시 시작*이 필요합니다.
 * **앱 내부 웹 콘텐츠**(WebView, 서버 렌더링 화면)는 일반적으로 앱별 로캘이 아니라 계정 또는 `Accept-Language`를 따릅니다.
 * 일부 OEM 시스템에서는 **강제 종료가 거부될 수 있습니다.** 로캘은 기록되므로 앱을 직접 닫으면 되며 UI에서 이를 안내합니다.
-* **업무 프로필/보조 사용자:** 앱이 설치된 사용자에서만 작동합니다.
+* **업무 프로필 / 보조 사용자:** 본 앱이 설치된 사용자 영역(프로필) 내에서만 설정을 변경할 수 있습니다.
 * 크게 수정된 일부 OEM ROM은 AOSP보다 shell 권한을 더 제한할 수 있습니다. 이 경우 앱은 조용히 실패하지 않고 `SecurityException`을 표시합니다.
 
 ---
@@ -150,7 +152,10 @@ LocaleManagerService  →  패키지별 LocaleList 재정의  →  다음 앱 �
 
 ## 검증
 
-권한 계층은 모의 구현에 의존하지 않고 검증했습니다. `app/src/debug/.../LocaleGatewayProbe.kt`는 실제 `LocaleGateway`와 `ProcessGateway`를 uid 2000의 `app_process`로 실행하여 Shizuku나 mock 없이 실제 `LocaleManagerService`에 연결합니다.
+특권 계층의 동작은 단순한 추측이나 모의 구현(mock)에 의존하지 않고 실제 Android 환경에서
+엄격히 검증했습니다. `app/src/debug/.../LocaleGatewayProbe.kt`는 실제 `LocaleGateway`와
+`ProcessGateway`를 uid 2000의 `app_process`로 실행해 Shizuku나 mock 없이 기기의
+`LocaleManagerService`에 직접 연결합니다.
 
 ```
 ./gradlew assembleDebug
