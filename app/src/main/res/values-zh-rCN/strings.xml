@@ -39,13 +39,13 @@
     <string name="locale_group_current">当前设置</string>
     <string name="locale_group_system">系统</string>
     <string name="locale_group_added">你的语言</string>
-    <string name="locale_group_common">常用语言</string>
-    <string name="locale_group_all">所有语言</string>
+    <string name="locale_group_supported">此应用的官方支持语言</string>
+    <string name="locale_group_other">其他语言</string>
     <string name="follows_device_language">跟随设备语言</string>
     <string name="help_subtitle">本应用能做什么，以及它的能力边界</string>
     <string name="help_what_title">本应用的功能</string>
     <string name="help_what_body_1">Android 13 允许系统为每个应用保存不同语言。“设置 → 应用 → 应用语言”只列出提供语言区域配置的应用，因此大多数应用不会出现在那里，但底层覆盖功能仍可对它们生效。</string>
-    <string name="help_what_body_2">本应用可直接为任意已安装软件包写入相同的单应用语言覆盖。你的手机可以保持日语，同时让一个应用使用英语，另一个使用简体中文。</string>
+    <string name="help_what_body_2">本应用可直接为任意已安装软件包写入相同的单应用语言覆盖。你的手机可以保持中文，同时让一个应用使用英语，另一个使用日语。</string>
     <string name="not_translator_title">这不是翻译工具</string>
     <string name="not_translator_body">它只更改应用被告知使用的语言。如果应用没有提供该语言的资源，Android 会回退到应用默认语言，界面不会发生可见变化。</string>
     <string name="help_using_title">使用方法</string>

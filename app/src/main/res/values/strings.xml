@@ -41,8 +41,8 @@
     <string name="locale_group_current">Current setting</string>
     <string name="locale_group_system">System</string>
     <string name="locale_group_added">Your languages</string>
-    <string name="locale_group_common">Common languages</string>
-    <string name="locale_group_all">All languages</string>
+    <string name="locale_group_supported">Officially supported by this app</string>
+    <string name="locale_group_other">Other languages</string>
     <string name="follows_device_language">Follows the device language</string>
 
     <string name="help_subtitle">What this app does, and where it stops</string>

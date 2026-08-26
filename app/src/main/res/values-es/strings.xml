@@ -39,8 +39,8 @@
     <string name="locale_group_current">Configuración actual</string>
     <string name="locale_group_system">Sistema</string>
     <string name="locale_group_added">Tus idiomas</string>
-    <string name="locale_group_common">Idiomas frecuentes</string>
-    <string name="locale_group_all">Todos los idiomas</string>
+    <string name="locale_group_supported">Idiomas compatibles oficialmente con esta app</string>
+    <string name="locale_group_other">Otros idiomas</string>
     <string name="follows_device_language">Usa el idioma del dispositivo</string>
     <string name="help_subtitle">Qué hace esta app y cuáles son sus límites</string>
     <string name="help_what_title">Qué hace esta app</string>

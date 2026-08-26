@@ -39,8 +39,8 @@
     <string name="locale_group_current">현재 설정</string>
     <string name="locale_group_system">시스템</string>
     <string name="locale_group_added">내 언어</string>
-    <string name="locale_group_common">주요 언어</string>
-    <string name="locale_group_all">모든 언어</string>
+    <string name="locale_group_supported">이 앱의 공식 지원 언어</string>
+    <string name="locale_group_other">기타 언어</string>
     <string name="follows_device_language">기기 언어를 따름</string>
     <string name="help_subtitle">이 앱의 기능과 한계</string>
     <string name="help_what_title">이 앱의 기능</string>

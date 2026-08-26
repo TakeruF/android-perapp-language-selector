@@ -39,8 +39,8 @@
     <string name="locale_group_current">現在の設定</string>
     <string name="locale_group_system">システム</string>
     <string name="locale_group_added">端末に追加した言語</string>
-    <string name="locale_group_common">主な言語</string>
-    <string name="locale_group_all">すべての言語</string>
+    <string name="locale_group_supported">このアプリの公式対応言語</string>
+    <string name="locale_group_other">その他の言語</string>
     <string name="follows_device_language">端末の言語に従います</string>
     <string name="help_subtitle">できることと、その限界</string>
     <string name="help_what_title">このアプリでできること</string>

@@ -18,11 +18,11 @@ enum class LocaleGroup {
     /** The extra languages the user added under Settings → System → Languages. */
     ADDED,
 
-    /** Widely spoken languages, most speakers first. */
-    COMMON,
+    /** Languages explicitly declared by the selected app's LocaleConfig. */
+    SUPPORTED,
 
-    /** Everything else Android knows, in dictionary order. */
-    ALL,
+    /** Widely spoken languages followed by everything else Android knows. */
+    OTHER,
 }
 
 /**
@@ -212,13 +212,17 @@ object LocaleCatalog {
             val tag = Locale.forLanguageTag(wanted).toLanguageTag()
             if (!taken.add(tag)) continue
             taken.add(locale.toLanguageTag())
-            result += entryFor(locale, LocaleGroup.COMMON, tag)
+            result += entryFor(locale, LocaleGroup.OTHER, tag)
         }
 
         val collator = Collator.getInstance()
         val rest = available.values
-            .filter { it.toLanguageTag() !in taken }
-            .map { entryFor(it, LocaleGroup.ALL, it.toLanguageTag()) }
+            // Keep the common regional choices as the single representative for the two
+            // aliases that otherwise look duplicated in this picker: en-US for English and
+            // zh-CN for Simplified Chinese. System/added locales are handled above and remain
+            // visible when they are actually configured on the device.
+            .filter { it.toLanguageTag() !in taken && !isCollapsedAlias(it) }
+            .map { entryFor(it, LocaleGroup.OTHER, it.toLanguageTag()) }
             .sortedWith(compareBy(collator) { it.sortKey })
         result += rest
 
@@ -248,6 +252,10 @@ object LocaleCatalog {
         }
         return sameLanguage.minWithOrNull(byTag)
     }
+
+    private fun isCollapsedAlias(locale: Locale): Boolean =
+        (locale.language == "en" && locale.script.isEmpty() && locale.country.isEmpty()) ||
+            (locale.language == "zh" && locale.script == "Hans" && locale.country.isEmpty())
 
     /**
      * "中文 (简体, 中国)" — ICU assembles language, script and region the way each language writes

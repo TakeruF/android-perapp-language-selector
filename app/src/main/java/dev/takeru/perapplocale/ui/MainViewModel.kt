@@ -129,13 +129,18 @@ class MainViewModel(
             .toList()
 
         val collator = Collator.getInstance()
+        val ownPackageName = getApplication<Application>().packageName
         val ordered = if (settings.configuredFirst) {
             visible.sortedWith(
-                compareByDescending<AppInfo> { it.isConfigured }
+                compareBy<AppInfo> { if (it.packageName == ownPackageName) 0 else 1 }
+                    .thenByDescending { it.isConfigured }
                     .thenBy(collator) { it.label },
             )
         } else {
-            visible.sortedWith(compareBy(collator) { it.label })
+            visible.sortedWith(
+                compareBy<AppInfo> { if (it.packageName == ownPackageName) 0 else 1 }
+                    .thenBy(collator) { it.label },
+            )
         }
 
         return MainUiState(

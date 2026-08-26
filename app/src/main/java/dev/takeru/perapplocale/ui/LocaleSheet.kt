@@ -98,15 +98,15 @@ fun LocaleSheet(
         value = withContext(Dispatchers.Default) { LocaleCatalog.entries() }
     }
 
-    val rows = remember(catalog, query, app.localeTag) {
-        catalog?.let { buildRows(it, query, app.localeTag) }.orEmpty()
+    val rows = remember(catalog, query, app.localeTag, supportedLocales) {
+        catalog?.let { buildRows(it, query, app.localeTag, supportedLocales) }.orEmpty()
     }
 
     val listState = rememberLazyListState()
     // Editing the query rebuilds the list under the old scroll offset, which would otherwise
     // leave the user staring at the middle of the results.
     LaunchedEffect(query) { listState.scrollToItem(0) }
-    LaunchedEffect(catalog) {
+    LaunchedEffect(catalog, supportedLocales) {
         if (catalog == null || selectedTag.isEmpty()) return@LaunchedEffect
         val index = rows.indexOfFirst { it is SheetRow.Item && it.entry.tag == selectedTag }
         if (index > 0) listState.scrollToItem(index)
@@ -258,7 +258,7 @@ fun LocaleSheet(
                 text = {
                     LazyColumn(Modifier.heightIn(max = 420.dp)) {
                         items(declared.tags, key = { it }) { tag ->
-                            val entry = remember(tag) { LocaleCatalog.entryFor(tag, LocaleGroup.ALL) }
+                            val entry = remember(tag) { LocaleCatalog.entryFor(tag, LocaleGroup.SUPPORTED) }
                             Column(Modifier.padding(vertical = 6.dp)) {
                                 Text(entry.displayName.ifBlank { entry.label })
                                 Text(
@@ -300,7 +300,7 @@ private fun SupportedLocalesSummary(
                 )
                 val preview = remember(supportedLocales.tags) {
                     supportedLocales.tags.take(SUPPORTED_LOCALE_PREVIEW_SIZE).joinToString(", ") { tag ->
-                        val entry = LocaleCatalog.entryFor(tag, LocaleGroup.ALL)
+                        val entry = LocaleCatalog.entryFor(tag, LocaleGroup.SUPPORTED)
                         entry.displayName.ifBlank { entry.label }
                     }
                 }
@@ -362,13 +362,14 @@ private sealed interface SheetRow {
  * Flattens the catalog into list rows.
  *
  * With no query the groups are kept and labelled, which is what carries the intended order
- * (device language → the user's other languages → most spoken → the rest). While searching,
- * headers only get in the way, so results come back as one list ranked by match quality.
+ * (device language → the user's other languages → this app's declared languages → other
+ * languages). Search keeps those labels so official matches remain distinguishable.
  */
 private fun buildRows(
     catalog: List<LocaleEntry>,
     rawQuery: String,
     currentTag: String,
+    supportedLocales: SupportedLocales,
 ): List<SheetRow> {
     // A locale already applied to this app that the catalog does not list — set by another tool,
     // or shipped by a system image this one does not know. It has to stay reachable.
@@ -377,34 +378,53 @@ private fun buildRows(
         ?.let { listOf(LocaleCatalog.entryFor(it, LocaleGroup.CURRENT)) }
         .orEmpty()
 
+    val deviceTags = catalog
+        .filter { it.group == LocaleGroup.SYSTEM || it.group == LocaleGroup.ADDED }
+        .mapTo(mutableSetOf()) { it.tag }
+    val currentTags = extras.mapTo(mutableSetOf()) { it.tag }
+    val declared = supportedLocales as? SupportedLocales.Declared
+    val supported = declared?.tags
+        ?.distinct()
+        ?.filter { it.isNotEmpty() }
+        ?.map { LocaleCatalog.entryFor(it, LocaleGroup.SUPPORTED) }
+        ?.filter { it.tag !in deviceTags && it.tag !in currentTags }
+        .orEmpty()
+    val supportedTags = supported.mapTo(mutableSetOf()) { it.tag }
+    val other = catalog.filter { it.group == LocaleGroup.OTHER && it.tag !in supportedTags }
+    val sections = buildList {
+        if (extras.isNotEmpty()) add(LocaleGroup.CURRENT to extras)
+        add(LocaleGroup.SYSTEM to catalog.filter { it.group == LocaleGroup.SYSTEM })
+        add(LocaleGroup.ADDED to catalog.filter { it.group == LocaleGroup.ADDED })
+        if (supported.isNotEmpty()) add(LocaleGroup.SUPPORTED to supported)
+        add(LocaleGroup.OTHER to other)
+    }.filter { it.second.isNotEmpty() }
+
     val needle = LocaleCatalog.normalizeQuery(rawQuery)
 
     if (needle.isEmpty()) {
-        val rows = ArrayList<SheetRow>(catalog.size + extras.size + LocaleGroup.entries.size)
-        var group: LocaleGroup? = null
-        for (entry in extras + catalog) {
-            if (entry.group != group) {
-                group = entry.group
-                rows += SheetRow.Header(group)
+        return sections.flatMapTo(ArrayList()) { (group, entries) ->
+            buildList<SheetRow> {
+                add(SheetRow.Header(group))
+                entries.forEach { add(SheetRow.Item(it)) }
             }
-            rows += SheetRow.Item(entry)
         }
-        return rows
     }
 
-    // The current-setting row keeps its heading even while searching, so a tag the device does
-    // not ship cannot sit in the results looking like one it offered.
-    val rows = ArrayList<SheetRow>()
-    for (entry in extras) {
-        rows += SheetRow.Header(entry.group)
-        rows += SheetRow.Item(entry)
+    // Keep section labels while searching so an official match cannot look like an arbitrary
+    // locale from the broad fallback list.
+    return sections.flatMapTo(ArrayList()) { (group, entries) ->
+        val matches = entries
+            .mapNotNull { entry -> entry.score(needle).takeIf { it >= 0 }?.let { it to entry } }
+            .sortedBy { it.first } // stable: ties keep each section's own ordering
+        if (matches.isEmpty()) {
+            emptyList()
+        } else {
+            buildList<SheetRow> {
+                add(SheetRow.Header(group))
+                matches.forEach { (_, entry) -> add(SheetRow.Item(entry)) }
+            }
+        }
     }
-    val matches = catalog
-        .mapNotNull { entry -> entry.score(needle).takeIf { it >= 0 }?.let { it to entry } }
-        .sortedBy { it.first } // stable: ties keep the catalog's own ordering
-    if (matches.isNotEmpty() && rows.isNotEmpty()) rows += SheetRow.Header(LocaleGroup.ALL)
-    matches.mapTo(rows) { SheetRow.Item(it.second) }
-    return rows
 }
 
 @Composable
@@ -415,8 +435,8 @@ private fun GroupHeader(group: LocaleGroup) {
                 LocaleGroup.CURRENT -> R.string.locale_group_current
                 LocaleGroup.SYSTEM -> R.string.locale_group_system
                 LocaleGroup.ADDED -> R.string.locale_group_added
-                LocaleGroup.COMMON -> R.string.locale_group_common
-                LocaleGroup.ALL -> R.string.locale_group_all
+                LocaleGroup.SUPPORTED -> R.string.locale_group_supported
+                LocaleGroup.OTHER -> R.string.locale_group_other
             },
         ),
         style = MaterialTheme.typography.labelLarge,
