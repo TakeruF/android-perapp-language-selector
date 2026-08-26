@@ -8,36 +8,37 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.Locale
 
 /** Where an entry sits in the picker. The declaration order is the display order. */
-enum class LocaleGroup(val title: String) {
+enum class LocaleGroup {
     /** A tag that is already applied to the app but is not part of the catalog. */
-    CURRENT("Current setting"),
+    CURRENT,
 
     /** "System Default" plus the device's primary language. */
-    SYSTEM("System"),
+    SYSTEM,
 
     /** The extra languages the user added under Settings → System → Languages. */
-    ADDED("Your languages"),
+    ADDED,
 
     /** Widely spoken languages, most speakers first. */
-    COMMON("Common languages"),
+    COMMON,
 
     /** Everything else Android knows, in dictionary order. */
-    ALL("All languages"),
+    ALL,
 }
 
 /**
  * One row of the locale picker.
  *
- * [label] is the endonym ("日本語"), [englishName] the English name ("Japanese (Japan)"), and
- * [searchKeys] holds every lowercased string the row can be found by, so a search for 日本語,
- * Japanese or ja-JP all land on the same entry.
+ * [label] is the endonym ("日本語"), [displayName] is localized for this app's UI,
+ * [englishName] is retained as a search alias, and [searchKeys] holds every lowercased string the
+ * row can be found by, so a search for 日本語, Japanese or ja-JP all land on the same entry.
  */
 data class LocaleEntry(
     val tag: String,
     val label: String,
+    val displayName: String,
     val englishName: String,
     val group: LocaleGroup,
-    /** Display name in the device's own UI language; what "dictionary order" sorts on. */
+    /** Display name in this app's UI language; what "dictionary order" sorts on. */
     val sortKey: String,
     val searchKeys: List<String>,
 ) {
@@ -46,8 +47,8 @@ data class LocaleEntry(
     val subtitle: String
         get() = when {
             isSystemDefault -> "Follows the device language"
-            englishName.isEmpty() || englishName == label -> tag
-            else -> "$englishName · $tag"
+            displayName.isEmpty() || displayName == label -> tag
+            else -> "$displayName · $tag"
         }
 
     fun toOption(): LocaleOption = LocaleOption(tag, label)
@@ -127,10 +128,16 @@ object LocaleCatalog {
     val SYSTEM_DEFAULT = LocaleEntry(
         tag = "",
         label = "System Default",
+        displayName = "",
         englishName = "",
         group = LocaleGroup.SYSTEM,
         sortKey = "",
-        searchKeys = listOf("system default", "system", "default", "システム", "デフォルト", "端末"),
+        searchKeys = listOf(
+            "system default", "system", "default",
+            "システム", "デフォルト", "端末",
+            "系统默认", "系统", "기본값", "시스템",
+            "predeterminado", "sistema", "valeur par défaut", "système",
+        ),
     )
 
     private val labelCache = ConcurrentHashMap<String, String>()
@@ -270,7 +277,7 @@ object LocaleCatalog {
             tag, locale.toLanguageTag(), locale.language, locale.country, locale.script,
         ).filter { it.isNotBlank() }.map { it.lowercase(Locale.ROOT) }
 
-        return LocaleEntry(tag, label, english, group, uiName.ifBlank { label }, keys)
+        return LocaleEntry(tag, label, uiName, english, group, uiName.ifBlank { label }, keys)
     }
 
     /** Normalises what the user typed so `ja_JP`, `JA-jp` and `ja-JP` all search the same way. */

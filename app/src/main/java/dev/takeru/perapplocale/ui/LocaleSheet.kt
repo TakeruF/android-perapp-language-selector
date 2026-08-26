@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,8 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -32,6 +35,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,15 +47,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.takeru.perapplocale.R
 import dev.takeru.perapplocale.data.AppInfo
 import dev.takeru.perapplocale.data.LocaleCatalog
 import dev.takeru.perapplocale.data.LocaleEntry
 import dev.takeru.perapplocale.data.LocaleGroup
 import dev.takeru.perapplocale.data.LocaleOption
+import dev.takeru.perapplocale.data.SupportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -68,6 +76,7 @@ fun LocaleSheet(
     app: AppInfo,
     enabled: Boolean,
     busy: Boolean,
+    loadSupportedLocales: suspend (String) -> SupportedLocales,
     onDismiss: () -> Unit,
     onApply: (LocaleOption, Boolean) -> Unit,
 ) {
@@ -75,6 +84,14 @@ fun LocaleSheet(
 
     var selectedTag by remember(app.packageName) { mutableStateOf(app.localeTag) }
     var query by remember(app.packageName) { mutableStateOf("") }
+    var showSupportedLanguages by remember(app.packageName) { mutableStateOf(false) }
+
+    val supportedLocales by produceState<SupportedLocales>(
+        initialValue = SupportedLocales.Loading,
+        key1 = app.packageName,
+    ) {
+        value = loadSupportedLocales(app.packageName)
+    }
 
     // ~800 locales with several display names each: too slow for the frame that opens the sheet.
     val catalog by produceState<List<LocaleEntry>?>(initialValue = null) {
@@ -110,18 +127,23 @@ fun LocaleSheet(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
+            SupportedLocalesSummary(
+                supportedLocales = supportedLocales,
+                onShowAll = { showSupportedLanguages = true },
+            )
+
             Spacer(Modifier.height(12.dp))
 
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("日本語 / Japanese / ja-JP") },
+                placeholder = { Text(stringResource(R.string.language_search_hint)) },
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                 trailingIcon = {
                     if (query.isNotEmpty()) {
                         IconButton(onClick = { query = "" }) {
-                            Icon(Icons.Filled.Clear, contentDescription = "Clear search")
+                            Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.clear_search))
                         }
                     }
                 },
@@ -139,7 +161,7 @@ fun LocaleSheet(
                     }
                     rows.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            "No language matches \"${query.trim()}\".",
+                            stringResource(R.string.no_language_matches, query.trim()),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -147,7 +169,7 @@ fun LocaleSheet(
                     else -> LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         items(rows, key = { it.key }) { row ->
                             when (row) {
-                                is SheetRow.Header -> GroupHeader(row.title)
+                                is SheetRow.Header -> GroupHeader(row.group)
                                 is SheetRow.Item -> LocaleRow(
                                     entry = row.entry,
                                     selected = selectedTag == row.entry.tag,
@@ -166,11 +188,39 @@ fun LocaleSheet(
                     ?: LocaleOption(selectedTag, LocaleOption.labelFor(selectedTag))
             }
             Text(
-                if (selection.isSystemDefault) "Selected: System Default" else "Selected: ${selection.label} · ${selection.tag}",
+                if (selection.isSystemDefault) {
+                    stringResource(R.string.selected_system_default)
+                } else {
+                    stringResource(R.string.selected_language, selection.label, selection.tag)
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+
+            val unsupportedSelection = selection
+                .takeUnless { it.isSystemDefault }
+                ?.let { selected ->
+                    (supportedLocales as? SupportedLocales.Declared)
+                        ?.takeUnless { it.supports(selected.tag) }
+                } != null
+            if (unsupportedSelection) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    ),
+                ) {
+                    Text(
+                        stringResource(R.string.unsupported_language_warning, selection.label),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(12.dp),
+                    )
+                }
+            }
 
             Spacer(Modifier.height(12.dp))
 
@@ -180,17 +230,17 @@ fun LocaleSheet(
                     onClick = { onApply(selection, false) },
                     enabled = canApply,
                     modifier = Modifier.weight(1f),
-                ) { Text("Apply") }
+                ) { Text(stringResource(R.string.apply)) }
                 Button(
                     onClick = { onApply(selection, true) },
                     enabled = canApply,
                     modifier = Modifier.weight(1f),
-                ) { Text("Apply & Restart") }
+                ) { Text(stringResource(R.string.apply_and_restart)) }
             }
 
             if (!enabled) {
                 Text(
-                    "Shizuku is not ready, so nothing can be applied yet.",
+                    stringResource(R.string.shizuku_not_ready),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(top = 8.dp),
@@ -198,13 +248,109 @@ fun LocaleSheet(
             }
         }
     }
+
+    if (showSupportedLanguages) {
+        val declared = supportedLocales as? SupportedLocales.Declared
+        if (declared != null) {
+            AlertDialog(
+                onDismissRequest = { showSupportedLanguages = false },
+                title = { Text(stringResource(R.string.supported_languages_dialog_title)) },
+                text = {
+                    LazyColumn(Modifier.heightIn(max = 420.dp)) {
+                        items(declared.tags, key = { it }) { tag ->
+                            val entry = remember(tag) { LocaleCatalog.entryFor(tag, LocaleGroup.ALL) }
+                            Column(Modifier.padding(vertical = 6.dp)) {
+                                Text(entry.displayName.ifBlank { entry.label })
+                                Text(
+                                    tag,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showSupportedLanguages = false }) {
+                        Text(stringResource(R.string.close))
+                    }
+                },
+            )
+        }
+    }
 }
+
+@Composable
+private fun SupportedLocalesSummary(
+    supportedLocales: SupportedLocales,
+    onShowAll: () -> Unit,
+) {
+    Column(Modifier.padding(top = 10.dp)) {
+        when (supportedLocales) {
+            SupportedLocales.Loading -> Text(
+                stringResource(R.string.supported_languages_loading),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            is SupportedLocales.Declared -> {
+                Text(
+                    stringResource(R.string.supported_languages_count, supportedLocales.tags.size),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                val preview = remember(supportedLocales.tags) {
+                    supportedLocales.tags.take(SUPPORTED_LOCALE_PREVIEW_SIZE).joinToString(", ") { tag ->
+                        val entry = LocaleCatalog.entryFor(tag, LocaleGroup.ALL)
+                        entry.displayName.ifBlank { entry.label }
+                    }
+                }
+                Text(
+                    if (supportedLocales.tags.size > SUPPORTED_LOCALE_PREVIEW_SIZE) {
+                        stringResource(
+                            R.string.supported_languages_preview_more,
+                            preview,
+                            supportedLocales.tags.size - SUPPORTED_LOCALE_PREVIEW_SIZE,
+                        )
+                    } else {
+                        preview
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (supportedLocales.tags.size > SUPPORTED_LOCALE_PREVIEW_SIZE) {
+                    TextButton(onClick = onShowAll) {
+                        Text(stringResource(R.string.show_all_supported_languages))
+                    }
+                }
+            }
+            SupportedLocales.NotDeclared -> Text(
+                stringResource(R.string.supported_languages_not_declared),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SupportedLocales.Invalid -> Text(
+                stringResource(R.string.supported_languages_invalid),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+            )
+            SupportedLocales.Unavailable -> Text(
+                stringResource(R.string.supported_languages_unavailable),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+    }
+}
+
+private const val SUPPORTED_LOCALE_PREVIEW_SIZE = 4
 
 private sealed interface SheetRow {
     val key: String
 
-    data class Header(val title: String) : SheetRow {
-        override val key: String get() = "header:$title"
+    data class Header(val group: LocaleGroup) : SheetRow {
+        override val key: String get() = "header:$group"
     }
 
     data class Item(val entry: LocaleEntry) : SheetRow {
@@ -239,7 +385,7 @@ private fun buildRows(
         for (entry in extras + catalog) {
             if (entry.group != group) {
                 group = entry.group
-                rows += SheetRow.Header(group.title)
+                rows += SheetRow.Header(group)
             }
             rows += SheetRow.Item(entry)
         }
@@ -250,21 +396,29 @@ private fun buildRows(
     // not ship cannot sit in the results looking like one it offered.
     val rows = ArrayList<SheetRow>()
     for (entry in extras) {
-        rows += SheetRow.Header(entry.group.title)
+        rows += SheetRow.Header(entry.group)
         rows += SheetRow.Item(entry)
     }
     val matches = catalog
         .mapNotNull { entry -> entry.score(needle).takeIf { it >= 0 }?.let { it to entry } }
         .sortedBy { it.first } // stable: ties keep the catalog's own ordering
-    if (matches.isNotEmpty() && rows.isNotEmpty()) rows += SheetRow.Header(LocaleGroup.ALL.title)
+    if (matches.isNotEmpty() && rows.isNotEmpty()) rows += SheetRow.Header(LocaleGroup.ALL)
     matches.mapTo(rows) { SheetRow.Item(it.second) }
     return rows
 }
 
 @Composable
-private fun GroupHeader(title: String) {
+private fun GroupHeader(group: LocaleGroup) {
     Text(
-        title,
+        stringResource(
+            when (group) {
+                LocaleGroup.CURRENT -> R.string.locale_group_current
+                LocaleGroup.SYSTEM -> R.string.locale_group_system
+                LocaleGroup.ADDED -> R.string.locale_group_added
+                LocaleGroup.COMMON -> R.string.locale_group_common
+                LocaleGroup.ALL -> R.string.locale_group_all
+            },
+        ),
         style = MaterialTheme.typography.labelLarge,
         fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.primary,
@@ -284,9 +438,14 @@ private fun LocaleRow(entry: LocaleEntry, selected: Boolean, onClick: () -> Unit
     ) {
         RadioButton(selected = selected, onClick = onClick)
         Column(Modifier.weight(1f)) {
-            Text(entry.label, style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
-                entry.subtitle,
+                if (entry.isSystemDefault) stringResource(R.string.system_default) else entry.label,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                if (entry.isSystemDefault) stringResource(R.string.follows_device_language) else entry.subtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

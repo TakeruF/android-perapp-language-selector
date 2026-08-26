@@ -1,6 +1,6 @@
 # Per-App Language
 
-[English](README.md) | [简体中文](README.zh-CN.md) | 日本語
+[English](README.md) | [简体中文](README.zh-CN.md) | 日本語 | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md)
 
 アプリごとに特定の**ロケール**を強制適用する Android ユーティリティです。アプリ内に言語設定がなく、
 「設定 → アプリ → アプリの言語」に表示されないアプリにも適用できます。
@@ -96,6 +96,13 @@ LocaleList getApplicationLocales(String packageName, int userId);
 Shizuku は同じ shell uid で小さなサービスを実行し、アプリが Binder トランザクションを
 そのサービス経由で送れるようにします。つまり、このアプリ自体が権限を得るのではなく、
 shell uid に呼び出しを代行してもらいます。root が不要なのもこの仕組みによるものです。
+
+### 完全なアプリ一覧が必要な理由
+
+コア機能は、パッケージ名を事前に知ることのできない**任意のインストール済みアプリ**を選ぶことです。
+対象を限定したパッケージ照会ではこの一覧を作れないため、`QUERY_ALL_PACKAGES` を宣言しています。
+取得したパッケージ名、表示名、アイコン、ロケール設定、公式の対応言語宣言は端末内だけで使用します。
+インターネット権限はなく、アプリ一覧を共有しません。詳しくは[プライバシーポリシー](PRIVACY_POLICY.md)を参照してください。
 
 ---
 
@@ -230,6 +237,9 @@ adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
 ただし、検証環境で利用できた Android バージョンは API 37 だけです。そのため、API 33 の
 3 引数版 `setApplicationLocales` 分岐は AOSP ソースを基に実装しており、実機では未実行です。
 実行されたのは API 34 以降の 4 引数版です。
+
+固定の OEM 横断手順と、Pixel/AOSP、One UI、ColorOS、HyperOS の現在の検証状況は
+[`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md) で管理しています。
 
 ---
 

@@ -1,6 +1,6 @@
 # Per-App Language
 
-[English](README.md) | 简体中文 | [日本語](README.ja.md)
+[English](README.md) | 简体中文 | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md)
 
 一款 Android 工具，可为单个应用强制指定**语言区域（locale）**——即使应用本身没有语言设置，
 也从未出现在“设置 → 应用 → 应用语言”中，也可以使用。
@@ -90,6 +90,13 @@ LocaleList getApplicationLocales(String packageName, int userId);
 
 Shizuku 以同一个 shell uid 运行一个小型服务，并允许应用通过它转发 Binder 事务。
 因此，本应用自身不会获得任何权限，而是请 shell uid 代为调用。这也是本项目无需 root 的原因。
+
+### 为什么需要完整的应用可见性
+
+核心功能是让用户选择**任意已安装应用**，而这些应用的软件包名称无法预先得知。
+Android 的定向软件包查询无法生成这份列表，因此本应用声明了 `QUERY_ALL_PACKAGES`。
+获取的软件包名称、显示名称、图标、语言区域设置和官方支持语言声明只在设备本地使用；
+本应用没有互联网权限，也不会共享应用清单。详见[隐私政策](PRIVACY_POLICY.md)。
 
 ---
 
@@ -211,6 +218,9 @@ adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
 需要明确说明一个限制：此处唯一可用的 Android 版本是 API 37，因此 API 33 的三参数
 `setApplicationLocales` 分支是根据 AOSP 源码实现的，并未实际执行。实际运行的是 API 34+
 的四参数分支。
+
+固定的 OEM 横向测试步骤以及 Pixel/AOSP、One UI、ColorOS、HyperOS 的当前验证状态记录在
+[`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md) 中。
 
 ---
 

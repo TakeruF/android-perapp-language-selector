@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.takeru.perapplocale.R
 import dev.takeru.perapplocale.shizuku.ShizukuState
 
 const val ADB_START_COMMAND: String =
@@ -36,8 +38,8 @@ fun SetupScreen(
     onCopy: (String) -> Unit,
 ) {
     DocScaffold(
-        title = "Shizuku setup guide",
-        subtitle = "Four steps, no root, no computer required",
+        title = stringResource(R.string.shizuku_setup_guide),
+        subtitle = stringResource(R.string.setup_subtitle),
         onBack = onBack,
         snackbarHostState = snackbarHostState,
     ) {
@@ -48,64 +50,51 @@ fun SetupScreen(
             onOpenShizukuApp = onOpenShizukuApp,
         )
 
-        DocSection("Why Shizuku is needed") {
-            DocBody(
-                "Writing another app's locale requires system permissions that are reserved for " +
-                    "the platform, so no ordinary app can hold them. Shizuku runs a small service " +
-                    "as the shell user — the same user behind adb — and lets this app route that " +
-                    "one call through it. Nothing here needs root, and the app gains no permission " +
-                    "of its own.",
-            )
+        DocSection(stringResource(R.string.why_shizuku_title)) {
+            DocBody(stringResource(R.string.why_shizuku_body))
         }
 
-        DocSection("Steps") {
+        DocSection(stringResource(R.string.steps_title)) {
             DocStep(
                 1,
-                "Install Shizuku",
-                "From Google Play, F-Droid, or the GitHub releases page. On a rooted device you " +
-                    "can install Sui instead — it starts by itself and survives reboots.",
+                stringResource(R.string.setup_install_title),
+                stringResource(R.string.setup_install_body),
             )
             DocStep(
                 2,
-                "Start the service on-device (Android 11+)",
-                "Enable Developer options → Wireless debugging, keep that screen open, then open " +
-                    "Shizuku and tap \"Start via Wireless debugging\". The first time, Shizuku asks " +
-                    "you to pair using the pairing code shown under Wireless debugging.",
+                stringResource(R.string.setup_on_device_title),
+                stringResource(R.string.setup_on_device_body),
             )
             DocStep(
                 3,
-                "…or start it from a computer instead",
-                "Enable USB debugging, connect the phone, and run this once:",
+                stringResource(R.string.setup_computer_title),
+                stringResource(R.string.setup_computer_body),
             )
             DocCommand(ADB_START_COMMAND) { onCopy(ADB_START_COMMAND) }
             DocStep(
                 4,
-                "Grant this app permission",
-                "Come back here and accept the Shizuku prompt. The status at the top of this " +
-                    "screen says Connected as soon as everything is in place.",
+                stringResource(R.string.setup_grant_title),
+                stringResource(R.string.setup_grant_body),
             )
         }
 
         DocCallout(
-            "Shizuku stops at every reboot",
-            "The service is not a background app; it dies when the device restarts, and the app " +
-                "list here goes back to being read-only until you repeat step 2 or 3. Sui, on a " +
-                "rooted device, is the only way around that.",
+            stringResource(R.string.setup_reboot_title),
+            stringResource(R.string.setup_reboot_body),
         )
 
-        DocSection("If it still does not connect") {
+        DocSection(stringResource(R.string.troubleshooting_title)) {
             DocBullet(
-                "Wireless debugging turned itself off.",
-                "Some ROMs disable it when the screen locks or the Wi-Fi network changes. Turn it " +
-                    "back on and start Shizuku again.",
+                stringResource(R.string.troubleshooting_wireless_title),
+                stringResource(R.string.troubleshooting_wireless_body),
             )
             DocBullet(
-                "The permission prompt never appeared.",
-                "Open Shizuku, find this app under \"Authorized applications\", and grant it there.",
+                stringResource(R.string.troubleshooting_permission_title),
+                stringResource(R.string.troubleshooting_permission_body),
             )
             DocBullet(
-                "Battery optimisation killed Shizuku.",
-                "Exclude Shizuku from battery optimisation so the service is not stopped while it is idle.",
+                stringResource(R.string.troubleshooting_battery_title),
+                stringResource(R.string.troubleshooting_battery_body),
             )
         }
 
@@ -114,7 +103,7 @@ fun SetupScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             OutlinedButton(onClick = { onOpenUrl("https://shizuku.rikka.app/guide/setup/") }) {
-                Text("Shizuku documentation")
+                Text(stringResource(R.string.shizuku_documentation))
             }
         }
     }
@@ -130,13 +119,13 @@ private fun CurrentStatus(
     val ready = shizuku == ShizukuState.READY
     val (title, body) = when (shizuku) {
         ShizukuState.READY ->
-            "Connected" to "Shizuku is running and this app is authorised. Nothing else to do."
+            stringResource(R.string.connected) to stringResource(R.string.connected_body)
         ShizukuState.PERMISSION_REQUIRED ->
-            "Waiting for permission" to "Shizuku is running. Step 4 is all that is left."
+            stringResource(R.string.waiting_for_permission) to stringResource(R.string.waiting_for_permission_body)
         ShizukuState.NOT_RUNNING ->
-            "Shizuku is installed but not running" to "Start the service — step 2 or step 3 below."
+            stringResource(R.string.shizuku_installed_not_running) to stringResource(R.string.shizuku_installed_not_running_body)
         ShizukuState.NOT_INSTALLED ->
-            "Shizuku is not installed" to "Start at step 1."
+            stringResource(R.string.shizuku_not_installed) to stringResource(R.string.shizuku_not_installed_short_body)
     }
 
     Card(
@@ -156,10 +145,10 @@ private fun CurrentStatus(
             Text(body, style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 if (shizuku == ShizukuState.PERMISSION_REQUIRED) {
-                    TextButton(onClick = onRequestPermission) { Text("Grant permission") }
+                    TextButton(onClick = onRequestPermission) { Text(stringResource(R.string.grant_permission)) }
                 }
-                TextButton(onClick = onOpenShizukuApp) { Text("Open Shizuku") }
-                TextButton(onClick = onRecheck) { Text("Re-check") }
+                TextButton(onClick = onOpenShizukuApp) { Text(stringResource(R.string.open_shizuku)) }
+                TextButton(onClick = onRecheck) { Text(stringResource(R.string.recheck)) }
             }
         }
     }

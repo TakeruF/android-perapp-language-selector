@@ -48,10 +48,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.takeru.perapplocale.R
 import dev.takeru.perapplocale.data.AppInfo
 import dev.takeru.perapplocale.data.LocaleOption
 import dev.takeru.perapplocale.shizuku.ShizukuState
@@ -81,9 +83,9 @@ fun MainScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Per-App Language", fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.app_name), fontWeight = FontWeight.SemiBold)
                         Text(
-                            "Changes the locale an app sees — it does not translate anything",
+                            stringResource(R.string.app_subtitle),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 2,
@@ -93,15 +95,15 @@ fun MainScreen(
                 },
                 actions = {
                     IconButton(onClick = onRefresh) {
-                        Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
+                        Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.refresh))
                     }
                     Box {
                         IconButton(onClick = { menuOpen = true }) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "More options")
+                            Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.more_options))
                         }
                         DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                             DropdownMenuItem(
-                                text = { Text("Show system apps") },
+                                text = { Text(stringResource(R.string.show_system_apps)) },
                                 trailingIcon = {
                                     Switch(
                                         checked = state.showSystemApps,
@@ -111,7 +113,7 @@ fun MainScreen(
                                 onClick = { onShowSystemAppsChange(!state.showSystemApps) },
                             )
                             DropdownMenuItem(
-                                text = { Text("Configured apps first") },
+                                text = { Text(stringResource(R.string.configured_apps_first)) },
                                 trailingIcon = {
                                     Switch(
                                         checked = state.configuredFirst,
@@ -121,14 +123,14 @@ fun MainScreen(
                                 onClick = { onConfiguredFirstChange(!state.configuredFirst) },
                             )
                             DropdownMenuItem(
-                                text = { Text("Shizuku setup guide") },
+                                text = { Text(stringResource(R.string.shizuku_setup_guide)) },
                                 onClick = {
                                     menuOpen = false
                                     onOpenSetup()
                                 },
                             )
                             DropdownMenuItem(
-                                text = { Text("Help") },
+                                text = { Text(stringResource(R.string.help)) },
                                 onClick = {
                                     menuOpen = false
                                     onOpenHelp()
@@ -156,12 +158,12 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                placeholder = { Text("Search apps or package names…") },
+                placeholder = { Text(stringResource(R.string.search_apps)) },
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                 trailingIcon = {
                     if (state.query.isNotEmpty()) {
                         IconButton(onClick = { onQueryChange("") }) {
-                            Icon(Icons.Filled.Clear, contentDescription = "Clear search")
+                            Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.clear_search))
                         }
                     }
                 },
@@ -180,12 +182,12 @@ fun MainScreen(
                 FilterChip(
                     selected = state.filter == AppFilter.ALL,
                     onClick = { onFilterChange(AppFilter.ALL) },
-                    label = { Text("All") },
+                    label = { Text(stringResource(R.string.all_apps)) },
                 )
                 FilterChip(
                     selected = state.filter == AppFilter.CONFIGURED,
                     onClick = { onFilterChange(AppFilter.CONFIGURED) },
-                    label = { Text("Configured (${state.configuredCount})") },
+                    label = { Text(stringResource(R.string.configured_apps_count, state.configuredCount)) },
                 )
             }
 
@@ -217,12 +219,13 @@ fun MainScreen(
     }
 }
 
+@Composable
 private fun emptyMessage(state: MainUiState): String = when {
-    state.query.isNotBlank() -> "No app matches \"${state.query}\"."
+    state.query.isNotBlank() -> stringResource(R.string.no_app_matches, state.query)
     state.filter == AppFilter.CONFIGURED && state.shizuku != ShizukuState.READY ->
-        "Nothing recorded yet. Connect Shizuku to read what is already configured."
-    state.filter == AppFilter.CONFIGURED -> "No app has a forced locale yet."
-    else -> "No apps to show. Try enabling \"Show system apps\"."
+        stringResource(R.string.nothing_recorded)
+    state.filter == AppFilter.CONFIGURED -> stringResource(R.string.no_configured_apps)
+    else -> stringResource(R.string.no_apps_to_show)
 }
 
 @Composable
@@ -265,7 +268,7 @@ private fun AppRow(app: AppInfo, busy: Boolean, onClick: () -> Unit) {
             )
             Text(
                 if (app.isConfigured) "${LocaleOption.labelFor(app.localeTag)} · ${app.localeTag}"
-                else LocaleOption.labelFor(app.localeTag),
+                else stringResource(R.string.system_default),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (app.isConfigured) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onSurfaceVariant,

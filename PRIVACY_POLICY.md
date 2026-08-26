@@ -1,12 +1,14 @@
 # Privacy Policy for Per-App Language
 
-Effective date: August 24, 2026
+Effective date: August 26, 2026
 
 Per-App Language is developed by TakeruF. This policy explains how the app handles information.
 
 ## Information the app accesses
 
-Per-App Language reads the list of applications installed on your Android device, including package names, app names, icons, and current per-app locale settings. This access is necessary so you can select any installed app and view or change its language setting.
+Per-App Language reads the list of applications installed on your Android device, including package names, app names, icons, current per-app locale settings, and official language-support declarations. This access is necessary so you can select any installed app, understand its declared language support, and view or change its language setting.
+
+Android classifies the complete installed-app inventory as sensitive information. The app therefore uses `QUERY_ALL_PACKAGES` only for this visible, user-initiated core feature. A narrower package query cannot provide a picker for arbitrary installed apps because their package names are not known in advance.
 
 The app also stores the following information locally on your device:
 
@@ -15,7 +17,7 @@ The app also stores the following information locally on your device:
 
 ## How information is used
 
-The installed-app information and locally stored preferences are used only to display the app list and perform the language-setting actions you request. When you apply a language, the selected package name and locale tag are passed on the same device to the user-installed Shizuku service, which performs the requested Android system operation.
+The installed-app information and locally stored preferences are used only to display the app list, show declared language compatibility, and perform the language-setting actions you request. When you apply a language, the selected package name and locale tag are passed on the same device to the user-installed Shizuku service, which performs the requested Android system operation.
 
 ## Data collection and sharing
 

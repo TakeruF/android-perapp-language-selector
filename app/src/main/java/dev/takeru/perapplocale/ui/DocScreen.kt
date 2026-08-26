@@ -33,12 +33,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import dev.takeru.perapplocale.R
 
 /**
  * Shared chrome for the two prose screens (setup guide, help). They are read top to bottom, so
@@ -70,7 +72,10 @@ fun DocScaffold(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back),
+                        )
                     }
                 },
             )
@@ -185,7 +190,7 @@ fun DocCommand(command: String, onCopy: () -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onCopy) { Text("Copy") }
+            TextButton(onClick = onCopy) { Text(stringResource(R.string.copy)) }
         }
     }
 }

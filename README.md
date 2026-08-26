@@ -1,6 +1,6 @@
 # Per-App Language
 
-English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
+English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md)
 
 An Android utility that forces a specific **locale** on individual apps — even apps that have no
 in-app language setting and never show up under *Settings → Apps → App language*.
@@ -92,6 +92,14 @@ All three are `signature|privileged`, so a normal app can never be granted them.
 Shizuku runs a small service as that same shell uid and lets an app route binder transactions
 through it. So this app does not gain any permission itself; it asks the shell uid to make the
 call on its behalf. That is also the reason nothing here needs root.
+
+### Why full app visibility
+
+The core feature is a picker for **any installed app**, whose package names cannot be known in
+advance. Android's targeted package queries cannot build that list, so the app declares
+`QUERY_ALL_PACKAGES`. It uses the resulting package names, labels, icons, locale settings, and
+official language declarations only on the device; it has no Internet permission and does not
+share the inventory. See the [Privacy Policy](PRIVACY_POLICY.md).
 
 ---
 
@@ -224,6 +232,9 @@ confirming the result with `cmd locale get-app-locales` rather than trusting the
 One caveat, stated plainly: the only Android version available here was API 37, so the API 33
 three-argument `setApplicationLocales` branch is derived from the AOSP sources rather than executed.
 The four-argument branch (API 34+) is the one that ran.
+
+The fixed cross-OEM procedure and the current Pixel/AOSP, One UI, ColorOS, and HyperOS evidence
+status are tracked in [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
 
 ---
 

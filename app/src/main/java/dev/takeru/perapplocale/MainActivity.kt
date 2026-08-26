@@ -73,12 +73,24 @@ class MainActivity : ComponentActivity() {
                                 duration = SnackbarDuration.Long,
                             )
                             is UiEvent.Launch -> runCatching {
-                                context.startActivity(
-                                    event.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                                )
-                            }.onFailure {
-                                snackbarHostState.showSnackbar("Could not relaunch the app: ${it.message}")
-                            }
+                                context.startActivity(event.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                            }.fold(
+                                onSuccess = {
+                                    snackbarHostState.showSnackbar(
+                                        context.getString(R.string.applied_restarting, event.appliedMessage),
+                                    )
+                                },
+                                onFailure = {
+                                    snackbarHostState.showSnackbar(
+                                        context.getString(
+                                            R.string.error_relaunch_after_applied,
+                                            event.appliedMessage,
+                                            it.message ?: it.javaClass.simpleName,
+                                        ),
+                                        duration = SnackbarDuration.Long,
+                                    )
+                                },
+                            )
                         }
                     }
                 }
@@ -108,8 +120,9 @@ class MainActivity : ComponentActivity() {
                             val live = state.apps.firstOrNull { it.packageName == app.packageName } ?: app
                             LocaleSheet(
                                 app = live,
-                                enabled = state.shizukuReady,
+                                enabled = state.shizukuReady || live.packageName == context.packageName,
                                 busy = state.busyPackage == live.packageName,
+                                loadSupportedLocales = viewModel::supportedLocalesFor,
                                 onDismiss = { sheetApp = null },
                                 onApply = { option, restart ->
                                     sheetApp = null
@@ -131,6 +144,7 @@ class MainActivity : ComponentActivity() {
                     )
 
                     Screen.HELP -> HelpScreen(
+                        shizuku = state.shizuku,
                         snackbarHostState = snackbarHostState,
                         onBack = goBack,
                         onOpenSetup = {
@@ -138,6 +152,7 @@ class MainActivity : ComponentActivity() {
                             screen = Screen.SETUP
                         },
                         onOpenUrl = ::openUrl,
+                        onCopy = ::copyToClipboard,
                     )
                 }
             }
@@ -162,7 +177,7 @@ class MainActivity : ComponentActivity() {
 
     private fun copyToClipboard(text: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText("Shizuku start command", text))
+        clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.shizuku_start_command), text))
         // Android 13+ shows its own copy confirmation, so saying it twice would be noise.
     }
 
@@ -170,7 +185,7 @@ class MainActivity : ComponentActivity() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         } catch (_: ActivityNotFoundException) {
-            Toast.makeText(this, "No browser available", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_browser_available), Toast.LENGTH_SHORT).show()
         }
     }
 

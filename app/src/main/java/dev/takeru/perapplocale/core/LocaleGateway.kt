@@ -55,6 +55,10 @@ object LocaleGateway {
     /** Cached lazily; `asInterface` is only reachable when hidden-API exemptions took effect. */
     internal var reflectionUnavailable = false
 
+    @Volatile
+    var lastPath: GatewayPath = GatewayPath.UNKNOWN
+        private set
+
     /**
      * How we obtain the service binder. A seam, not a configuration knob: the on-device probe in
      * the debug variant swaps in [SystemBinder.raw] so it can exercise this class as the shell uid
@@ -71,7 +75,10 @@ object LocaleGateway {
     @Throws(LocaleGatewayException::class)
     fun getApplicationLocales(packageName: String): LocaleList {
         val binder = requireBinder()
-        reflectiveGet(binder, packageName)?.let { return it }
+        reflectiveGet(binder, packageName)?.let {
+            lastPath = GatewayPath.REFLECTION
+            return it
+        }
         return transactGet(binder, packageName)
     }
 
@@ -82,7 +89,10 @@ object LocaleGateway {
     @Throws(LocaleGatewayException::class)
     fun setApplicationLocales(packageName: String, locales: LocaleList) {
         val binder = requireBinder()
-        if (reflectiveSet(binder, packageName, locales)) return
+        if (reflectiveSet(binder, packageName, locales)) {
+            lastPath = GatewayPath.REFLECTION
+            return
+        }
         transactSet(binder, packageName, locales)
     }
 
@@ -153,11 +163,13 @@ object LocaleGateway {
             data.writeInt(myUserId)
             binder.transact(TX_GET_APPLICATION_LOCALES, data, reply, 0)
             reply.readException()
-            return if (reply.readInt() != 0) {
+            val result = if (reply.readInt() != 0) {
                 LocaleList.CREATOR.createFromParcel(reply)
             } else {
                 LocaleList.getEmptyLocaleList()
             }
+            lastPath = GatewayPath.RAW_TRANSACTION
+            return result
         } catch (t: Throwable) {
             throw asGatewayException("read the locale of", packageName, t)
         } finally {
@@ -180,6 +192,7 @@ object LocaleGateway {
             }
             binder.transact(TX_SET_APPLICATION_LOCALES, data, reply, 0)
             reply.readException()
+            lastPath = GatewayPath.RAW_TRANSACTION
         } catch (t: Throwable) {
             throw asGatewayException("change the locale of", packageName, t)
         } finally {
@@ -205,5 +218,7 @@ object LocaleGateway {
         return LocaleGatewayException("Could not $verb $packageName. $hint", cause)
     }
 }
+
+enum class GatewayPath { UNKNOWN, REFLECTION, RAW_TRANSACTION }
 
 class LocaleGatewayException(message: String, cause: Throwable? = null) : Exception(message, cause)

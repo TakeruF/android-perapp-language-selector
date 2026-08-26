@@ -1,5 +1,7 @@
 package dev.takeru.perapplocale.ui
 
+import android.os.Build
+import android.os.Process
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -11,7 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.takeru.perapplocale.R
+import dev.takeru.perapplocale.core.LocaleGateway
+import dev.takeru.perapplocale.shizuku.ShizukuState
+import java.util.Locale
 
 private const val PROJECT_URL = "https://github.com/TakeruF/android-perapp-language-selector"
 
@@ -22,10 +29,12 @@ private const val PROJECT_URL = "https://github.com/TakeruF/android-perapp-langu
  */
 @Composable
 fun HelpScreen(
+    shizuku: ShizukuState,
     snackbarHostState: SnackbarHostState,
     onBack: () -> Unit,
     onOpenSetup: () -> Unit,
     onOpenUrl: (String) -> Unit,
+    onCopy: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val version = remember(context) {
@@ -33,110 +42,103 @@ fun HelpScreen(
             context.packageManager.getPackageInfo(context.packageName, 0).versionName
         }.getOrNull()
     }
+    val diagnostics = remember(context, version, shizuku) {
+        val shizukuVersion = runCatching {
+            context.packageManager.getPackageInfo(SHIZUKU_PACKAGE, 0).versionName
+        }.getOrNull() ?: "not installed"
+        val localeServiceReachable = runCatching { LocaleGateway.isServiceReachable() }.getOrDefault(false)
+        buildString {
+            appendLine("App: ${version ?: "unknown"} (${context.packageName})")
+            appendLine("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+            appendLine("Manufacturer: ${Build.MANUFACTURER}")
+            appendLine("Model: ${Build.MODEL}")
+            appendLine("Profile userId: ${Process.myUid() / 100_000}")
+            appendLine("Shizuku: ${shizuku.name.lowercase(Locale.ROOT)} ($shizukuVersion)")
+            appendLine("Locale service: ${if (localeServiceReachable) "reachable" else "not reachable"}")
+            append("Gateway: ${LocaleGateway.lastPath.name.lowercase(Locale.ROOT)}")
+        }
+    }
 
     DocScaffold(
-        title = "Help",
-        subtitle = "What this app does, and where it stops",
+        title = stringResource(R.string.help),
+        subtitle = stringResource(R.string.help_subtitle),
         onBack = onBack,
         snackbarHostState = snackbarHostState,
     ) {
-        DocSection("What this app does") {
-            DocBody(
-                "Android 13 lets the system keep a separate language for each app. Settings → " +
-                    "Apps → App language only lists apps that ship a locale config, so most apps " +
-                    "never appear there even though the underlying override works for them too.",
-            )
-            DocBody(
-                "This app writes that same per-app override directly, for any installed package. " +
-                    "Your phone can stay in Japanese while one app runs in English and another in " +
-                    "简体中文.",
-            )
+        DocSection(stringResource(R.string.help_what_title)) {
+            DocBody(stringResource(R.string.help_what_body_1))
+            DocBody(stringResource(R.string.help_what_body_2))
         }
 
         DocCallout(
-            "This is not a translator",
-            "It only changes the language an app is told to use. If the app does not ship " +
-                "resources for that language, Android falls back to the app's default and nothing " +
-                "visible changes.",
+            stringResource(R.string.not_translator_title),
+            stringResource(R.string.not_translator_body),
         )
 
-        DocSection("Using it") {
-            DocStep(1, "Pick an app", "Search by app name or package name. Use the menu to include system apps.")
-            DocStep(2, "Choose a language", "Pick a preset or type any BCP 47 tag, such as pt-BR or zh-Hant-TW.")
+        DocSection(stringResource(R.string.help_using_title)) {
+            DocStep(1, stringResource(R.string.help_pick_app_title), stringResource(R.string.help_pick_app_body))
+            DocStep(2, stringResource(R.string.help_choose_language_title), stringResource(R.string.help_choose_language_body))
             DocStep(
                 3,
-                "Apply, or Apply & Restart",
-                "Apply writes the locale; a running app may not notice until it restarts. " +
-                    "Apply & Restart force-stops the app and reopens it, which is what makes the " +
-                    "change visible in most apps.",
+                stringResource(R.string.help_apply_title),
+                stringResource(R.string.help_apply_body),
             )
+            DocBody(stringResource(R.string.help_system_default_body))
+        }
+
+        DocSection(stringResource(R.string.requirements_title)) {
+            DocBullet(stringResource(R.string.requirement_android_title), stringResource(R.string.requirement_android_body))
+            DocBullet(stringResource(R.string.requirement_shizuku_title), stringResource(R.string.requirement_shizuku_body))
+            DocBullet(stringResource(R.string.requirement_no_root_title), stringResource(R.string.requirement_no_root_body))
+        }
+
+        DocSection(stringResource(R.string.limitations_title)) {
+            DocBullet(
+                stringResource(R.string.limitation_language_title),
+                stringResource(R.string.limitation_language_body),
+            )
+            DocBullet(
+                stringResource(R.string.limitation_own_language_title),
+                stringResource(R.string.limitation_own_language_body),
+            )
+            DocBullet(
+                stringResource(R.string.limitation_web_title),
+                stringResource(R.string.limitation_web_body),
+            )
+            DocBullet(
+                stringResource(R.string.limitation_force_stop_title),
+                stringResource(R.string.limitation_force_stop_body),
+            )
+            DocBullet(
+                stringResource(R.string.limitation_profile_title),
+                stringResource(R.string.limitation_profile_body),
+            )
+            DocBullet(
+                stringResource(R.string.limitation_reboot_title),
+                stringResource(R.string.limitation_reboot_body),
+            )
+        }
+
+        DocSection(stringResource(R.string.privacy_title)) {
+            DocBody(stringResource(R.string.privacy_body))
+        }
+
+        DocSection(stringResource(R.string.about_title)) {
             DocBody(
-                "Choosing System default removes the override and hands the app back to the " +
-                    "phone's language. Apps with an override are marked with a dot and can be " +
-                    "listed on their own with the Configured filter.",
+                if (version != null) stringResource(R.string.about_version, version)
+                else stringResource(R.string.about_without_version),
             )
-        }
-
-        DocSection("Requirements") {
-            DocBullet("Android 13 or newer.", "Per-app locales did not exist before Android 13, and cannot be emulated on Android 12.")
-            DocBullet("Shizuku, running.", "Or Sui on a rooted device. The setup guide covers this.")
-            DocBullet("No root.", "Shizuku's own service does the privileged call; this app holds no special permission.")
-        }
-
-        DocSection("Limitations") {
-            DocBullet(
-                "Apps without that language stay unchanged.",
-                "Setting zh-CN on an English-only app changes nothing visible.",
-            )
-            DocBullet(
-                "Some apps choose their own language.",
-                "Where the language lives in an in-app setting or in your account on their server, " +
-                    "the app ignores the system locale entirely. Several Chinese super-apps work this way.",
-            )
-            DocBullet(
-                "Web content usually ignores it.",
-                "Screens rendered from the server, and much of what appears in a WebView, follow " +
-                    "the account or the browser's Accept-Language header instead.",
-            )
-            DocBullet(
-                "Force-stop can be refused.",
-                "Some OEM builds reject it. The locale is still written — close the app from " +
-                    "Recents yourself. The app says so when this happens.",
-            )
-            DocBullet(
-                "One user profile at a time.",
-                "Changes apply to the user this app is installed in; a work profile has its own copy of everything.",
-            )
-            DocBullet(
-                "Shizuku must be restarted after every reboot.",
-                "Until it is, the list still shows what is configured but nothing can be changed.",
-            )
-        }
-
-        DocSection("Privacy") {
-            DocBody(
-                "Everything happens on the device. The app has no internet permission and sends " +
-                    "nothing anywhere. It reads the installed app list to show it to you, and " +
-                    "stores your choices locally so configured apps are recognisable at launch — " +
-                    "the system itself remains the source of truth for locales.",
-            )
-        }
-
-        DocSection("About") {
-            DocBody(
-                buildString {
-                    append("Per-App Language")
-                    if (version != null) append(" $version")
-                    append(" · Apache License 2.0")
-                },
-            )
+            DocBody(stringResource(R.string.diagnostics_body))
+            DocCommand(diagnostics) { onCopy(diagnostics) }
             Row(
                 modifier = Modifier.padding(top = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Button(onClick = onOpenSetup) { Text("Shizuku setup guide") }
-                OutlinedButton(onClick = { onOpenUrl(PROJECT_URL) }) { Text("Source code") }
+                Button(onClick = onOpenSetup) { Text(stringResource(R.string.shizuku_setup_guide)) }
+                OutlinedButton(onClick = { onOpenUrl(PROJECT_URL) }) { Text(stringResource(R.string.source_code)) }
             }
         }
     }
 }
+
+private const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"

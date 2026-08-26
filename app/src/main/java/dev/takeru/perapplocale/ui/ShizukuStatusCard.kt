@@ -20,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.takeru.perapplocale.R
 import dev.takeru.perapplocale.shizuku.ShizukuState
 
 /**
@@ -40,24 +42,23 @@ fun ShizukuStatusCard(
     val (icon, title, body, actionLabel, action) = when (state) {
         ShizukuState.PERMISSION_REQUIRED -> StatusContent(
             Icons.Filled.Lock,
-            "Shizuku permission needed",
-            "Shizuku is running. Grant this app permission so it can talk to the system locale service.",
-            "Grant permission",
+            stringResource(R.string.shizuku_permission_needed),
+            stringResource(R.string.shizuku_permission_needed_body),
+            stringResource(R.string.grant_permission),
             onRequestPermission,
         )
         ShizukuState.NOT_RUNNING -> StatusContent(
             Icons.Filled.PlayArrow,
-            "Shizuku is not running",
-            "Start the Shizuku service from the Shizuku app — over Wireless debugging, or from a computer with adb. " +
-                "It must be restarted after every reboot.",
-            "How to start it",
+            stringResource(R.string.shizuku_not_running),
+            stringResource(R.string.shizuku_not_running_body),
+            stringResource(R.string.how_to_start_shizuku),
             onOpenSetup,
         )
         ShizukuState.NOT_INSTALLED -> StatusContent(
             Icons.Filled.Warning,
-            "Shizuku is not installed",
-            "This app cannot change another app's locale on its own. Install Shizuku, then start its service.",
-            "Setup guide",
+            stringResource(R.string.shizuku_not_installed),
+            stringResource(R.string.shizuku_not_installed_body),
+            stringResource(R.string.setup_guide),
             onOpenSetup,
         )
         ShizukuState.READY -> StatusContent(Icons.Filled.CheckCircle, "", "", "", {})
@@ -84,7 +85,7 @@ fun ShizukuStatusCard(
             Text(body, style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(onClick = action) { Text(actionLabel) }
-                TextButton(onClick = onRecheck) { Text("Re-check") }
+                TextButton(onClick = onRecheck) { Text(stringResource(R.string.recheck)) }
             }
         }
     }

@@ -1,11 +1,13 @@
 package dev.takeru.perapplocale.ui
 
 import android.app.Application
+import android.app.LocaleManager
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dev.takeru.perapplocale.R
 import dev.takeru.perapplocale.core.LocaleGateway
 import dev.takeru.perapplocale.core.LocaleGatewayException
 import dev.takeru.perapplocale.core.ProcessGateway
@@ -14,6 +16,7 @@ import dev.takeru.perapplocale.data.AppRepository
 import dev.takeru.perapplocale.data.LocaleOption
 import dev.takeru.perapplocale.data.Settings
 import dev.takeru.perapplocale.data.SettingsStore
+import dev.takeru.perapplocale.data.SupportedLocales
 import dev.takeru.perapplocale.shizuku.ShizukuRepository
 import dev.takeru.perapplocale.shizuku.ShizukuState
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +53,7 @@ data class MainUiState(
 sealed interface UiEvent {
     data class Message(val text: String) : UiEvent
     data class Error(val text: String) : UiEvent
-    data class Launch(val intent: Intent) : UiEvent
+    data class Launch(val intent: Intent, val appliedMessage: String) : UiEvent
 }
 
 class MainViewModel(
@@ -186,7 +189,7 @@ class MainViewModel(
     private suspend fun refreshApps() {
         loadingApps.value = true
         rawApps.value = runCatching { appRepository.loadInstalledApps() }
-            .onFailure { events.send(UiEvent.Error("Could not read the installed app list: ${it.message}")) }
+            .onFailure { events.send(UiEvent.Error(text(R.string.error_read_apps, it.message))) }
             .getOrDefault(emptyList())
         loadingApps.value = false
     }
@@ -227,7 +230,10 @@ class MainViewModel(
                 if (found.isEmpty() && failure != null) {
                     events.send(
                         UiEvent.Error(
-                            "Could not read any app's locale. ${failure.message ?: failure.javaClass.simpleName}",
+                            text(
+                                R.string.error_read_locales,
+                                failure.message ?: failure.javaClass.simpleName,
+                            ),
                         ),
                     )
                 }
@@ -246,6 +252,18 @@ class MainViewModel(
         viewModelScope.launch {
             busyPackage.value = packageName
             try {
+                if (packageName == getApplication<Application>().packageName) {
+                    // Force-stopping ourselves would kill this process before it could relaunch.
+                    // The public API is also the canonical path for changing the calling app.
+                    settingsStore.recordAssignment(packageName, option.tag)
+                    updateLocalTag(packageName, option.tag)
+                    getApplication<Application>()
+                        .getSystemService(LocaleManager::class.java)
+                        .applicationLocales = option.toLocaleList()
+                    events.send(UiEvent.Message(appliedMessage(option)))
+                    return@launch
+                }
+
                 withContext(Dispatchers.IO) {
                     LocaleGateway.setApplicationLocales(packageName, option.toLocaleList())
                 }
@@ -262,22 +280,29 @@ class MainViewModel(
                 when {
                     !stopped -> events.send(
                         UiEvent.Error(
-                            "Locale applied, but this device refused to force-stop the app. " +
-                                "Close it from Recents to see the change.",
+                            text(R.string.error_force_stop_refused),
                         ),
                     )
                     launchIntent == null -> events.send(
-                        UiEvent.Message("${appliedMessage(option)} The app has no launcher entry, so it was only stopped."),
+                        UiEvent.Message(text(R.string.applied_no_launcher, appliedMessage(option))),
                     )
                     else -> {
-                        events.send(UiEvent.Launch(launchIntent))
-                        events.send(UiEvent.Message("${appliedMessage(option)} Restarting…"))
+                        events.send(UiEvent.Launch(launchIntent, appliedMessage(option)))
                     }
                 }
             } catch (e: LocaleGatewayException) {
-                events.send(UiEvent.Error(e.message ?: "The locale change failed."))
+                events.send(
+                    UiEvent.Error(
+                        e.message?.let { text(R.string.error_locale_change_detail, it) }
+                            ?: text(R.string.error_locale_change),
+                    ),
+                )
             } catch (e: Exception) {
-                events.send(UiEvent.Error("Unexpected failure: ${e.message ?: e.javaClass.simpleName}"))
+                events.send(
+                    UiEvent.Error(
+                        text(R.string.error_unexpected, e.message ?: e.javaClass.simpleName),
+                    ),
+                )
             } finally {
                 busyPackage.value = null
             }
@@ -285,13 +310,20 @@ class MainViewModel(
     }
 
     private fun appliedMessage(option: LocaleOption): String =
-        if (option.isSystemDefault) "Reset to the system locale." else "Applied ${option.label}."
+        if (option.isSystemDefault) text(R.string.reset_to_system_locale)
+        else text(R.string.applied_language, option.label)
+
+    private fun text(id: Int, vararg args: Any?): String =
+        getApplication<Application>().getString(id, *args)
 
     private fun updateLocalTag(packageName: String, tag: String) {
         rawApps.value = rawApps.value.map { app ->
             if (app.packageName == packageName) app.copy(localeTag = tag, localeKnown = true) else app
         }
     }
+
+    suspend fun supportedLocalesFor(packageName: String): SupportedLocales =
+        appRepository.supportedLocalesFor(packageName)
 
     class Factory(
         private val application: Application,
