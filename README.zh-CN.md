@@ -6,13 +6,15 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play：**正在进行封闭测试，即将上线。
+**Google Play：** 正在进行封闭测试，即将上线。
 
 每个版本都使用同一密钥签名，证书指纹会发布在发行说明中。隐私详情请参阅[隐私政策](PRIVACY_POLICY.md)。
 
 ---
 
-一款 Android 工具，可为单个应用强制指定**语言区域（locale）**——即使应用本身没有语言设置，
+## 应用简介
+
+一款 Android 工具，可为单个应用强制指定**语言区域（locale）** ——即使应用本身没有语言设置，
 也从未出现在“设置 → 应用 → 应用语言”中，也可以使用。
 
 你的手机可以保持日语，同时让微信和淘宝使用简体中文、ChatGPT 使用英语、Google 地图保持日语。
@@ -50,11 +52,11 @@
 
 ## 它实际上做了什么
 
-Android 13 引入了**单应用语言区域**。系统会为每个软件包保存一份 `LocaleList` 覆盖设置，
+Android 13 引入了**单应用语言区域** 。系统会为每个软件包保存一份 `LocaleList` 覆盖设置，
 并在应用启动时将其应用到该应用的 `Configuration`。应用无需主动适配这项功能——
 无论应用是否适配，框架都会覆盖其配置。
 
-应用需要主动适配的只是被系统设置**列出**：“设置 → 应用 → 应用语言”只会显示附带
+应用需要主动适配的只是被系统设置**列出** ：“设置 → 应用 → 应用语言”只会显示附带
 `locales_config.xml`（`android:localeConfig`）的应用。没有该文件的应用在设置中不可见，
 但底层语言区域覆盖机制依然可以正常工作。
 
@@ -78,7 +80,7 @@ Android 13 引入了**单应用语言区域**。系统会为每个软件包保�
 
 ### 为什么需要 Shizuku
 
-公开 API `LocaleManager.setApplicationLocales(LocaleList)` 只能写入**调用方自身**软件包的
+公开 API `LocaleManager.setApplicationLocales(LocaleList)` 只能写入**调用方自身** 软件包的
 语言区域。其背后的系统服务提供了可指定软件包的版本：
 
 ```aidl
@@ -103,7 +105,7 @@ Shizuku 以同一个 shell uid 运行一个小型服务，并允许应用通过�
 
 ### 为什么需要完整的应用可见性
 
-核心功能是让用户选择**任意已安装应用**，而这些应用的软件包名称无法预先得知。
+核心功能是让用户选择**任意已安装应用** ，而这些应用的软件包名称无法预先得知。
 Android 的定向软件包查询无法生成这份列表，因此本应用声明了 `QUERY_ALL_PACKAGES`。
 获取的软件包名称、显示名称、图标、语言区域设置和官方支持语言声明只在设备本地使用；
 本应用没有互联网权限，也不会共享应用清单。详见[隐私政策](PRIVACY_POLICY.md)。
@@ -112,13 +114,13 @@ Android 的定向软件包查询无法生成这份列表，因此本应用声明
 
 ## 设置
 
-1. **安装 Shizuku**——可从 [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api)、
+1. **安装 Shizuku** ——可从 [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api)、
    F-Droid 或 [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases) 安装。
 
 2. **启动 Shizuku 服务。**
 
    *直接在设备上启动（Android 11+，无需电脑）：*
-   打开开发者选项 → 开启**无线调试** → 打开 Shizuku → 选择**通过无线调试启动**。
+   打开开发者选项 → 开启**无线调试** → 打开 Shizuku → 选择**通过无线调试启动** 。
 
    *通过电脑启动：*
    ```
@@ -126,13 +128,13 @@ Android 的定向软件包查询无法生成这份列表，因此本应用声明
    ```
 
    Shizuku 会在设备重启后停止，因此每次重启后都需要重复此步骤。
-   已 root 的用户可以安装 **Sui**，它会自动启动。
+   已 root 的用户可以安装 **Sui** ，它会自动启动。
 
-3. **打开 Per-App Language**，并在弹出的 Shizuku 权限对话框中授权。
+3. **打开 Per-App Language** ，并在弹出的 Shizuku 权限对话框中授权。
 
-4. 点选一个应用，选择语言，然后点击**应用并重启**。
+4. 点选一个应用，选择语言，然后点击**应用并重启** 。
 
-> **设置完成后：**即使 Shizuku 停止、设备重启或开发者选项被关闭，Android 仍会保留已经应用的
+> **设置完成后：** 即使 Shizuku 停止、设备重启或开发者选项被关闭，Android 仍会保留已经应用的
 > 语言设置。开发者选项和调试只用于启动并保持 Shizuku 可用；当你需要更改或重置语言时，
 > 请重新开启它们并启动 Shizuku。在未 root 的设备上，每次重启后都需要重新启动 Shizuku。
 > 如果希望 Shizuku 持续可用，其[故障排除指南](https://shizuku.rikka.app/guide/setup/#start-via-wireless-debugging-start-by-connecting-to-a-computer-shizuku-randomly-stops)
@@ -157,31 +159,31 @@ LocaleManagerService  →  按软件包保存的 LocaleList 覆盖  →  下次�
 
 本应用实现了两种与该服务通信的方式，并会自动回退：
 
-1. **反射调用 `ILocaleManager$Stub.asInterface`**（首选）。它会检查设备上实际存在的方法，
+1. **反射调用 `ILocaleManager$Stub.asInterface`** （首选）。它会检查设备上实际存在的方法，
    因此可自行适配 API 33 → 34 的签名变化（`fromDelegate`）以及 OEM 调整。
-2. **手写 `Parcel` 事务**（回退方案），在隐藏 API 反射被阻止时使用。它完全不需要隐藏类，
+2. **手写 `Parcel` 事务** （回退方案），在隐藏 API 反射被阻止时使用。它完全不需要隐藏类，
    代价是需要硬编码事务 ID——自 API 33 起，这些接口在 AIDL 中的声明顺序一直没有变化。
 
-**应用**只写入语言区域。**应用并重启**还会调用 `IActivityManager.forceStopPackage()`
+**应用** 只写入语言区域。**应用并重启** 还会调用 `IActivityManager.forceStopPackage()`
 并重新启动应用，因为运行中的应用只会把语言区域变化当作配置变化，而许多应用会在启动时缓存字符串，
 从而忽略这一变化。
 
-选择**系统默认**会发送一个空的 `LocaleList`，这是系统框架中“清除覆盖设置”的机制。
+选择**系统默认** 会发送一个空的 `LocaleList`，这是系统框架中“清除覆盖设置”的机制。
 
 ---
 
 ## 它做不到什么
 
-* **它不能翻译。**为一个只提供英语资源的应用设置 `zh-CN` 不会产生可见变化。
+* **它不能翻译。** 为一个只提供英语资源的应用设置 `zh-CN` 不会产生可见变化。
   Android 会回退到应用的默认资源。
-* **自行在内部选择语言的应用**（将语言保存在账号/服务器端，或提供自己的应用内设置）
+* **自行在内部选择语言的应用** （将语言保存在账号/服务器端，或提供自己的应用内设置）
   会忽略系统语言区域。部分中国超级应用属于这种情况。
-* **只在进程启动时重新读取语言区域的应用**需要使用“应用并重启”——这正是该按钮的用途。
-* **应用内的网页内容**（WebView、服务器渲染的页面）通常跟随账号设置或 `Accept-Language`，
+* **只在进程启动时重新读取语言区域的应用** 需要使用“应用并重启”——这正是该按钮的用途。
+* **应用内的网页内容** （WebView、服务器渲染的页面）通常跟随账号设置或 `Accept-Language`，
   而不是单应用语言区域。
-* **某些 OEM 系统可能拒绝强制停止。**语言区域仍会成功写入；你只需自行关闭应用。
+* **某些 OEM 系统可能拒绝强制停止。** 语言区域仍会成功写入；你只需自行关闭应用。
   发生这种情况时，界面会明确提示。
-* **工作资料 / 次要用户：**本应用仅对其当前安装所在的用户环境生效，无法跨工作资料或次要用户操作。
+* **工作资料 / 次要用户：** 本应用仅对其当前安装所在的用户环境生效，无法跨工作资料或次要用户操作。
 * 一些深度修改的 OEM ROM 可能会进一步限制 shell 权限。此时，本应用会报告
   `SecurityException`，而不是静默失败。
 
@@ -296,12 +298,12 @@ keyPassword=…
 
 ## 致谢
 
-* **[VegaBobo/Language-Selector](https://github.com/VegaBobo/Language-Selector)**——
+* **[VegaBobo/Language-Selector](https://github.com/VegaBobo/Language-Selector)** ——
   该先驱项目证明了通过 Shizuku 控制单应用语言区域是可行的。本项目将其总体思路作为参考，
   但依据 AOSP 源码和 Shizuku API 独立实现，不包含其任何代码。（若将来引用其代码，
   会在此正式添加 Apache-2.0 署名。）
 * **[RikkaApps/Shizuku](https://github.com/RikkaApps/Shizuku)** 及 Shizuku API。
-* **[LSPosed/AndroidHiddenApiBypass](https://github.com/LSPosed/AndroidHiddenApiBypass)**。
+* **[LSPosed/AndroidHiddenApiBypass](https://github.com/LSPosed/AndroidHiddenApiBypass)** 。
 
 ## 许可证
 

@@ -12,7 +12,9 @@
 
 ---
 
-앱 내부에 언어 설정이 없고 *설정 → 앱 → 앱 언어*에 표시되지 않는 앱에도 특정 **로캘**을 강제로 적용하는 Android 유틸리티입니다.
+## 앱 소개
+
+앱 내부에 언어 설정이 없고 *설정 → 앱 → 앱 언어*에 표시되지 않는 앱에도 특정 **로캘** 을 강제로 적용하는 Android 유틸리티입니다.
 
 기기 시스템 언어는 한국어로 유지하면서 WeChat과 Taobao는 중국어 간체(简体中文),
 ChatGPT는 영어, Google 지도는 한국어로 각각 설정해 사용할 수 있습니다.
@@ -59,7 +61,7 @@ Android 13에는 **앱별 로캘** 기능이 추가되었습니다. 시스템은
 
 ### Shizuku가 필요한 이유
 
-공개 API인 `LocaleManager.setApplicationLocales(LocaleList)`는 **호출한 패키지**의 로캘만 변경합니다. 내부 시스템 서비스에는 패키지를 지정하는 다음 메서드가 있습니다.
+공개 API인 `LocaleManager.setApplicationLocales(LocaleList)`는 **호출한 패키지** 의 로캘만 변경합니다. 내부 시스템 서비스에는 패키지를 지정하는 다음 메서드가 있습니다.
 
 ```aidl
 // frameworks/base/core/java/android/app/ILocaleManager.aidl
@@ -80,7 +82,7 @@ Shizuku는 같은 shell uid로 작은 서비스를 실행하고 앱의 Binder �
 
 ### 전체 앱 목록이 필요한 이유
 
-핵심 기능은 패키지 이름을 미리 알 수 없는 **모든 설치된 앱**을 선택하는 것입니다. Android의 제한된 패키지 쿼리로는 이 목록을 만들 수 없어 `QUERY_ALL_PACKAGES`를 선언합니다. 가져온 패키지 이름, 표시 이름, 아이콘, 로캘 설정과 공식 언어 선언은 기기 안에서만 사용합니다. 인터넷 권한이 없으며 앱 목록을 공유하지 않습니다. [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
+핵심 기능은 패키지 이름을 미리 알 수 없는 **모든 설치된 앱** 을 선택하는 것입니다. Android의 제한된 패키지 쿼리로는 이 목록을 만들 수 없어 `QUERY_ALL_PACKAGES`를 선언합니다. 가져온 패키지 이름, 표시 이름, 아이콘, 로캘 설정과 공식 언어 선언은 기기 안에서만 사용합니다. 인터넷 권한이 없으며 앱 목록을 공유하지 않습니다. [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
 
 ---
 
@@ -90,7 +92,7 @@ Shizuku는 같은 shell uid로 작은 서비스를 실행하고 앱의 Binder �
 
 2. **Shizuku 서비스 시작**
 
-   *기기에서(Android 11 이상, 컴퓨터 불필요):* 개발자 옵션 → **무선 디버깅** 켜기 → Shizuku 열기 → **무선 디버깅으로 시작**.
+   *기기에서(Android 11 이상, 컴퓨터 불필요):* 개발자 옵션 → **무선 디버깅** 켜기 → Shizuku 열기 → **무선 디버깅으로 시작** .
 
    *컴퓨터에서:*
    ```
@@ -98,11 +100,11 @@ Shizuku는 같은 shell uid로 작은 서비스를 실행하고 앱의 Binder �
    ```
 
    Shizuku는 재부팅하면 중지되므로 이 단계를 다시 수행해야 합니다. 루팅된 기기에서는 Shizuku 대신
-   자동으로 시작되는 **Sui**를 설치해 사용할 수 있습니다.
+   자동으로 시작되는 **Sui** 를 설치해 사용할 수 있습니다.
 
 3. **Per-App Language를 열고** Shizuku 권한 요청을 허용합니다.
 
-4. 앱과 언어를 선택한 뒤 **적용 후 다시 시작**을 누릅니다.
+4. 앱과 언어를 선택한 뒤 **적용 후 다시 시작** 을 누릅니다.
 
 > **설정 후:** Shizuku가 중지되거나 기기를 재부팅하거나 개발자 옵션을 꺼도 Android는 적용된 언어 설정을 유지합니다. 개발자 옵션과 디버깅은 Shizuku를 시작하고 사용 가능한 상태로 유지할 때만 필요합니다. 언어를 변경하거나 초기화하려면 다시 켜고 Shizuku를 시작하세요. 루팅되지 않은 기기에서는 재부팅할 때마다 이 시작 과정이 필요합니다. Shizuku를 계속 실행하려면 [문제 해결 안내](https://shizuku.rikka.app/guide/setup/#start-via-wireless-debugging-start-by-connecting-to-a-computer-shizuku-randomly-stops)에서 권장하는 대로 개발자 옵션과 USB 디버깅을 켜 두세요.
 
@@ -125,21 +127,21 @@ LocaleManagerService  →  패키지별 LocaleList 재정의  →  다음 앱 �
 
 앱은 서비스와 통신하는 두 가지 방식을 구현하며 자동으로 대체 경로를 사용합니다.
 
-1. **`ILocaleManager$Stub.asInterface` 리플렉션**(기본). 기기의 메서드를 검사해 API 33 → 34 시그니처 변경(`fromDelegate`)과 OEM 변경에 대응합니다.
-2. **직접 구현한 `Parcel` 트랜잭션**(대체). 숨겨진 API 리플렉션이 차단될 때 사용합니다. 숨겨진 클래스는 필요 없지만 API 33 이후 유지된 AIDL 선언 순서의 트랜잭션 ID를 사용합니다.
+1. **`ILocaleManager$Stub.asInterface` 리플렉션** (기본). 기기의 메서드를 검사해 API 33 → 34 시그니처 변경(`fromDelegate`)과 OEM 변경에 대응합니다.
+2. **직접 구현한 `Parcel` 트랜잭션** (대체). 숨겨진 API 리플렉션이 차단될 때 사용합니다. 숨겨진 클래스는 필요 없지만 API 33 이후 유지된 AIDL 선언 순서의 트랜잭션 ID를 사용합니다.
 
-**적용**은 로캘만 씁니다. **적용 후 다시 시작**은 `IActivityManager.forceStopPackage()`를 호출하고 앱을 다시 엽니다. 많은 앱이 시작 시 문자열을 캐시하고 실행 중 구성 변경을 무시하기 때문입니다.
+**적용** 은 로캘만 씁니다. **적용 후 다시 시작** 은 `IActivityManager.forceStopPackage()`를 호출하고 앱을 다시 엽니다. 많은 앱이 시작 시 문자열을 캐시하고 실행 중 구성 변경을 무시하기 때문입니다.
 
-**시스템 기본값**을 선택하면 빈 `LocaleList`를 보내 재정의를 제거합니다.
+**시스템 기본값** 을 선택하면 빈 `LocaleList`를 보내 재정의를 제거합니다.
 
 ---
 
 ## 지원하지 않는 기능
 
 * **번역할 수 없습니다.** 영어 리소스만 있는 앱에 `zh-CN`을 설정해도 화면은 바뀌지 않으며 Android는 앱의 기본 리소스로 대체합니다.
-* **자체적으로 언어를 선택하는 앱**은 시스템 로캘을 무시할 수 있습니다. 언어를 계정, 서버 또는 앱 내부 설정에 저장하는 일부 중국 슈퍼앱이 해당합니다.
-* **프로세스 시작 시에만 로캘을 읽는 앱**에는 *적용 후 다시 시작*이 필요합니다.
-* **앱 내부 웹 콘텐츠**(WebView, 서버 렌더링 화면)는 일반적으로 앱별 로캘이 아니라 계정 또는 `Accept-Language`를 따릅니다.
+* **자체적으로 언어를 선택하는 앱** 은 시스템 로캘을 무시할 수 있습니다. 언어를 계정, 서버 또는 앱 내부 설정에 저장하는 일부 중국 슈퍼앱이 해당합니다.
+* **프로세스 시작 시에만 로캘을 읽는 앱** 에는 *적용 후 다시 시작*이 필요합니다.
+* **앱 내부 웹 콘텐츠** (WebView, 서버 렌더링 화면)는 일반적으로 앱별 로캘이 아니라 계정 또는 `Accept-Language`를 따릅니다.
 * 일부 OEM 시스템에서는 **강제 종료가 거부될 수 있습니다.** 로캘은 기록되므로 앱을 직접 닫으면 되며 UI에서 이를 안내합니다.
 * **업무 프로필 / 보조 사용자:** 본 앱이 설치된 사용자 영역(프로필) 내에서만 설정을 변경할 수 있습니다.
 * 크게 수정된 일부 OEM ROM은 AOSP보다 shell 권한을 더 제한할 수 있습니다. 이 경우 앱은 조용히 실패하지 않고 `SecurityException`을 표시합니다.
@@ -243,7 +245,7 @@ keyPassword=…
 
 * **[VegaBobo/Language-Selector](https://github.com/VegaBobo/Language-Selector)** — Shizuku를 통한 앱별 로캘 제어가 가능함을 보여 준 선행 프로젝트입니다. 일반적인 접근 방식만 참고했으며 이 프로젝트는 AOSP 소스와 Shizuku API를 기반으로 독립 구현되었고 해당 코드를 포함하지 않습니다. 향후 코드를 포함한다면 Apache-2.0 저작자 표시를 정식으로 추가합니다.
 * **[RikkaApps/Shizuku](https://github.com/RikkaApps/Shizuku)** 및 Shizuku API.
-* **[LSPosed/AndroidHiddenApiBypass](https://github.com/LSPosed/AndroidHiddenApiBypass)**.
+* **[LSPosed/AndroidHiddenApiBypass](https://github.com/LSPosed/AndroidHiddenApiBypass)** .
 
 ## 라이선스
 

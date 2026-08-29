@@ -13,6 +13,8 @@ release notes. See the [Privacy Policy](PRIVACY_POLICY.md) for privacy details.
 
 ---
 
+## About
+
 An Android utility that forces a specific **locale** on individual apps — even apps that have no
 in-app language setting and never show up under *Settings → Apps → App language*.
 

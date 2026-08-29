@@ -12,6 +12,8 @@ Toutes les versions sont signées avec la même clé ; l’empreinte du certific
 
 ---
 
+## Présentation
+
 Un utilitaire Android qui impose des **paramètres régionaux** à chaque application, même si celle-ci ne propose aucun choix de langue et n’apparaît jamais dans *Paramètres → Applications → Langue de l’application*.
 
 Votre téléphone peut rester en français tandis que WeChat et Taobao utilisent le chinois simplifié,

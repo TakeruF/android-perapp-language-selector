@@ -12,6 +12,8 @@ Todas las versiones se firman con la misma clave y la huella del certificado se 
 
 ---
 
+## Descripción
+
 Una utilidad para Android que fuerza una **configuración regional** concreta en cada aplicación, incluso si la app no tiene un ajuste de idioma y no aparece en *Ajustes → Aplicaciones → Idioma de la aplicación*.
 
 El teléfono puede seguir en español mientras WeChat y Taobao usan chino simplificado, ChatGPT usa
