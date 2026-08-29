@@ -48,7 +48,7 @@
     <string name="help_subtitle">What this app does, and where it stops</string>
     <string name="help_what_title">What this app does</string>
     <string name="help_what_body_1">Android 13 lets the system keep a separate language for each app. Settings → Apps → App language only lists apps that ship a locale config, so most apps never appear there even though the underlying override works for them too.</string>
-    <string name="help_what_body_2">This app writes that same per-app override directly, for any installed package. Your phone can stay in Japanese while one app runs in English and another in 简体中文.</string>
+    <string name="help_what_body_2">This app writes that same per-app override directly, for any installed package. Your phone can stay in Japanese while one app runs in English and another in Simplified Chinese.</string>
     <string name="not_translator_title">This is not a translator</string>
     <string name="not_translator_body">It only changes the language an app is told to use. If the app does not ship resources for that language, Android falls back to the app’s default and nothing visible changes.</string>
     <string name="help_using_title">Using it</string>
@@ -140,5 +140,28 @@
     <string name="supported_languages_invalid">Android could not read this app’s declared language list.</string>
     <string name="supported_languages_unavailable">The app’s language information is unavailable.</string>
     <string name="unsupported_language_warning">This app does not declare support for %1$s. Android may fall back to another language.</string>
+    <string name="shortcut_reset_all">Reset all</string>
+    <string name="shortcut_reset_all_long">Reset all app languages</string>
+    <string name="reset_all_confirmation_title">Reset all app languages?</string>
+    <string name="reset_all_confirmation_body">This removes every per-app language override and returns those apps to System Default. Apps are not restarted.</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset_all_confirm">Reset all</string>
+    <string name="reset_all_requires_shizuku">Shizuku must be connected to reset all app languages.</string>
+    <string name="reset_all_complete">Reset the language for %1$d apps.</string>
+    <string name="reset_all_nothing_to_reset">No app language overrides were found.</string>
+    <string name="reset_all_partial">Reset %1$d apps, but %2$d could not be reset.</string>
     <string name="diagnostics_body">Include these diagnostics when reporting an OEM-specific problem:</string>
+    <string name="selected_apps_count">%1$d apps selected</string>
+    <string name="cancel_selection">Cancel selection</string>
+    <string name="change_language">Change language</string>
+    <string name="bulk_sheet_title">Change language for %1$d apps</string>
+    <string name="bulk_sheet_body">Choose one language for every selected app. Language support may differ between apps.</string>
+    <string name="bulk_choose_language">Choose a language</string>
+    <string name="continue_to_confirmation">Review change</string>
+    <string name="bulk_confirmation_title">Change language for %1$d apps?</string>
+    <string name="bulk_confirmation_body">This will set %1$s for all %2$d selected apps. Any existing per-app language setting will be overwritten. Apps will not be restarted.</string>
+    <string name="confirm_bulk_change">Change all</string>
+    <string name="bulk_change_complete">Changed the language for %1$d apps.</string>
+    <string name="bulk_change_failed">Could not change any of the %1$d apps.</string>
+    <string name="bulk_change_partial">Changed %1$d of %2$d apps; %3$d failed.</string>
 </resources>

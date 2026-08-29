@@ -55,9 +55,26 @@ class SettingsStore(private val context: Context) {
 
     /** Records (or, for an empty [tag], forgets) what we last applied to [packageName]. */
     suspend fun recordAssignment(packageName: String, tag: String) {
+        recordAssignments(listOf(packageName), tag)
+    }
+
+    /** Records one bulk operation atomically so partial DataStore writes cannot split the batch. */
+    suspend fun recordAssignments(packageNames: Collection<String>, tag: String) {
         context.dataStore.edit { prefs ->
             val current = decodeAssignments(prefs[Keys.ASSIGNMENTS]).toMutableMap()
-            if (tag.isEmpty()) current.remove(packageName) else current[packageName] = tag
+            for (packageName in packageNames) {
+                if (tag.isEmpty()) current.remove(packageName) else current[packageName] = tag
+            }
+            prefs[Keys.ASSIGNMENTS] = encodeAssignments(current)
+        }
+    }
+
+    /** Forgets successfully reset packages without discarding unrelated UI preferences. */
+    suspend fun forgetAssignments(packageNames: Collection<String>) {
+        if (packageNames.isEmpty()) return
+        context.dataStore.edit { prefs ->
+            val current = decodeAssignments(prefs[Keys.ASSIGNMENTS]).toMutableMap()
+            packageNames.forEach(current::remove)
             prefs[Keys.ASSIGNMENTS] = encodeAssignments(current)
         }
     }

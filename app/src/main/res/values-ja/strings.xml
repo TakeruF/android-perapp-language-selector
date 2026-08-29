@@ -45,7 +45,7 @@
     <string name="help_subtitle">できることと、その限界</string>
     <string name="help_what_title">このアプリでできること</string>
     <string name="help_what_body_1">Android 13 では、アプリごとに別の言語を保存できます。「設定 → アプリ → アプリの言語」にはロケール設定を提供するアプリしか表示されませんが、表示されない多くのアプリにも基盤の上書き機能は使えます。</string>
-    <string name="help_what_body_2">このアプリは、インストール済みの任意のパッケージへ同じアプリ別ロケール設定を直接書き込みます。端末は日本語のまま、あるアプリは英語、別のアプリは简体中文で使えます。</string>
+    <string name="help_what_body_2">このアプリは、インストール済みの任意のパッケージへ同じアプリ別ロケール設定を直接書き込みます。端末は日本語のまま、あるアプリは英語、別のアプリは簡体字中国語で使えます。</string>
     <string name="not_translator_title">翻訳ツールではありません</string>
     <string name="not_translator_body">アプリに使用させる言語を変更するだけです。アプリにその言語のリソースが含まれていなければ、Android はアプリのデフォルト言語に戻るため、表示は変わりません。</string>
     <string name="help_using_title">使い方</string>
@@ -135,5 +135,28 @@
     <string name="supported_languages_invalid">Androidがこのアプリの対応言語宣言を読み取れませんでした。</string>
     <string name="supported_languages_unavailable">このアプリの言語情報を取得できません。</string>
     <string name="unsupported_language_warning">このアプリは%1$sへの対応を宣言していません。Androidが別の言語にフォールバックする場合があります。</string>
+    <string name="shortcut_reset_all">すべてリセット</string>
+    <string name="shortcut_reset_all_long">すべてのアプリ言語をリセット</string>
+    <string name="reset_all_confirmation_title">すべてのアプリ言語をリセットしますか？</string>
+    <string name="reset_all_confirmation_body">アプリごとの言語設定をすべて解除し、システムのデフォルトに戻します。アプリは再起動されません。</string>
+    <string name="cancel">キャンセル</string>
+    <string name="reset_all_confirm">すべてリセット</string>
+    <string name="reset_all_requires_shizuku">すべてのアプリ言語をリセットするには、Shizukuへの接続が必要です。</string>
+    <string name="reset_all_complete">%1$d個のアプリの言語をリセットしました。</string>
+    <string name="reset_all_nothing_to_reset">リセットするアプリ言語はありません。</string>
+    <string name="reset_all_partial">%1$d個のアプリをリセットしましたが、%2$d個はリセットできませんでした。</string>
     <string name="diagnostics_body">OEM固有の問題を報告するときは、次の診断情報を添付してください：</string>
+    <string name="selected_apps_count">%1$d個のアプリを選択</string>
+    <string name="cancel_selection">選択を解除</string>
+    <string name="change_language">言語を変更</string>
+    <string name="bulk_sheet_title">%1$d個のアプリの言語を変更</string>
+    <string name="bulk_sheet_body">選択したすべてのアプリに適用する言語を1つ選びます。アプリごとに対応言語が異なる場合があります。</string>
+    <string name="bulk_choose_language">言語を選択してください</string>
+    <string name="continue_to_confirmation">変更内容を確認</string>
+    <string name="bulk_confirmation_title">%1$d個のアプリの言語を変更しますか？</string>
+    <string name="bulk_confirmation_body">選択した%2$d個のアプリすべてを「%1$s」に設定します。既存のアプリ別言語設定は上書きされます。アプリは再起動されません。</string>
+    <string name="confirm_bulk_change">すべて変更</string>
+    <string name="bulk_change_complete">%1$d個のアプリの言語を変更しました。</string>
+    <string name="bulk_change_failed">%1$d個のアプリを変更できませんでした。</string>
+    <string name="bulk_change_partial">%2$d個中%1$d個のアプリを変更しました。%3$d個は変更できませんでした。</string>
 </resources>

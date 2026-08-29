@@ -45,7 +45,7 @@
     <string name="help_subtitle">Fonctionnement et limites de l’appli</string>
     <string name="help_what_title">Ce que fait cette appli</string>
     <string name="help_what_body_1">Android 13 permet au système de conserver une langue distincte pour chaque appli. Paramètres → Applications → Langue de l’application n’affiche que les applis qui fournissent une configuration régionale. La plupart n’y figurent donc pas, même si le remplacement sous-jacent fonctionne aussi pour elles.</string>
-    <string name="help_what_body_2">Cette appli écrit directement ce même remplacement régional par appli pour tout package installé. Votre téléphone peut rester en français tandis qu’une appli fonctionne en anglais et une autre en 简体中文.</string>
+    <string name="help_what_body_2">Cette appli écrit directement ce même remplacement régional par appli pour tout package installé. Votre téléphone peut rester en français tandis qu’une appli fonctionne en anglais et une autre en chinois simplifié.</string>
     <string name="not_translator_title">Ce n’est pas un traducteur</string>
     <string name="not_translator_body">L’appli change uniquement la langue indiquée à l’appli cible. Si celle-ci ne contient pas de ressources pour cette langue, Android revient à sa langue par défaut et rien ne change à l’écran.</string>
     <string name="help_using_title">Utilisation</string>
@@ -135,5 +135,28 @@
     <string name="supported_languages_invalid">Android n’a pas pu lire la liste de langues déclarée par cette appli.</string>
     <string name="supported_languages_unavailable">Les informations de langue de cette appli sont indisponibles.</string>
     <string name="unsupported_language_warning">Cette appli ne déclare pas prendre en charge %1$s. Android peut revenir à une autre langue.</string>
+    <string name="shortcut_reset_all">Tout réinitialiser</string>
+    <string name="shortcut_reset_all_long">Réinitialiser les langues des applis</string>
+    <string name="reset_all_confirmation_title">Réinitialiser toutes les langues ?</string>
+    <string name="reset_all_confirmation_body">Tous les réglages de langue par appli seront supprimés et remis sur la valeur système. Les applis ne redémarreront pas.</string>
+    <string name="cancel">Annuler</string>
+    <string name="reset_all_confirm">Tout réinitialiser</string>
+    <string name="reset_all_requires_shizuku">Shizuku doit être connecté pour réinitialiser toutes les langues.</string>
+    <string name="reset_all_complete">La langue de %1$d applis a été réinitialisée.</string>
+    <string name="reset_all_nothing_to_reset">Aucun réglage de langue d’appli à réinitialiser.</string>
+    <string name="reset_all_partial">%1$d applis ont été réinitialisées, mais %2$d n’ont pas pu l’être.</string>
     <string name="diagnostics_body">Joignez ces informations de diagnostic pour signaler un problème propre à un fabricant :</string>
+    <string name="selected_apps_count">%1$d applis sélectionnées</string>
+    <string name="cancel_selection">Annuler la sélection</string>
+    <string name="change_language">Changer la langue</string>
+    <string name="bulk_sheet_title">Changer la langue de %1$d applis</string>
+    <string name="bulk_sheet_body">Choisissez une langue pour toutes les applis sélectionnées. La prise en charge peut varier selon l’appli.</string>
+    <string name="bulk_choose_language">Choisissez une langue</string>
+    <string name="continue_to_confirmation">Vérifier la modification</string>
+    <string name="bulk_confirmation_title">Changer la langue de %1$d applis ?</string>
+    <string name="bulk_confirmation_body">La langue %1$s sera appliquée aux %2$d applis sélectionnées. Tout réglage existant par appli sera écrasé. Les applis ne redémarreront pas.</string>
+    <string name="confirm_bulk_change">Tout modifier</string>
+    <string name="bulk_change_complete">La langue de %1$d applis a été modifiée.</string>
+    <string name="bulk_change_failed">Impossible de modifier les %1$d applis.</string>
+    <string name="bulk_change_partial">%1$d applis sur %2$d ont été modifiées ; %3$d ont échoué.</string>
 </resources>

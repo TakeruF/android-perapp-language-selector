@@ -1,8 +1,9 @@
 package dev.takeru.perapplocale.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +40,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,7 +62,7 @@ import dev.takeru.perapplocale.data.LocaleOption
 import dev.takeru.perapplocale.shizuku.ShizukuState
 import dev.takeru.perapplocale.util.rememberAppIcon
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
     state: MainUiState,
@@ -74,68 +77,100 @@ fun MainScreen(
     onOpenHelp: () -> Unit,
     onRecheckShizuku: () -> Unit,
     onAppClick: (AppInfo) -> Unit,
+    selectedPackageNames: Set<String>,
+    canChangeSelection: Boolean,
+    onSelectionToggle: (AppInfo) -> Unit,
+    onClearSelection: () -> Unit,
+    onChangeSelectedLanguage: () -> Unit,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
+    val selectionMode = selectedPackageNames.isNotEmpty()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
-                    Column {
-                        Text(stringResource(R.string.app_name), fontWeight = FontWeight.SemiBold)
+                    if (selectionMode) {
                         Text(
-                            stringResource(R.string.app_subtitle),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
+                            stringResource(R.string.selected_apps_count, selectedPackageNames.size),
+                            fontWeight = FontWeight.SemiBold,
                         )
+                    } else {
+                        Column {
+                            Text(stringResource(R.string.app_name), fontWeight = FontWeight.SemiBold)
+                            Text(
+                                stringResource(R.string.app_subtitle),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
+                },
+                navigationIcon = {
+                    if (selectionMode) {
+                        IconButton(onClick = onClearSelection) {
+                            Icon(
+                                Icons.Filled.Clear,
+                                contentDescription = stringResource(R.string.cancel_selection),
+                            )
+                        }
                     }
                 },
                 actions = {
-                    IconButton(onClick = onRefresh) {
-                        Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.refresh))
-                    }
-                    Box {
-                        IconButton(onClick = { menuOpen = true }) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.more_options))
+                    if (selectionMode) {
+                        TextButton(
+                            onClick = onChangeSelectedLanguage,
+                            enabled = canChangeSelection,
+                        ) {
+                            Text(stringResource(R.string.change_language))
                         }
-                        DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.show_system_apps)) },
-                                trailingIcon = {
-                                    Switch(
-                                        checked = state.showSystemApps,
-                                        onCheckedChange = onShowSystemAppsChange,
-                                    )
-                                },
-                                onClick = { onShowSystemAppsChange(!state.showSystemApps) },
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.configured_apps_first)) },
-                                trailingIcon = {
-                                    Switch(
-                                        checked = state.configuredFirst,
-                                        onCheckedChange = onConfiguredFirstChange,
-                                    )
-                                },
-                                onClick = { onConfiguredFirstChange(!state.configuredFirst) },
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.shizuku_setup_guide)) },
-                                onClick = {
-                                    menuOpen = false
-                                    onOpenSetup()
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.help)) },
-                                onClick = {
-                                    menuOpen = false
-                                    onOpenHelp()
-                                },
-                            )
+                    } else {
+                        IconButton(onClick = onRefresh) {
+                            Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.refresh))
+                        }
+                        Box {
+                            IconButton(onClick = { menuOpen = true }) {
+                                Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.more_options))
+                            }
+                            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.show_system_apps)) },
+                                    trailingIcon = {
+                                        Switch(
+                                            checked = state.showSystemApps,
+                                            onCheckedChange = onShowSystemAppsChange,
+                                        )
+                                    },
+                                    onClick = { onShowSystemAppsChange(!state.showSystemApps) },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.configured_apps_first)) },
+                                    trailingIcon = {
+                                        Switch(
+                                            checked = state.configuredFirst,
+                                            onCheckedChange = onConfiguredFirstChange,
+                                        )
+                                    },
+                                    onClick = { onConfiguredFirstChange(!state.configuredFirst) },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.shizuku_setup_guide)) },
+                                    onClick = {
+                                        menuOpen = false
+                                        onOpenSetup()
+                                    },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.help)) },
+                                    onClick = {
+                                        menuOpen = false
+                                        onOpenHelp()
+                                    },
+                                )
+                            }
                         }
                     }
                 },
@@ -208,8 +243,13 @@ fun MainScreen(
                     items(state.apps, key = { it.packageName }) { app ->
                         AppRow(
                             app = app,
-                            busy = state.busyPackage == app.packageName,
-                            onClick = { onAppClick(app) },
+                            busy = app.packageName in state.busyPackages,
+                            selected = app.packageName in selectedPackageNames,
+                            selectionMode = selectionMode,
+                            onClick = {
+                                if (selectionMode) onSelectionToggle(app) else onAppClick(app)
+                            },
+                            onLongClick = { onSelectionToggle(app) },
                         )
                     }
                     item { Spacer(Modifier.height(24.dp)) }
@@ -233,14 +273,26 @@ private fun CenteredBox(content: @Composable () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { content() }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun AppRow(app: AppInfo, busy: Boolean, onClick: () -> Unit) {
+private fun AppRow(
+    app: AppInfo,
+    busy: Boolean,
+    selected: Boolean,
+    selectionMode: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+) {
     val icon: ImageBitmap? by rememberAppIcon(app.packageName)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .background(
+                if (selected) MaterialTheme.colorScheme.secondaryContainer
+                else MaterialTheme.colorScheme.surface,
+            )
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -286,6 +338,7 @@ private fun AppRow(app: AppInfo, busy: Boolean, onClick: () -> Unit) {
 
         when {
             busy -> CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+            selectionMode -> Checkbox(checked = selected, onCheckedChange = null)
             app.isConfigured -> Box(
                 Modifier
                     .size(10.dp)

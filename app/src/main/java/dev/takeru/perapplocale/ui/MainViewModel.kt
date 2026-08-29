@@ -3,6 +3,7 @@ package dev.takeru.perapplocale.ui
 import android.app.Application
 import android.app.LocaleManager
 import android.content.Intent
+import android.os.LocaleList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -44,7 +46,8 @@ data class MainUiState(
     val filter: AppFilter = AppFilter.ALL,
     val showSystemApps: Boolean = false,
     val configuredFirst: Boolean = true,
-    val busyPackage: String? = null,
+    val busyPackages: Set<String> = emptySet(),
+    val resettingAll: Boolean = false,
 ) {
     val shizukuReady: Boolean get() = shizuku == ShizukuState.READY
 }
@@ -69,7 +72,8 @@ class MainViewModel(
     private val readingLocales = MutableStateFlow(false)
     private val query = MutableStateFlow("")
     private val filter = MutableStateFlow(AppFilter.ALL)
-    private val busyPackage = MutableStateFlow<String?>(null)
+    private val busyPackages = MutableStateFlow<Set<String>>(emptySet())
+    private val resettingAll = MutableStateFlow(false)
 
     private val events = Channel<UiEvent>(Channel.BUFFERED)
     val uiEvents = events.receiveAsFlow()
@@ -82,10 +86,12 @@ class MainViewModel(
             shizukuRepository.state,
             rawApps,
             settingsStore.settings,
-            combine(query, filter, busyPackage) { q, f, busy -> Triple(q, f, busy) },
-            combine(loadingApps, readingLocales) { loading, reading -> loading to reading },
-        ) { shizuku, apps, settings, (q, f, busy), (loading, reading) ->
-            buildState(shizuku, apps, settings, q, f, busy, loading, reading)
+            combine(query, filter, busyPackages) { q, f, busy -> Triple(q, f, busy) },
+            combine(loadingApps, readingLocales, resettingAll) { loading, reading, resetting ->
+                Triple(loading, reading, resetting)
+            },
+        ) { shizuku, apps, settings, (q, f, busy), (loading, reading, resetting) ->
+            buildState(shizuku, apps, settings, q, f, busy, loading, reading, resetting)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MainUiState())
 
     init {
@@ -111,9 +117,10 @@ class MainViewModel(
         settings: Settings,
         q: String,
         f: AppFilter,
-        busy: String?,
+        busy: Set<String>,
         loading: Boolean,
         reading: Boolean,
+        resetting: Boolean,
     ): MainUiState {
         // Until the system has answered, fall back to the local mirror so configured apps are
         // still recognisable immediately after launch.
@@ -153,7 +160,8 @@ class MainViewModel(
             filter = f,
             showSystemApps = settings.showSystemApps,
             configuredFirst = settings.configuredFirst,
-            busyPackage = busy,
+            busyPackages = busy,
+            resettingAll = resetting,
         )
     }
 
@@ -188,6 +196,96 @@ class MainViewModel(
         viewModelScope.launch {
             refreshApps()
             if (shizukuRepository.state.value == ShizukuState.READY) scanLocales()
+        }
+    }
+
+    /** Clears every per-app locale override after the Activity has obtained confirmation. */
+    fun resetAllCustomizations() {
+        if (resettingAll.value || busyPackages.value.isNotEmpty()) return
+        viewModelScope.launch {
+            if (shizukuRepository.state.value != ShizukuState.READY) {
+                events.send(UiEvent.Error(text(R.string.reset_all_requires_shizuku)))
+                return@launch
+            }
+
+            resettingAll.value = true
+            try {
+                // The shortcut can cold-start the app. Wait for package discovery, then query the
+                // system directly so overrides created outside this app are included as well.
+                val apps = combine(rawApps, loadingApps) { installed, loading -> installed to loading }
+                    .first { (_, loading) -> !loading }
+                    .first
+                val cachedAssignments = settingsStore.settings.first().assignments.keys
+                val ownPackage = getApplication<Application>().packageName
+                val emptyLocales = LocaleList.getEmptyLocaleList()
+                val resetPackages = mutableListOf<String>()
+                var failed = 0
+
+                withContext(Dispatchers.IO) {
+                    for (app in apps) {
+                        if (app.packageName == ownPackage) continue
+                        val currentTag = runCatching {
+                            LocaleOption.tagOf(LocaleGateway.getApplicationLocales(app.packageName))
+                        }.getOrNull()
+                        if (currentTag.isNullOrEmpty() && app.packageName !in cachedAssignments) continue
+
+                        runCatching {
+                            LocaleGateway.setApplicationLocales(app.packageName, emptyLocales)
+                        }.onSuccess {
+                            resetPackages += app.packageName
+                        }.onFailure {
+                            failed += 1
+                        }
+                    }
+                }
+
+                val ownConfigured = getApplication<Application>()
+                    .getSystemService(LocaleManager::class.java)
+                    .applicationLocales
+                    .isEmpty
+                    .not() || ownPackage in cachedAssignments
+                if (ownConfigured) {
+                    runCatching {
+                        getApplication<Application>()
+                            .getSystemService(LocaleManager::class.java)
+                            .applicationLocales = emptyLocales
+                    }.onSuccess {
+                        resetPackages += ownPackage
+                    }.onFailure {
+                        failed += 1
+                    }
+                }
+
+                settingsStore.forgetAssignments(resetPackages)
+                val resetSet = resetPackages.toSet()
+                rawApps.value = rawApps.value.map { app ->
+                    if (app.packageName in resetSet) {
+                        app.copy(localeTag = "", localeKnown = true)
+                    } else {
+                        app
+                    }
+                }
+
+                when {
+                    failed > 0 -> events.send(
+                        UiEvent.Error(
+                            text(R.string.reset_all_partial, resetPackages.size, failed),
+                        ),
+                    )
+                    resetPackages.isEmpty() -> events.send(
+                        UiEvent.Message(text(R.string.reset_all_nothing_to_reset)),
+                    )
+                    else -> events.send(
+                        UiEvent.Message(text(R.string.reset_all_complete, resetPackages.size)),
+                    )
+                }
+            } catch (e: Exception) {
+                events.send(
+                    UiEvent.Error(text(R.string.error_unexpected, e.message ?: e.javaClass.simpleName)),
+                )
+            } finally {
+                resettingAll.value = false
+            }
         }
     }
 
@@ -253,9 +351,9 @@ class MainViewModel(
      * relaunch it, which is what makes the change visible in apps that cache their strings.
      */
     fun apply(packageName: String, option: LocaleOption, restart: Boolean) {
-        if (busyPackage.value != null) return
+        if (resettingAll.value || busyPackages.value.isNotEmpty()) return
         viewModelScope.launch {
-            busyPackage.value = packageName
+            busyPackages.value = setOf(packageName)
             try {
                 if (packageName == getApplication<Application>().packageName) {
                     // Force-stopping ourselves would kill this process before it could relaunch.
@@ -309,7 +407,67 @@ class MainViewModel(
                     ),
                 )
             } finally {
-                busyPackage.value = null
+                busyPackages.value = emptySet()
+            }
+        }
+    }
+
+    /** Applies one locale to every target, even when a target already has another override. */
+    fun applyBulk(packageNames: Set<String>, option: LocaleOption) {
+        if (packageNames.isEmpty() || resettingAll.value || busyPackages.value.isNotEmpty()) return
+        viewModelScope.launch {
+            busyPackages.value = packageNames
+            val ownPackageName = getApplication<Application>().packageName
+            val succeeded = mutableSetOf<String>()
+
+            try {
+                // Do our own package last because changing it can recreate the Activity.
+                for (packageName in packageNames.sortedBy { it == ownPackageName }) {
+                    runCatching {
+                        if (packageName == ownPackageName) {
+                            getApplication<Application>()
+                                .getSystemService(LocaleManager::class.java)
+                                .applicationLocales = option.toLocaleList()
+                        } else {
+                            withContext(Dispatchers.IO) {
+                                LocaleGateway.setApplicationLocales(packageName, option.toLocaleList())
+                            }
+                        }
+                    }.onSuccess {
+                        succeeded += packageName
+                        updateLocalTag(packageName, option.tag)
+                    }
+                }
+
+                if (succeeded.isNotEmpty()) {
+                    settingsStore.recordAssignments(succeeded, option.tag)
+                }
+
+                val total = packageNames.size
+                when (succeeded.size) {
+                    total -> events.send(
+                        UiEvent.Message(text(R.string.bulk_change_complete, total)),
+                    )
+                    0 -> events.send(
+                        UiEvent.Error(text(R.string.bulk_change_failed, total)),
+                    )
+                    else -> events.send(
+                        UiEvent.Error(
+                            text(
+                                R.string.bulk_change_partial,
+                                succeeded.size,
+                                total,
+                                total - succeeded.size,
+                            ),
+                        ),
+                    )
+                }
+            } catch (e: Exception) {
+                events.send(
+                    UiEvent.Error(text(R.string.error_unexpected, e.message ?: e.javaClass.simpleName)),
+                )
+            } finally {
+                busyPackages.value = emptySet()
             }
         }
     }

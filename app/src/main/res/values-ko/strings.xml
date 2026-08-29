@@ -45,7 +45,7 @@
     <string name="help_subtitle">이 앱의 기능과 한계</string>
     <string name="help_what_title">이 앱의 기능</string>
     <string name="help_what_body_1">Android 13부터 시스템이 앱마다 별도의 언어를 저장할 수 있습니다. 설정 → 앱 → 앱 언어에는 로캘 구성을 제공하는 앱만 표시되지만, 목록에 없는 대부분의 앱에도 내부 재정의 기능은 작동합니다.</string>
-    <string name="help_what_body_2">이 앱은 설치된 모든 패키지에 동일한 앱별 로캘 재정의를 직접 기록합니다. 휴대전화는 한국어로 유지하면서 한 앱은 영어로, 다른 앱은 简体中文로 사용할 수 있습니다.</string>
+    <string name="help_what_body_2">이 앱은 설치된 모든 패키지에 동일한 앱별 로캘 재정의를 직접 기록합니다. 휴대전화는 한국어로 유지하면서 한 앱은 영어로, 다른 앱은 중국어 간체로 사용할 수 있습니다.</string>
     <string name="not_translator_title">번역 앱이 아닙니다</string>
     <string name="not_translator_body">앱에 사용하도록 전달되는 언어만 변경합니다. 앱에 해당 언어 리소스가 없으면 Android가 앱의 기본 언어로 대체하므로 화면은 바뀌지 않습니다.</string>
     <string name="help_using_title">사용 방법</string>
@@ -135,5 +135,28 @@
     <string name="supported_languages_invalid">Android가 이 앱의 언어 선언을 읽지 못했습니다.</string>
     <string name="supported_languages_unavailable">이 앱의 언어 정보를 가져올 수 없습니다.</string>
     <string name="unsupported_language_warning">이 앱은 %1$s 지원을 선언하지 않았습니다. Android가 다른 언어로 대체할 수 있습니다.</string>
+    <string name="shortcut_reset_all">모두 초기화</string>
+    <string name="shortcut_reset_all_long">모든 앱 언어 초기화</string>
+    <string name="reset_all_confirmation_title">모든 앱 언어를 초기화할까요?</string>
+    <string name="reset_all_confirmation_body">앱별 언어 설정을 모두 제거하고 시스템 기본값으로 되돌립니다. 앱은 다시 시작되지 않습니다.</string>
+    <string name="cancel">취소</string>
+    <string name="reset_all_confirm">모두 초기화</string>
+    <string name="reset_all_requires_shizuku">모든 앱 언어를 초기화하려면 Shizuku에 연결해야 합니다.</string>
+    <string name="reset_all_complete">앱 %1$d개의 언어를 초기화했습니다.</string>
+    <string name="reset_all_nothing_to_reset">초기화할 앱 언어 설정이 없습니다.</string>
+    <string name="reset_all_partial">앱 %1$d개를 초기화했지만 %2$d개는 초기화하지 못했습니다.</string>
     <string name="diagnostics_body">OEM별 문제를 신고할 때 다음 진단 정보를 포함하세요:</string>
+    <string name="selected_apps_count">앱 %1$d개 선택됨</string>
+    <string name="cancel_selection">선택 취소</string>
+    <string name="change_language">언어 변경</string>
+    <string name="bulk_sheet_title">앱 %1$d개의 언어 변경</string>
+    <string name="bulk_sheet_body">선택한 모든 앱에 적용할 언어 하나를 고르세요. 앱마다 지원 언어가 다를 수 있습니다.</string>
+    <string name="bulk_choose_language">언어를 선택하세요</string>
+    <string name="continue_to_confirmation">변경 내용 확인</string>
+    <string name="bulk_confirmation_title">앱 %1$d개의 언어를 변경할까요?</string>
+    <string name="bulk_confirmation_body">선택한 앱 %2$d개를 모두 “%1$s”(으)로 설정합니다. 기존 앱별 언어 설정은 덮어씁니다. 앱은 다시 시작되지 않습니다.</string>
+    <string name="confirm_bulk_change">모두 변경</string>
+    <string name="bulk_change_complete">앱 %1$d개의 언어를 변경했습니다.</string>
+    <string name="bulk_change_failed">앱 %1$d개의 언어를 변경하지 못했습니다.</string>
+    <string name="bulk_change_partial">앱 %2$d개 중 %1$d개를 변경했으며 %3$d개는 실패했습니다.</string>
 </resources>

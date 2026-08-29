@@ -10,12 +10,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -35,8 +35,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,6 +46,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -84,7 +84,7 @@ fun LocaleSheet(
 
     var selectedTag by remember(app.packageName) { mutableStateOf(app.localeTag) }
     var query by remember(app.packageName) { mutableStateOf("") }
-    var showSupportedLanguages by remember(app.packageName) { mutableStateOf(false) }
+    var supportedLanguagesExpanded by remember(app.packageName) { mutableStateOf(false) }
 
     val supportedLocales by produceState<SupportedLocales>(
         initialValue = SupportedLocales.Loading,
@@ -129,7 +129,8 @@ fun LocaleSheet(
 
             SupportedLocalesSummary(
                 supportedLocales = supportedLocales,
-                onShowAll = { showSupportedLanguages = true },
+                expanded = supportedLanguagesExpanded,
+                onExpand = { supportedLanguagesExpanded = true },
             )
 
             Spacer(Modifier.height(12.dp))
@@ -249,41 +250,13 @@ fun LocaleSheet(
         }
     }
 
-    if (showSupportedLanguages) {
-        val declared = supportedLocales as? SupportedLocales.Declared
-        if (declared != null) {
-            AlertDialog(
-                onDismissRequest = { showSupportedLanguages = false },
-                title = { Text(stringResource(R.string.supported_languages_dialog_title)) },
-                text = {
-                    LazyColumn(Modifier.heightIn(max = 420.dp)) {
-                        items(declared.tags, key = { it }) { tag ->
-                            val entry = remember(tag) { LocaleCatalog.entryFor(tag, LocaleGroup.SUPPORTED) }
-                            Column(Modifier.padding(vertical = 6.dp)) {
-                                Text(entry.displayName.ifBlank { entry.label })
-                                Text(
-                                    tag,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                        }
-                    }
-                },
-                confirmButton = {
-                    TextButton(onClick = { showSupportedLanguages = false }) {
-                        Text(stringResource(R.string.close))
-                    }
-                },
-            )
-        }
-    }
 }
 
 @Composable
 private fun SupportedLocalesSummary(
     supportedLocales: SupportedLocales,
-    onShowAll: () -> Unit,
+    expanded: Boolean,
+    onExpand: () -> Unit,
 ) {
     Column(Modifier.padding(top = 10.dp)) {
         when (supportedLocales) {
@@ -298,31 +271,73 @@ private fun SupportedLocalesSummary(
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
-                val preview = remember(supportedLocales.tags) {
-                    supportedLocales.tags.take(SUPPORTED_LOCALE_PREVIEW_SIZE).joinToString(", ") { tag ->
+                val languageNames = remember(supportedLocales.tags) {
+                    supportedLocales.tags.map { tag ->
                         val entry = LocaleCatalog.entryFor(tag, LocaleGroup.SUPPORTED)
                         entry.displayName.ifBlank { entry.label }
                     }
                 }
-                Text(
-                    if (supportedLocales.tags.size > SUPPORTED_LOCALE_PREVIEW_SIZE) {
-                        stringResource(
-                            R.string.supported_languages_preview_more,
-                            preview,
-                            supportedLocales.tags.size - SUPPORTED_LOCALE_PREVIEW_SIZE,
-                        )
-                    } else {
-                        preview
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                if (supportedLocales.tags.size > SUPPORTED_LOCALE_PREVIEW_SIZE) {
-                    TextButton(onClick = onShowAll) {
-                        Text(stringResource(R.string.show_all_supported_languages))
+                val preview = languageNames.take(SUPPORTED_LOCALE_PREVIEW_SIZE).joinToString(", ")
+                if (expanded || languageNames.size <= SUPPORTED_LOCALE_PREVIEW_SIZE) {
+                    Text(
+                        languageNames.joinToString(", "),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    val collapsedText = stringResource(
+                        R.string.supported_languages_preview_more,
+                        preview,
+                        languageNames.size - SUPPORTED_LOCALE_PREVIEW_SIZE,
+                    )
+                    val moreStart = collapsedText.indexOf(preview)
+                        .takeIf { it >= 0 }
+                        ?.plus(preview.length)
+                        ?: 0
+                    val moreColor = MaterialTheme.colorScheme.primary
+                    val moreText = remember(
+                        collapsedText,
+                        moreStart,
+                        moreColor,
+                    ) {
+                        buildAnnotatedString {
+                            append(collapsedText)
+                            addStyle(
+                                style = SpanStyle(
+                                    color = moreColor,
+                                    fontWeight = FontWeight.SemiBold,
+                                ),
+                                start = moreStart,
+                                end = collapsedText.length,
+                            )
+                            addStringAnnotation(
+                                tag = SUPPORTED_LOCALE_MORE_ANNOTATION,
+                                annotation = "expand",
+                                start = moreStart,
+                                end = collapsedText.length,
+                            )
+                        }
                     }
+                    @Suppress("DEPRECATION")
+                    ClickableText(
+                        text = moreText,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        onClick = { offset ->
+                            if (
+                                moreText.getStringAnnotations(
+                                    tag = SUPPORTED_LOCALE_MORE_ANNOTATION,
+                                    start = offset,
+                                    end = offset,
+                                ).isNotEmpty()
+                            ) {
+                                onExpand()
+                            }
+                        },
+                    )
                 }
             }
             SupportedLocales.NotDeclared -> Text(
@@ -345,8 +360,9 @@ private fun SupportedLocalesSummary(
 }
 
 private const val SUPPORTED_LOCALE_PREVIEW_SIZE = 4
+private const val SUPPORTED_LOCALE_MORE_ANNOTATION = "supported-locale-more"
 
-private sealed interface SheetRow {
+internal sealed interface SheetRow {
     val key: String
 
     data class Header(val group: LocaleGroup) : SheetRow {
@@ -365,7 +381,7 @@ private sealed interface SheetRow {
  * (device language → the user's other languages → this app's declared languages → other
  * languages). Search keeps those labels so official matches remain distinguishable.
  */
-private fun buildRows(
+internal fun buildRows(
     catalog: List<LocaleEntry>,
     rawQuery: String,
     currentTag: String,
@@ -428,7 +444,7 @@ private fun buildRows(
 }
 
 @Composable
-private fun GroupHeader(group: LocaleGroup) {
+internal fun GroupHeader(group: LocaleGroup) {
     Text(
         stringResource(
             when (group) {
@@ -447,7 +463,7 @@ private fun GroupHeader(group: LocaleGroup) {
 }
 
 @Composable
-private fun LocaleRow(entry: LocaleEntry, selected: Boolean, onClick: () -> Unit) {
+internal fun LocaleRow(entry: LocaleEntry, selected: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

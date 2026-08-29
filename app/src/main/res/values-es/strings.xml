@@ -45,7 +45,7 @@
     <string name="help_subtitle">Qué hace esta app y cuáles son sus límites</string>
     <string name="help_what_title">Qué hace esta app</string>
     <string name="help_what_body_1">Android 13 permite al sistema guardar un idioma distinto para cada app. Ajustes → Aplicaciones → Idioma de la aplicación solo muestra las apps que incluyen una configuración regional, por lo que muchas no aparecen aunque la función interna también sirva para ellas.</string>
-    <string name="help_what_body_2">Esta app escribe directamente esa misma configuración regional por app para cualquier paquete instalado. El teléfono puede seguir en español mientras una app usa inglés y otra 简体中文.</string>
+    <string name="help_what_body_2">Esta app escribe directamente esa misma configuración regional por app para cualquier paquete instalado. El teléfono puede seguir en español mientras una app usa inglés y otra chino simplificado.</string>
     <string name="not_translator_title">No es un traductor</string>
     <string name="not_translator_body">Solo cambia el idioma que se indica a la app. Si la app no incluye recursos para ese idioma, Android vuelve al idioma predeterminado de la app y no cambia nada visible.</string>
     <string name="help_using_title">Cómo usarla</string>
@@ -135,5 +135,28 @@
     <string name="supported_languages_invalid">Android no pudo leer la lista de idiomas declarada por esta app.</string>
     <string name="supported_languages_unavailable">La información de idiomas de la app no está disponible.</string>
     <string name="unsupported_language_warning">Esta app no declara compatibilidad con %1$s. Android puede usar otro idioma.</string>
+    <string name="shortcut_reset_all">Restablecer</string>
+    <string name="shortcut_reset_all_long">Restablecer idiomas de apps</string>
+    <string name="reset_all_confirmation_title">¿Restablecer todos los idiomas?</string>
+    <string name="reset_all_confirmation_body">Se eliminarán todos los idiomas configurados por app y se volverá al valor predeterminado del sistema. Las apps no se reiniciarán.</string>
+    <string name="cancel">Cancelar</string>
+    <string name="reset_all_confirm">Restablecer todo</string>
+    <string name="reset_all_requires_shizuku">Shizuku debe estar conectado para restablecer todos los idiomas.</string>
+    <string name="reset_all_complete">Se restableció el idioma de %1$d apps.</string>
+    <string name="reset_all_nothing_to_reset">No se encontró ningún idioma de app que restablecer.</string>
+    <string name="reset_all_partial">Se restablecieron %1$d apps, pero no se pudieron restablecer %2$d.</string>
     <string name="diagnostics_body">Incluye estos datos de diagnóstico al informar de un problema específico de un fabricante:</string>
+    <string name="selected_apps_count">%1$d apps seleccionadas</string>
+    <string name="cancel_selection">Cancelar selección</string>
+    <string name="change_language">Cambiar idioma</string>
+    <string name="bulk_sheet_title">Cambiar el idioma de %1$d apps</string>
+    <string name="bulk_sheet_body">Elige un idioma para todas las apps seleccionadas. La compatibilidad puede variar entre apps.</string>
+    <string name="bulk_choose_language">Elige un idioma</string>
+    <string name="continue_to_confirmation">Revisar cambio</string>
+    <string name="bulk_confirmation_title">¿Cambiar el idioma de %1$d apps?</string>
+    <string name="bulk_confirmation_body">Se establecerá %1$s en las %2$d apps seleccionadas. Se sobrescribirá cualquier idioma configurado por app. Las apps no se reiniciarán.</string>
+    <string name="confirm_bulk_change">Cambiar todas</string>
+    <string name="bulk_change_complete">Se cambió el idioma de %1$d apps.</string>
+    <string name="bulk_change_failed">No se pudo cambiar ninguna de las %1$d apps.</string>
+    <string name="bulk_change_partial">Se cambiaron %1$d de %2$d apps; %3$d fallaron.</string>
 </resources>

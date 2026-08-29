@@ -21,6 +21,7 @@ class PerAppLocaleApp : Application() {
         super.onCreate()
         exemptHiddenApis()
         shizukuRepository.register()
+        installAppShortcuts(this)
     }
 
     /**
