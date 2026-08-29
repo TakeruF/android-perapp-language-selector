@@ -36,7 +36,7 @@ before testing, restore that exact value instead of using the probe's default ta
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Google / AOSP | `sdk_gphone16k_arm64`, Android 17 / API 37 | Pass | Pass | Pass | Pass | Pass | 2026-08-26: Shizuku 13.6.0; debug probe 9/9; final locale `[]` |
 | Samsung One UI | Not available | Pending | Pending | Pending | Pending | Pending | Requires a Samsung device |
-| OPPO ColorOS | Not available | Pending | Pending | Pending | Pending | Pending | Requires an OPPO device |
-| Xiaomi HyperOS | Not available | Pending | Pending | Pending | Pending | Pending | Requires a Xiaomi device |
+| OPPO ColorOS | OPPO Find X9 Pro (China), `PLG110`, Android 16 / API 36 | Pass | Pass | Pass | Pass | Pass | 2026-08-30: ColorOS build `PLG110_16.0.10.501(CN01B110P02)`; Android security update 2026-08-01; fixed smoke-test flow verified on device |
+| Xiaomi HyperOS | Xiaomi 14 Pro (China), HyperOS 3 | Pass | Pass | Pass | Pass | Pass | 2026-08-30: HyperOS `3.0.307.0.WNBCNXM`; fixed smoke-test flow verified on device |
 
 Do not turn a pending row into “supported” based only on code review or another OEM's result.
