@@ -2,6 +2,16 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | Español | [Français](README.fr.md)
 
+## Descarga
+
+[<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
+
+**Google Play:** La prueba cerrada está en curso. Próximamente.
+
+Todas las versiones se firman con la misma clave y la huella del certificado se publica en las notas de la versión. Consulta la [Política de privacidad](PRIVACY_POLICY.md) para obtener más información.
+
+---
+
 Una utilidad para Android que fuerza una **configuración regional** concreta en cada aplicación, incluso si la app no tiene un ajuste de idioma y no aparece en *Ajustes → Aplicaciones → Idioma de la aplicación*.
 
 El teléfono puede seguir en español mientras WeChat y Taobao usan chino simplificado, ChatGPT usa
@@ -72,14 +82,6 @@ Shizuku ejecuta un pequeño servicio con ese mismo uid shell y permite que una a
 ### Por qué se necesita visibilidad completa de las apps
 
 La función principal permite elegir **cualquier app instalada**, cuyos nombres de paquete no pueden conocerse de antemano. Las consultas limitadas de Android no pueden crear esa lista, por lo que la app declara `QUERY_ALL_PACKAGES`. Los paquetes, nombres, iconos, configuraciones regionales e idiomas declarados se usan solo en el dispositivo; la app no tiene permiso de Internet ni comparte el inventario. Consulta la [Política de privacidad](PRIVACY_POLICY.md).
-
----
-
-## Descarga
-
-Descarga el APK firmado desde la [última versión](https://github.com/TakeruF/android-perapp-language-selector/releases/latest). Todas las versiones se firman con la misma clave y la huella del certificado se publica en las notas de la versión.
-
-Consulta los detalles en la [Política de privacidad](PRIVACY_POLICY.md).
 
 ---
 
@@ -227,6 +229,14 @@ keyPassword=…
 ```
 
 El archivo y el almacén de claves están excluidos de Git.
+
+---
+
+## Comentarios y contribuciones
+
+Si encuentras un error de traducción, notifícalo mediante la [plantilla de Issue para errores de traducción](https://github.com/TakeruF/android-perapp-language-selector/issues/new?template=translation-error.yml).
+También se aceptan [informes de errores](https://github.com/TakeruF/android-perapp-language-selector/issues) y
+[Pull Requests](https://github.com/TakeruF/android-perapp-language-selector/pulls).
 
 ---
 

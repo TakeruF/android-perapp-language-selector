@@ -2,6 +2,17 @@
 
 English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md)
 
+## Download
+
+[<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
+
+**Google Play:** Closed testing is in progress. Coming soon.
+
+Every release is signed with the same key; the certificate fingerprint is published in the
+release notes. See the [Privacy Policy](PRIVACY_POLICY.md) for privacy details.
+
+---
+
 An Android utility that forces a specific **locale** on individual apps — even apps that have no
 in-app language setting and never show up under *Settings → Apps → App language*.
 
@@ -101,17 +112,6 @@ advance. Android's targeted package queries cannot build that list, so the app d
 `QUERY_ALL_PACKAGES`. It uses the resulting package names, labels, icons, locale settings, and
 official language declarations only on the device; it has no Internet permission and does not
 share the inventory. See the [Privacy Policy](PRIVACY_POLICY.md).
-
----
-
-## Download
-
-Grab the signed APK from the
-[latest release](https://github.com/TakeruF/android-perapp-language-selector/releases/latest).
-Every release is signed with the same key; the certificate fingerprint is published in the
-release notes.
-
-Privacy details are available in the [Privacy Policy](PRIVACY_POLICY.md).
 
 ---
 
@@ -298,6 +298,15 @@ keyPassword=…
 ```
 
 The file and the keystore are both gitignored.
+
+---
+
+## Feedback and contributions
+
+Found a translation error? Please report it with the
+[translation error issue template](https://github.com/TakeruF/android-perapp-language-selector/issues/new?template=translation-error.yml).
+[Bug reports](https://github.com/TakeruF/android-perapp-language-selector/issues) and
+[pull requests](https://github.com/TakeruF/android-perapp-language-selector/pulls) are also welcome.
 
 ---
 

@@ -2,6 +2,17 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | 日本語 | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md)
 
+## ダウンロード
+
+[<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
+
+**Google Play：**現在クローズドテスト中です。近日公開予定です。
+
+すべてのリリースは同じ鍵で署名され、証明書のフィンガープリントはリリースノートに掲載されます。
+プライバシーについては[プライバシーポリシー](PRIVACY_POLICY.md)を参照してください。
+
+---
+
 アプリごとに特定の**ロケール**を強制適用する Android ユーティリティです。アプリ内に言語設定がなく、
 「設定 → アプリ → アプリの言語」に表示されないアプリにも対応しています。
 
@@ -103,14 +114,6 @@ shell uid に呼び出しを代行してもらいます。root が不要なの�
 対象を限定したパッケージ照会ではこの一覧を作れないため、`QUERY_ALL_PACKAGES` を宣言しています。
 取得したパッケージ名、表示名、アイコン、ロケール設定、公式の対応言語宣言は端末内だけで使用します。
 インターネット権限はなく、アプリ一覧を共有しません。詳しくは[プライバシーポリシー](PRIVACY_POLICY.md)を参照してください。
-
----
-
-## ダウンロード
-
-[最新リリース](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)から
-署名済み APK をダウンロードしてください。すべてのリリースは同じ鍵で署名され、
-証明書のフィンガープリントはリリースノートに掲載されます。
 
 ---
 
@@ -301,6 +304,14 @@ keyPassword=…
 ```
 
 このファイルとキーストアはいずれも gitignore の対象です。
+
+---
+
+## フィードバックと貢献
+
+翻訳の誤りを見つけた場合は、[翻訳エラー報告用 Issue テンプレート](https://github.com/TakeruF/android-perapp-language-selector/issues/new?template=translation-error.yml)から報告してください。
+[バグ報告](https://github.com/TakeruF/android-perapp-language-selector/issues)や
+[Pull Request](https://github.com/TakeruF/android-perapp-language-selector/pulls)も歓迎しています。
 
 ---
 

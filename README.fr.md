@@ -2,6 +2,16 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | Français
 
+## Téléchargement
+
+[<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
+
+**Google Play :** Le test fermé est en cours. Prochainement disponible.
+
+Toutes les versions sont signées avec la même clé ; l’empreinte du certificat figure dans les notes de version. Consultez la [Politique de confidentialité](PRIVACY_POLICY.md) pour plus de détails.
+
+---
+
 Un utilitaire Android qui impose des **paramètres régionaux** à chaque application, même si celle-ci ne propose aucun choix de langue et n’apparaît jamais dans *Paramètres → Applications → Langue de l’application*.
 
 Votre téléphone peut rester en français tandis que WeChat et Taobao utilisent le chinois simplifié,
@@ -72,14 +82,6 @@ Shizuku exécute un petit service avec ce même uid shell et permet à une appli
 ### Pourquoi la visibilité complète des applications est nécessaire
 
 La fonction principale permet de choisir **n’importe quelle application installée**, dont le nom de package ne peut pas être connu à l’avance. Les requêtes ciblées d’Android ne peuvent pas produire cette liste ; l’application déclare donc `QUERY_ALL_PACKAGES`. Les packages, noms, icônes, paramètres régionaux et langues déclarées sont utilisés uniquement sur l’appareil ; l’application n’a pas d’autorisation Internet et ne partage pas cet inventaire. Consultez la [Politique de confidentialité](PRIVACY_POLICY.md).
-
----
-
-## Téléchargement
-
-Téléchargez l’APK signé depuis la [dernière version](https://github.com/TakeruF/android-perapp-language-selector/releases/latest). Toutes les versions sont signées avec la même clé ; l’empreinte du certificat figure dans les notes de version.
-
-Consultez la [Politique de confidentialité](PRIVACY_POLICY.md) pour plus de détails.
 
 ---
 
@@ -228,6 +230,14 @@ keyPassword=…
 ```
 
 Ce fichier et le magasin de clés sont tous deux ignorés par Git.
+
+---
+
+## Retours et contributions
+
+Si vous repérez une erreur de traduction, signalez-la à l’aide du [modèle d’Issue dédié aux erreurs de traduction](https://github.com/TakeruF/android-perapp-language-selector/issues/new?template=translation-error.yml).
+Les [rapports de bugs](https://github.com/TakeruF/android-perapp-language-selector/issues) et les
+[Pull Requests](https://github.com/TakeruF/android-perapp-language-selector/pulls) sont également les bienvenus.
 
 ---
 

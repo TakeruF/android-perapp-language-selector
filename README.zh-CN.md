@@ -2,6 +2,16 @@
 
 [English](README.md) | 简体中文 | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md)
 
+## 下载
+
+[<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
+
+**Google Play：**正在进行封闭测试，即将上线。
+
+每个版本都使用同一密钥签名，证书指纹会发布在发行说明中。隐私详情请参阅[隐私政策](PRIVACY_POLICY.md)。
+
+---
+
 一款 Android 工具，可为单个应用强制指定**语言区域（locale）**——即使应用本身没有语言设置，
 也从未出现在“设置 → 应用 → 应用语言”中，也可以使用。
 
@@ -97,13 +107,6 @@ Shizuku 以同一个 shell uid 运行一个小型服务，并允许应用通过�
 Android 的定向软件包查询无法生成这份列表，因此本应用声明了 `QUERY_ALL_PACKAGES`。
 获取的软件包名称、显示名称、图标、语言区域设置和官方支持语言声明只在设备本地使用；
 本应用没有互联网权限，也不会共享应用清单。详见[隐私政策](PRIVACY_POLICY.md)。
-
----
-
-## 下载
-
-请从[最新版本](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
-下载已签名 APK。每个版本都使用同一密钥签名，证书指纹会发布在发行说明中。
 
 ---
 
@@ -280,6 +283,14 @@ keyPassword=…
 ```
 
 该文件和密钥库均已加入 `.gitignore`。
+
+---
+
+## 反馈与贡献
+
+如果发现翻译错误，请使用[翻译错误 Issue 模板](https://github.com/TakeruF/android-perapp-language-selector/issues/new?template=translation-error.yml)报告。
+也欢迎提交 [Bug 报告](https://github.com/TakeruF/android-perapp-language-selector/issues)和
+[Pull Request](https://github.com/TakeruF/android-perapp-language-selector/pulls)。
 
 ---
 

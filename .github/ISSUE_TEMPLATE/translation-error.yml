@@ -1,0 +1,57 @@
+name: Translation error
+description: Report an incorrect, unclear, or missing translation
+title: "[Translation]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Per-App Language's translations.
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      description: Which translation contains the error?
+      options:
+        - English
+        - Simplified Chinese
+        - Japanese
+        - Korean
+        - Spanish
+        - French
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: Where did you find it? Include the screen, README file, or string name if known.
+      placeholder: "Example: README.ja.md or Help > What this app does"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_translation
+    attributes:
+      label: Current translation
+      description: Copy the incorrect or unclear text here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested_translation
+    attributes:
+      label: Suggested translation
+      description: Tell us how you think the text should read and, if helpful, why.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Add screenshots, app version, device details, or any other useful context.
+    validations:
+      required: false

@@ -2,6 +2,16 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | 한국어 | [Español](README.es.md) | [Français](README.fr.md)
 
+## 다운로드
+
+[<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
+
+**Google Play:** 현재 비공개 테스트 중이며 곧 출시될 예정입니다.
+
+모든 릴리스는 같은 키로 서명되며 인증서 지문은 릴리스 노트에 공개됩니다. 개인정보 처리 내용은 [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
+
+---
+
 앱 내부에 언어 설정이 없고 *설정 → 앱 → 앱 언어*에 표시되지 않는 앱에도 특정 **로캘**을 강제로 적용하는 Android 유틸리티입니다.
 
 기기 시스템 언어는 한국어로 유지하면서 WeChat과 Taobao는 중국어 간체(简体中文),
@@ -71,14 +81,6 @@ Shizuku는 같은 shell uid로 작은 서비스를 실행하고 앱의 Binder �
 ### 전체 앱 목록이 필요한 이유
 
 핵심 기능은 패키지 이름을 미리 알 수 없는 **모든 설치된 앱**을 선택하는 것입니다. Android의 제한된 패키지 쿼리로는 이 목록을 만들 수 없어 `QUERY_ALL_PACKAGES`를 선언합니다. 가져온 패키지 이름, 표시 이름, 아이콘, 로캘 설정과 공식 언어 선언은 기기 안에서만 사용합니다. 인터넷 권한이 없으며 앱 목록을 공유하지 않습니다. [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
-
----
-
-## 다운로드
-
-[최신 릴리스](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)에서 서명된 APK를 받으세요. 모든 릴리스는 같은 키로 서명되며 인증서 지문은 릴리스 노트에 공개됩니다.
-
-개인정보 처리 내용은 [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
 
 ---
 
@@ -226,6 +228,14 @@ keyPassword=…
 ```
 
 이 파일과 키 저장소는 모두 Git에서 제외됩니다.
+
+---
+
+## 피드백 및 기여
+
+번역 오류를 발견하면 [번역 오류 Issue 템플릿](https://github.com/TakeruF/android-perapp-language-selector/issues/new?template=translation-error.yml)을 사용해 제보해 주세요.
+[버그 제보](https://github.com/TakeruF/android-perapp-language-selector/issues)와
+[Pull Request](https://github.com/TakeruF/android-perapp-language-selector/pulls)도 환영합니다.
 
 ---
 
