@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="cloned_app">Application clonée</string>
     <string name="app_name">Per-App Language</string>
     <string name="app_subtitle">Modifie les paramètres régionaux vus par une appli, sans traduire son contenu</string>
     <string name="back">Retour</string>
@@ -119,6 +120,7 @@
     <string name="error_force_stop_refused">Les paramètres régionaux ont été appliqués, mais l’appareil a refusé de forcer l’arrêt. Fermez l’appli depuis Récents pour voir le changement.</string>
     <string name="applied_no_launcher">%1$s L’appli n’a aucune activité lançable ; elle a été arrêtée, mais n’a pas pu être rouverte.</string>
     <string name="applied_restarting">%1$s Redémarrage…</string>
+    <string name="applied_reopen_clone_manually">%1$s Rouvrez manuellement l’application clonée.</string>
     <string name="error_relaunch_after_applied">%1$s Impossible de rouvrir l’appli : %2$s</string>
     <string name="error_locale_change">La modification des paramètres régionaux a échoué.</string>
     <string name="error_locale_change_detail">La modification des paramètres régionaux a échoué. %1$s</string>

@@ -37,6 +37,10 @@ object ProcessGateway {
      */
     @SuppressLint("PrivateApi") // Deliberate: see the class comment. Failure is handled, not fatal.
     fun forceStop(packageName: String): Boolean {
+        return forceStop(packageName, myUserId)
+    }
+
+    fun forceStop(packageName: String, userId: Int): Boolean {
         val binder: IBinder = binderProvider(SERVICE_NAME) ?: return false
         return try {
             val stub = Class.forName("android.app.IActivityManager\$Stub")
@@ -45,10 +49,10 @@ object ProcessGateway {
             val method = service.javaClass.methods.firstOrNull {
                 it.name == "forceStopPackage" && it.parameterTypes.size == 2
             } ?: return false
-            method.invoke(service, packageName, myUserId)
+            method.invoke(service, packageName, userId)
             true
         } catch (t: Throwable) {
-            Log.w(TAG, "forceStopPackage($packageName) failed", t)
+            Log.w(TAG, "forceStopPackage($packageName, user=$userId) failed", t)
             false
         }
     }

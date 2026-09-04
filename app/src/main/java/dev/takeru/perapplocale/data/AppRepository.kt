@@ -4,25 +4,40 @@ import android.app.LocaleConfig
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Process
+import android.os.UserManager
+import dev.takeru.perapplocale.core.PackageGateway
+import dev.takeru.perapplocale.core.UserGateway
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.Collator
 
-/** Reads the installed-package list. Nothing here needs Shizuku. */
+/** Reads owner apps publicly and clone-profile apps through Shizuku's system binders. */
 class AppRepository(context: Context) {
 
     private val appContext: Context = context.applicationContext
     private val packageManager: PackageManager = context.packageManager
+    // LocaleConfig is APK metadata rather than profile state, so clones intentionally share it.
     private val supportedLocalesCache = mutableMapOf<String, SupportedLocales>()
 
     suspend fun loadInstalledApps(): List<AppInfo> = withContext(Dispatchers.IO) {
         val flags = PackageManager.ApplicationInfoFlags.of(0L)
         val collator = Collator.getInstance()
-        packageManager.getInstalledApplications(flags)
+        val currentUserId = Process.myUid() / 100_000
+        val currentUserSerial = appContext.getSystemService(UserManager::class.java)
+            .getSerialNumberForUser(Process.myUserHandle())
+        val owner = packageManager.getInstalledApplications(flags).map { Triple(it, false, currentUserId to currentUserSerial) }
+        val clones = UserGateway.cloneProfiles(currentUserId).flatMap { profile ->
+            PackageGateway.installedApplications(profile.userId).map { Triple(it, true, profile.userId to profile.serialNumber) }
+        }
+        (owner + clones)
             .asSequence()
-            .map { info ->
+            .map { (info, isClone, profile) ->
                 AppInfo(
                     packageName = info.packageName,
+                    userId = profile.first,
+                    userSerialNumber = profile.second,
+                    isClone = isClone,
                     label = info.loadLabel(packageManager).toString(),
                     isSystemApp = isSystemApp(info),
                 )

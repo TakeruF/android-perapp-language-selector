@@ -27,6 +27,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.takeru.perapplocale.data.AppInfo
+import dev.takeru.perapplocale.data.AppTarget
+import android.os.Process
+import android.os.UserHandle
+import android.content.pm.LauncherApps
 import dev.takeru.perapplocale.data.LocaleOption
 import dev.takeru.perapplocale.ui.BulkLocaleSheet
 import dev.takeru.perapplocale.ui.HelpScreen
@@ -64,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 val context = LocalContext.current
 
                 var sheetApp by remember { mutableStateOf<AppInfo?>(null) }
-                var selectedPackageNames by remember { mutableStateOf<Set<String>>(emptySet()) }
+                var selectedTargets by remember { mutableStateOf<Set<AppTarget>>(emptySet()) }
                 var bulkSheetOpen by remember { mutableStateOf(false) }
                 var pendingBulkOption by remember { mutableStateOf<LocaleOption?>(null) }
                 var screen by rememberSaveable { mutableStateOf(Screen.LIST) }
@@ -74,13 +78,13 @@ class MainActivity : ComponentActivity() {
                 val goBack = { screen = if (screen == Screen.SETUP) setupOrigin else Screen.LIST }
 
                 BackHandler(enabled = screen != Screen.LIST) { goBack() }
-                BackHandler(enabled = screen == Screen.LIST && selectedPackageNames.isNotEmpty()) {
-                    selectedPackageNames = emptySet()
+                BackHandler(enabled = screen == Screen.LIST && selectedTargets.isNotEmpty()) {
+                    selectedTargets = emptySet()
                 }
 
-                LaunchedEffect(state.apps.map { it.packageName }) {
-                    selectedPackageNames = selectedPackageNames.intersect(
-                        state.apps.mapTo(mutableSetOf()) { it.packageName },
+                LaunchedEffect(state.apps.map { it.target }) {
+                    selectedTargets = selectedTargets.intersect(
+                        state.apps.mapTo(mutableSetOf()) { it.target },
                     )
                 }
 
@@ -107,6 +111,31 @@ class MainActivity : ComponentActivity() {
                                             event.appliedMessage,
                                             it.message ?: it.javaClass.simpleName,
                                         ),
+                                        duration = SnackbarDuration.Long,
+                                    )
+                                },
+                            )
+                            is UiEvent.LaunchProfile -> runCatching {
+                                // UserHandle.of(int) is hidden from the SDK stubs although it is
+                                // the standard framework factory. Hidden API access is already
+                                // best-effort enabled by PerAppLocaleApp.
+                                val profile = UserHandle::class.java
+                                    .getDeclaredMethod("of", Int::class.javaPrimitiveType)
+                                    .invoke(null, event.userId) as UserHandle
+                                val launcherApps = context.getSystemService(LauncherApps::class.java)
+                                val activity = launcherApps.getActivityList(event.packageName, profile)
+                                    .firstOrNull()
+                                    ?: error("No launcher activity in profile ${event.userId}")
+                                launcherApps.startMainActivity(activity.componentName, profile, null, null)
+                            }.fold(
+                                onSuccess = {
+                                    snackbarHostState.showSnackbar(
+                                        context.getString(R.string.applied_restarting, event.appliedMessage),
+                                    )
+                                },
+                                onFailure = {
+                                    snackbarHostState.showSnackbar(
+                                        context.getString(R.string.applied_reopen_clone_manually, event.appliedMessage),
                                         duration = SnackbarDuration.Long,
                                     )
                                 },
@@ -145,7 +174,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 pendingBulkOption?.let { option ->
-                    val count = selectedPackageNames.size
+                    val count = selectedTargets.size
                     val language = if (option.isSystemDefault) {
                         context.getString(R.string.system_default)
                     } else {
@@ -173,13 +202,13 @@ class MainActivity : ComponentActivity() {
                         confirmButton = {
                             TextButton(
                                 onClick = {
-                                    val targets = selectedPackageNames
+                                    val targets = selectedTargets
                                     pendingBulkOption = null
-                                    selectedPackageNames = emptySet()
+                                    selectedTargets = emptySet()
                                     viewModel.applyBulk(targets, option)
                                 },
-                                enabled = selectedPackageNames.isNotEmpty() &&
-                                    state.busyPackages.isEmpty() &&
+                                enabled = selectedTargets.isNotEmpty() &&
+                                    state.busyTargets.isEmpty() &&
                                     !state.resettingAll,
                             ) {
                                 Text(context.getString(R.string.confirm_bulk_change))
@@ -195,7 +224,7 @@ class MainActivity : ComponentActivity() {
                             snackbarHostState = snackbarHostState,
                             onQueryChange = viewModel::onQueryChange,
                             onFilterChange = {
-                                selectedPackageNames = emptySet()
+                                selectedTargets = emptySet()
                                 viewModel.onFilterChange(it)
                             },
                             onShowSystemAppsChange = viewModel::setShowSystemApps,
@@ -209,30 +238,30 @@ class MainActivity : ComponentActivity() {
                             onOpenHelp = { screen = Screen.HELP },
                             onRecheckShizuku = viewModel::refreshShizuku,
                             onAppClick = { sheetApp = it },
-                            selectedPackageNames = selectedPackageNames,
+                            selectedTargets = selectedTargets,
                             canChangeSelection = !state.resettingAll &&
-                                state.busyPackages.isEmpty() &&
-                                (state.shizukuReady || selectedPackageNames.all {
-                                    it == context.packageName
+                                state.busyTargets.isEmpty() &&
+                                (state.shizukuReady || selectedTargets.all {
+                                    it.packageName == context.packageName && it.userId == Process.myUid() / 100_000
                                 }),
                             onSelectionToggle = { app ->
-                                selectedPackageNames = if (app.packageName in selectedPackageNames) {
-                                    selectedPackageNames - app.packageName
+                                selectedTargets = if (app.target in selectedTargets) {
+                                    selectedTargets - app.target
                                 } else {
-                                    selectedPackageNames + app.packageName
+                                    selectedTargets + app.target
                                 }
                             },
-                            onClearSelection = { selectedPackageNames = emptySet() },
+                            onClearSelection = { selectedTargets = emptySet() },
                             onChangeSelectedLanguage = { bulkSheetOpen = true },
                         )
 
                         if (bulkSheetOpen) {
                             BulkLocaleSheet(
-                                appCount = selectedPackageNames.size,
+                                appCount = selectedTargets.size,
                                 enabled = !state.resettingAll &&
-                                    state.busyPackages.isEmpty() &&
-                                    (state.shizukuReady || selectedPackageNames.all {
-                                        it == context.packageName
+                                    state.busyTargets.isEmpty() &&
+                                    (state.shizukuReady || selectedTargets.all {
+                                        it.packageName == context.packageName && it.userId == Process.myUid() / 100_000
                                     }),
                                 onDismiss = { bulkSheetOpen = false },
                                 onContinue = { option ->
@@ -244,16 +273,16 @@ class MainActivity : ComponentActivity() {
 
                         sheetApp?.let { app ->
                             // Re-read from state so the sheet reflects a locale applied moments ago.
-                            val live = state.apps.firstOrNull { it.packageName == app.packageName } ?: app
+                            val live = state.apps.firstOrNull { it.target == app.target } ?: app
                             LocaleSheet(
                                 app = live,
-                                enabled = state.shizukuReady || live.packageName == context.packageName,
-                                busy = live.packageName in state.busyPackages,
+                                enabled = state.shizukuReady || (live.packageName == context.packageName && live.userId == Process.myUid() / 100_000),
+                                busy = live.target in state.busyTargets,
                                 loadSupportedLocales = viewModel::supportedLocalesFor,
                                 onDismiss = { sheetApp = null },
                                 onApply = { option, restart ->
                                     sheetApp = null
-                                    viewModel.apply(live.packageName, option, restart)
+                                    viewModel.apply(live.target, option, restart)
                                 },
                             )
                         }
@@ -294,8 +323,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Users typically leave to start Shizuku and come straight back.
+        // Settings can create/delete clone profiles or packages while we are backgrounded.
         shizukuRepository.refresh()
+        viewModel.refresh()
     }
 
     /** Opens the Shizuku manager, or its Play listing when it is not installed yet. */

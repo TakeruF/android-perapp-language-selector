@@ -82,13 +82,13 @@ fun LocaleSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    var selectedTag by remember(app.packageName) { mutableStateOf(app.localeTag) }
-    var query by remember(app.packageName) { mutableStateOf("") }
-    var supportedLanguagesExpanded by remember(app.packageName) { mutableStateOf(false) }
+    var selectedTag by remember(app.target) { mutableStateOf(app.localeTag) }
+    var query by remember(app.target) { mutableStateOf("") }
+    var supportedLanguagesExpanded by remember(app.target) { mutableStateOf(false) }
 
     val supportedLocales by produceState<SupportedLocales>(
         initialValue = SupportedLocales.Loading,
-        key1 = app.packageName,
+        key1 = app.target,
     ) {
         value = loadSupportedLocales(app.packageName)
     }

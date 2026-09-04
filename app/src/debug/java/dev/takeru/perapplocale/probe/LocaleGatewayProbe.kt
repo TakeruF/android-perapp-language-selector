@@ -14,7 +14,7 @@ import dev.takeru.perapplocale.core.SystemBinder
  * ```
  * adb push app-debug.apk /data/local/tmp/probe.apk
  * adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
- *     --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe <package>
+ *     --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe <package> [userId]
  * ```
  *
  * That exercises the real reflection path *and* the real raw-transaction path against the real
@@ -26,6 +26,7 @@ object LocaleGatewayProbe {
     @JvmStatic
     fun main(args: Array<String>) {
         val target = args.firstOrNull() ?: "com.android.settings"
+        val userId = args.getOrNull(1)?.toIntOrNull() ?: android.os.Process.myUid() / 100_000
 
         // Talk to the services directly: this process is already uid 2000.
         LocaleGateway.binderProvider = SystemBinder::raw
@@ -42,7 +43,7 @@ object LocaleGatewayProbe {
             }
         }
 
-        println("target=$target uid=${android.os.Process.myUid()}")
+        println("target=$target user=$userId uid=${android.os.Process.myUid()}")
 
         for (viaReflection in listOf(true, false)) {
             val path = if (viaReflection) "reflection" else "raw-transaction"
@@ -50,32 +51,34 @@ object LocaleGatewayProbe {
             println("--- $path ---")
 
             check("$path: reset to system default") {
-                LocaleGateway.setApplicationLocales(target, LocaleList.getEmptyLocaleList())
-                val got = LocaleGateway.getApplicationLocales(target)
+                LocaleGateway.setApplicationLocales(target, userId, LocaleList.getEmptyLocaleList())
+                val got = LocaleGateway.getApplicationLocales(target, userId)
                 require(got.isEmpty) { "expected empty, got \"$got\"" }
             }
             check("$path: set zh-CN and read it back") {
-                LocaleGateway.setApplicationLocales(target, LocaleList.forLanguageTags("zh-CN"))
-                val got = LocaleGateway.getApplicationLocales(target)
+                LocaleGateway.setApplicationLocales(target, userId, LocaleList.forLanguageTags("zh-CN"))
+                val got = LocaleGateway.getApplicationLocales(target, userId)
                 require(got.toLanguageTags() == "zh-CN") { "expected zh-CN, got \"${got.toLanguageTags()}\"" }
             }
-            check("$path: agrees with `cmd locale get-app-locales`") {
-                val shell = ProcessBuilder("sh", "-c", "cmd locale get-app-locales $target")
-                    .redirectErrorStream(true).start()
-                val out = shell.inputStream.bufferedReader().readText().trim()
-                shell.waitFor()
-                require(out.contains("zh-CN")) { "cmd locale disagrees: \"$out\"" }
+            if (userId == android.os.Process.myUid() / 100_000) {
+                check("$path: agrees with `cmd locale get-app-locales`") {
+                    val shell = ProcessBuilder("sh", "-c", "cmd locale get-app-locales $target")
+                        .redirectErrorStream(true).start()
+                    val out = shell.inputStream.bufferedReader().readText().trim()
+                    shell.waitFor()
+                    require(out.contains("zh-CN")) { "cmd locale disagrees: \"$out\"" }
+                }
             }
             check("$path: set ja-JP then reset") {
-                LocaleGateway.setApplicationLocales(target, LocaleList.forLanguageTags("ja-JP"))
-                require(LocaleGateway.getApplicationLocales(target).toLanguageTags() == "ja-JP")
-                LocaleGateway.setApplicationLocales(target, LocaleList.getEmptyLocaleList())
-                require(LocaleGateway.getApplicationLocales(target).isEmpty)
+                LocaleGateway.setApplicationLocales(target, userId, LocaleList.forLanguageTags("ja-JP"))
+                require(LocaleGateway.getApplicationLocales(target, userId).toLanguageTags() == "ja-JP")
+                LocaleGateway.setApplicationLocales(target, userId, LocaleList.getEmptyLocaleList())
+                require(LocaleGateway.getApplicationLocales(target, userId).isEmpty)
             }
         }
 
         check("forceStopPackage reaches IActivityManager") {
-            require(ProcessGateway.forceStop(target)) { "forceStop returned false" }
+            require(ProcessGateway.forceStop(target, userId)) { "forceStop returned false" }
         }
 
         println(if (failures == 0) "ALL PASS" else "FAILURES=$failures")

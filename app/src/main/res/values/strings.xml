@@ -19,6 +19,7 @@
     <string name="no_configured_apps">No app has a forced locale yet.</string>
     <string name="no_apps_to_show">No apps to show. Try enabling “Show system apps”.</string>
     <string name="system_default">System Default</string>
+    <string name="cloned_app">Cloned app</string>
 
     <string name="shizuku_permission_needed">Shizuku permission needed</string>
     <string name="shizuku_permission_needed_body">Shizuku is running. Grant this app permission so it can talk to the system locale service.</string>
@@ -124,6 +125,7 @@
     <string name="error_force_stop_refused">Locale applied, but this device refused to force-stop the app. Close it from Recents to see the change.</string>
     <string name="applied_no_launcher">%1$s This app has no launchable activity, so it was stopped but could not be reopened.</string>
     <string name="applied_restarting">%1$s Restarting…</string>
+    <string name="applied_reopen_clone_manually">%1$s Reopen the cloned app manually.</string>
     <string name="error_relaunch_after_applied">%1$s The app could not be reopened: %2$s</string>
     <string name="error_locale_change">The locale change failed.</string>
     <string name="error_locale_change_detail">The locale change failed. %1$s</string>

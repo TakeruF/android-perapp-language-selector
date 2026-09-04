@@ -16,7 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Loads launcher icons lazily and keeps a bounded cache.
+ * Loads launcher icons lazily and keeps a bounded cache. Clones intentionally share the
+ * package-name cache because they normally install the same APK; row identity never uses it.
  *
  * Decoding every icon up front would cost hundreds of milliseconds and a lot of memory on a
  * device with 300 packages, so rows ask for their own icon as they scroll into view.

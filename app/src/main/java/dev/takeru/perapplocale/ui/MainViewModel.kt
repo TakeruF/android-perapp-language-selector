@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.LocaleManager
 import android.content.Intent
 import android.os.LocaleList
+import android.os.Process
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,9 @@ import dev.takeru.perapplocale.core.LocaleGatewayException
 import dev.takeru.perapplocale.core.ProcessGateway
 import dev.takeru.perapplocale.data.AppInfo
 import dev.takeru.perapplocale.data.AppRepository
+import dev.takeru.perapplocale.data.AppTarget
+import dev.takeru.perapplocale.data.isOwnTarget
+import dev.takeru.perapplocale.data.withLocaleFor
 import dev.takeru.perapplocale.data.LocaleOption
 import dev.takeru.perapplocale.data.Settings
 import dev.takeru.perapplocale.data.SettingsStore
@@ -46,7 +50,7 @@ data class MainUiState(
     val filter: AppFilter = AppFilter.ALL,
     val showSystemApps: Boolean = false,
     val configuredFirst: Boolean = true,
-    val busyPackages: Set<String> = emptySet(),
+    val busyTargets: Set<AppTarget> = emptySet(),
     val resettingAll: Boolean = false,
 ) {
     val shizukuReady: Boolean get() = shizuku == ShizukuState.READY
@@ -57,6 +61,8 @@ sealed interface UiEvent {
     data class Message(val text: String) : UiEvent
     data class Error(val text: String) : UiEvent
     data class Launch(val intent: Intent, val appliedMessage: String) : UiEvent
+    /** Open via LauncherApps with this explicit profile, never a current-user Intent. */
+    data class LaunchProfile(val packageName: String, val userId: Int, val appliedMessage: String) : UiEvent
 }
 
 class MainViewModel(
@@ -72,7 +78,7 @@ class MainViewModel(
     private val readingLocales = MutableStateFlow(false)
     private val query = MutableStateFlow("")
     private val filter = MutableStateFlow(AppFilter.ALL)
-    private val busyPackages = MutableStateFlow<Set<String>>(emptySet())
+    private val busyTargets = MutableStateFlow<Set<AppTarget>>(emptySet())
     private val resettingAll = MutableStateFlow(false)
 
     private val events = Channel<UiEvent>(Channel.BUFFERED)
@@ -86,7 +92,7 @@ class MainViewModel(
             shizukuRepository.state,
             rawApps,
             settingsStore.settings,
-            combine(query, filter, busyPackages) { q, f, busy -> Triple(q, f, busy) },
+            combine(query, filter, busyTargets) { q, f, busy -> Triple(q, f, busy) },
             combine(loadingApps, readingLocales, resettingAll) { loading, reading, resetting ->
                 Triple(loading, reading, resetting)
             },
@@ -105,7 +111,10 @@ class MainViewModel(
             // Re-read locales when Shizuku becomes usable, and only then.
             shizukuRepository.state.collect { state ->
                 val ready = state == ShizukuState.READY
-                if (ready && !lastScannedForReady && rawApps.value.isNotEmpty()) scanLocales()
+                if (ready && !lastScannedForReady) {
+                    refreshApps()
+                    if (rawApps.value.isNotEmpty()) scanLocales()
+                }
                 lastScannedForReady = ready
             }
         }
@@ -117,7 +126,7 @@ class MainViewModel(
         settings: Settings,
         q: String,
         f: AppFilter,
-        busy: Set<String>,
+        busy: Set<AppTarget>,
         loading: Boolean,
         reading: Boolean,
         resetting: Boolean,
@@ -126,7 +135,7 @@ class MainViewModel(
         // still recognisable immediately after launch.
         val merged = apps.map { app ->
             if (app.localeKnown) app
-            else settings.assignments[app.packageName]?.let { app.copy(localeTag = it) } ?: app
+            else settings.assignments[app.assignmentKey]?.let { app.copy(localeTag = it) } ?: app
         }
 
         val visible = merged.asSequence()
@@ -137,16 +146,17 @@ class MainViewModel(
 
         val collator = Collator.getInstance()
         val ownPackageName = getApplication<Application>().packageName
+        val currentUserId = Process.myUid() / 100_000
         val ordered = if (settings.configuredFirst) {
             visible.sortedWith(
-                compareBy<AppInfo> { if (it.packageName == ownPackageName) 0 else 1 }
+                compareBy<AppInfo> { if (it.target.isOwnTarget(ownPackageName, currentUserId)) 0 else 1 }
                     .thenByDescending { it.isConfigured }
-                    .thenBy(collator) { it.label },
+                    .thenBy(collator) { it.label }.thenBy { it.packageName }.thenBy { it.isClone }.thenBy { it.userId },
             )
         } else {
             visible.sortedWith(
-                compareBy<AppInfo> { if (it.packageName == ownPackageName) 0 else 1 }
-                    .thenBy(collator) { it.label },
+                compareBy<AppInfo> { if (it.target.isOwnTarget(ownPackageName, currentUserId)) 0 else 1 }
+                    .thenBy(collator) { it.label }.thenBy { it.packageName }.thenBy { it.isClone }.thenBy { it.userId },
             )
         }
 
@@ -160,7 +170,7 @@ class MainViewModel(
             filter = f,
             showSystemApps = settings.showSystemApps,
             configuredFirst = settings.configuredFirst,
-            busyPackages = busy,
+            busyTargets = busy,
             resettingAll = resetting,
         )
     }
@@ -169,7 +179,8 @@ class MainViewModel(
         if (q.isBlank()) return true
         val needle = q.trim()
         return app.label.contains(needle, ignoreCase = true) ||
-            app.packageName.contains(needle, ignoreCase = true)
+            app.packageName.contains(needle, ignoreCase = true) ||
+            (app.isClone && "clone".contains(needle, ignoreCase = true))
     }
 
     fun onQueryChange(value: String) {
@@ -201,7 +212,7 @@ class MainViewModel(
 
     /** Clears every per-app locale override after the Activity has obtained confirmation. */
     fun resetAllCustomizations() {
-        if (resettingAll.value || busyPackages.value.isNotEmpty()) return
+        if (resettingAll.value || busyTargets.value.isNotEmpty()) return
         viewModelScope.launch {
             if (shizukuRepository.state.value != ShizukuState.READY) {
                 events.send(UiEvent.Error(text(R.string.reset_all_requires_shizuku)))
@@ -217,22 +228,23 @@ class MainViewModel(
                     .first
                 val cachedAssignments = settingsStore.settings.first().assignments.keys
                 val ownPackage = getApplication<Application>().packageName
+                val currentUserId = Process.myUid() / 100_000
                 val emptyLocales = LocaleList.getEmptyLocaleList()
-                val resetPackages = mutableListOf<String>()
+                val resetTargets = mutableListOf<AppTarget>()
                 var failed = 0
 
                 withContext(Dispatchers.IO) {
                     for (app in apps) {
-                        if (app.packageName == ownPackage) continue
+                        if (app.target.isOwnTarget(ownPackage, currentUserId)) continue
                         val currentTag = runCatching {
-                            LocaleOption.tagOf(LocaleGateway.getApplicationLocales(app.packageName))
+                            LocaleOption.tagOf(LocaleGateway.getApplicationLocales(app.packageName, app.userId))
                         }.getOrNull()
-                        if (currentTag.isNullOrEmpty() && app.packageName !in cachedAssignments) continue
+                        if (currentTag.isNullOrEmpty() && app.assignmentKey !in cachedAssignments) continue
 
                         runCatching {
-                            LocaleGateway.setApplicationLocales(app.packageName, emptyLocales)
+                            LocaleGateway.setApplicationLocales(app.packageName, app.userId, emptyLocales)
                         }.onSuccess {
-                            resetPackages += app.packageName
+                            resetTargets += app.target
                         }.onFailure {
                             failed += 1
                         }
@@ -243,23 +255,26 @@ class MainViewModel(
                     .getSystemService(LocaleManager::class.java)
                     .applicationLocales
                     .isEmpty
-                    .not() || ownPackage in cachedAssignments
+                    .not() || apps.firstOrNull { it.target.isOwnTarget(ownPackage, currentUserId) }
+                    ?.assignmentKey in cachedAssignments
                 if (ownConfigured) {
                     runCatching {
                         getApplication<Application>()
                             .getSystemService(LocaleManager::class.java)
                             .applicationLocales = emptyLocales
                     }.onSuccess {
-                        resetPackages += ownPackage
+                        resetTargets += AppTarget(ownPackage, currentUserId)
                     }.onFailure {
                         failed += 1
                     }
                 }
 
-                settingsStore.forgetAssignments(resetPackages)
-                val resetSet = resetPackages.toSet()
+                settingsStore.forgetAssignments(
+                    resetTargets.mapNotNull { target -> apps.firstOrNull { it.target == target }?.assignmentKey },
+                )
+                val resetSet = resetTargets.toSet()
                 rawApps.value = rawApps.value.map { app ->
-                    if (app.packageName in resetSet) {
+                    if (app.target in resetSet) {
                         app.copy(localeTag = "", localeKnown = true)
                     } else {
                         app
@@ -269,14 +284,14 @@ class MainViewModel(
                 when {
                     failed > 0 -> events.send(
                         UiEvent.Error(
-                            text(R.string.reset_all_partial, resetPackages.size, failed),
+                            text(R.string.reset_all_partial, resetTargets.size, failed),
                         ),
                     )
-                    resetPackages.isEmpty() -> events.send(
+                    resetTargets.isEmpty() -> events.send(
                         UiEvent.Message(text(R.string.reset_all_nothing_to_reset)),
                     )
                     else -> events.send(
-                        UiEvent.Message(text(R.string.reset_all_complete, resetPackages.size)),
+                        UiEvent.Message(text(R.string.reset_all_complete, resetTargets.size)),
                     )
                 }
             } catch (e: Exception) {
@@ -308,21 +323,21 @@ class MainViewModel(
         localeScanJob = viewModelScope.launch {
             readingLocales.value = true
             try {
-                val packages = rawApps.value.map { it.packageName }
-                if (packages.isEmpty()) return@launch
+                val targets = rawApps.value.map { it.target }
+                if (targets.isEmpty()) return@launch
 
                 var firstFailure: Throwable? = null
                 val found = withContext(Dispatchers.IO) {
                     buildMap {
-                        for (pkg in packages) {
-                            runCatching { LocaleGateway.getApplicationLocales(pkg) }
-                                .onSuccess { put(pkg, LocaleOption.tagOf(it)) }
+                        for (target in targets) {
+                            runCatching { LocaleGateway.getApplicationLocales(target.packageName, target.userId) }
+                                .onSuccess { put(target, LocaleOption.tagOf(it)) }
                                 .onFailure { if (firstFailure == null) firstFailure = it }
                         }
                     }
                 }
                 rawApps.value = rawApps.value.map { app ->
-                    val tag = found[app.packageName]
+                    val tag = found[app.target]
                     if (tag == null) app else app.copy(localeTag = tag, localeKnown = true)
                 }
 
@@ -350,16 +365,18 @@ class MainViewModel(
      * Applies [option] to [packageName]. When [restart] is set we also force-stop the app and
      * relaunch it, which is what makes the change visible in apps that cache their strings.
      */
-    fun apply(packageName: String, option: LocaleOption, restart: Boolean) {
-        if (resettingAll.value || busyPackages.value.isNotEmpty()) return
+    fun apply(target: AppTarget, option: LocaleOption, restart: Boolean) {
+        if (resettingAll.value || busyTargets.value.isNotEmpty()) return
         viewModelScope.launch {
-            busyPackages.value = setOf(packageName)
+            busyTargets.value = setOf(target)
             try {
-                if (packageName == getApplication<Application>().packageName) {
+                val ownPackageName = getApplication<Application>().packageName
+                val currentUserId = Process.myUid() / 100_000
+                if (target.isOwnTarget(ownPackageName, currentUserId)) {
                     // Force-stopping ourselves would kill this process before it could relaunch.
                     // The public API is also the canonical path for changing the calling app.
-                    settingsStore.recordAssignment(packageName, option.tag)
-                    updateLocalTag(packageName, option.tag)
+                    settingsStore.recordAssignment(assignmentKeyFor(target), option.tag)
+                    updateLocalTag(target, option.tag)
                     getApplication<Application>()
                         .getSystemService(LocaleManager::class.java)
                         .applicationLocales = option.toLocaleList()
@@ -368,30 +385,29 @@ class MainViewModel(
                 }
 
                 withContext(Dispatchers.IO) {
-                    LocaleGateway.setApplicationLocales(packageName, option.toLocaleList())
+                    LocaleGateway.setApplicationLocales(target.packageName, target.userId, option.toLocaleList())
                 }
-                settingsStore.recordAssignment(packageName, option.tag)
-                updateLocalTag(packageName, option.tag)
+                settingsStore.recordAssignment(assignmentKeyFor(target), option.tag)
+                updateLocalTag(target, option.tag)
 
                 if (!restart) {
                     events.send(UiEvent.Message(appliedMessage(option)))
                     return@launch
                 }
 
-                val stopped = withContext(Dispatchers.IO) { ProcessGateway.forceStop(packageName) }
-                val launchIntent = appRepository.launchIntentFor(packageName)
+                val stopped = withContext(Dispatchers.IO) { ProcessGateway.forceStop(target.packageName, target.userId) }
                 when {
                     !stopped -> events.send(
                         UiEvent.Error(
                             text(R.string.error_force_stop_refused),
                         ),
                     )
-                    launchIntent == null -> events.send(
-                        UiEvent.Message(text(R.string.applied_no_launcher, appliedMessage(option))),
+                    target.userId != currentUserId -> events.send(
+                        UiEvent.LaunchProfile(target.packageName, target.userId, appliedMessage(option)),
                     )
-                    else -> {
-                        events.send(UiEvent.Launch(launchIntent, appliedMessage(option)))
-                    }
+                    else -> appRepository.launchIntentFor(target.packageName)?.let {
+                        events.send(UiEvent.Launch(it, appliedMessage(option)))
+                    } ?: events.send(UiEvent.Message(text(R.string.applied_no_launcher, appliedMessage(option))))
                 }
             } catch (e: LocaleGatewayException) {
                 events.send(
@@ -407,43 +423,44 @@ class MainViewModel(
                     ),
                 )
             } finally {
-                busyPackages.value = emptySet()
+                busyTargets.value = emptySet()
             }
         }
     }
 
     /** Applies one locale to every target, even when a target already has another override. */
-    fun applyBulk(packageNames: Set<String>, option: LocaleOption) {
-        if (packageNames.isEmpty() || resettingAll.value || busyPackages.value.isNotEmpty()) return
+    fun applyBulk(targets: Set<AppTarget>, option: LocaleOption) {
+        if (targets.isEmpty() || resettingAll.value || busyTargets.value.isNotEmpty()) return
         viewModelScope.launch {
-            busyPackages.value = packageNames
+            busyTargets.value = targets
             val ownPackageName = getApplication<Application>().packageName
-            val succeeded = mutableSetOf<String>()
+            val currentUserId = Process.myUid() / 100_000
+            val succeeded = mutableSetOf<AppTarget>()
 
             try {
                 // Do our own package last because changing it can recreate the Activity.
-                for (packageName in packageNames.sortedBy { it == ownPackageName }) {
+                for (target in targets.sortedBy { it.isOwnTarget(ownPackageName, currentUserId) }) {
                     runCatching {
-                        if (packageName == ownPackageName) {
+                        if (target.isOwnTarget(ownPackageName, currentUserId)) {
                             getApplication<Application>()
                                 .getSystemService(LocaleManager::class.java)
                                 .applicationLocales = option.toLocaleList()
                         } else {
                             withContext(Dispatchers.IO) {
-                                LocaleGateway.setApplicationLocales(packageName, option.toLocaleList())
+                                LocaleGateway.setApplicationLocales(target.packageName, target.userId, option.toLocaleList())
                             }
                         }
                     }.onSuccess {
-                        succeeded += packageName
-                        updateLocalTag(packageName, option.tag)
+                        succeeded += target
+                        updateLocalTag(target, option.tag)
                     }
                 }
 
                 if (succeeded.isNotEmpty()) {
-                    settingsStore.recordAssignments(succeeded, option.tag)
+                    settingsStore.recordAssignments(succeeded.map(::assignmentKeyFor), option.tag)
                 }
 
-                val total = packageNames.size
+                val total = targets.size
                 when (succeeded.size) {
                     total -> events.send(
                         UiEvent.Message(text(R.string.bulk_change_complete, total)),
@@ -467,7 +484,7 @@ class MainViewModel(
                     UiEvent.Error(text(R.string.error_unexpected, e.message ?: e.javaClass.simpleName)),
                 )
             } finally {
-                busyPackages.value = emptySet()
+                busyTargets.value = emptySet()
             }
         }
     }
@@ -479,11 +496,13 @@ class MainViewModel(
     private fun text(id: Int, vararg args: Any?): String =
         getApplication<Application>().getString(id, *args)
 
-    private fun updateLocalTag(packageName: String, tag: String) {
-        rawApps.value = rawApps.value.map { app ->
-            if (app.packageName == packageName) app.copy(localeTag = tag, localeKnown = true) else app
-        }
+    private fun updateLocalTag(target: AppTarget, tag: String) {
+        rawApps.value = rawApps.value.withLocaleFor(target, tag)
     }
+
+    private fun assignmentKeyFor(target: AppTarget): String =
+        rawApps.value.firstOrNull { it.target == target }?.assignmentKey
+            ?: error("Target disappeared before its assignment could be saved: $target")
 
     suspend fun supportedLocalesFor(packageName: String): SupportedLocales =
         appRepository.supportedLocalesFor(packageName)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="cloned_app">应用分身</string>
     <string name="app_name">Per-App Language</string>
     <string name="app_subtitle">更改应用所使用的语言区域，不会翻译内容</string>
     <string name="back">返回</string>
@@ -119,6 +120,7 @@
     <string name="error_force_stop_refused">语言区域已应用，但此设备拒绝强制停止应用。请从最近任务中关闭应用以查看变化。</string>
     <string name="applied_no_launcher">%1$s 该应用没有可启动的界面，因此已停止但无法重新打开。</string>
     <string name="applied_restarting">%1$s 正在重启…</string>
+    <string name="applied_reopen_clone_manually">%1$s 请手动重新打开应用分身。</string>
     <string name="error_relaunch_after_applied">%1$s 无法重新打开应用：%2$s</string>
     <string name="error_locale_change">语言区域更改失败。</string>
     <string name="error_locale_change_detail">语言区域更改失败。%1$s</string>

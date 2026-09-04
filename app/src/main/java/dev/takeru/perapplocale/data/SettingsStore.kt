@@ -1,6 +1,8 @@
 package dev.takeru.perapplocale.data
 
 import android.content.Context
+import android.os.Process
+import android.os.UserManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -20,7 +22,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 data class Settings(
     val showSystemApps: Boolean = false,
     val configuredFirst: Boolean = true,
-    /** packageName -> BCP 47 tag. A cache of the system state, not the source of truth. */
+    /** Stable user-serial + package key -> BCP 47 tag. A cache of system state, not source of truth. */
     val assignments: Map<String, String> = emptyMap(),
 )
 
@@ -41,7 +43,7 @@ class SettingsStore(private val context: Context) {
             Settings(
                 showSystemApps = prefs[Keys.SHOW_SYSTEM_APPS] ?: false,
                 configuredFirst = prefs[Keys.CONFIGURED_FIRST] ?: true,
-                assignments = decodeAssignments(prefs[Keys.ASSIGNMENTS]),
+                assignments = migrateLegacyAssignmentKeys(decodeAssignments(prefs[Keys.ASSIGNMENTS]), currentUserSerialNumber()),
             )
         }
 
@@ -53,28 +55,32 @@ class SettingsStore(private val context: Context) {
         context.dataStore.edit { it[Keys.CONFIGURED_FIRST] = value }
     }
 
-    /** Records (or, for an empty [tag], forgets) what we last applied to [packageName]. */
-    suspend fun recordAssignment(packageName: String, tag: String) {
-        recordAssignments(listOf(packageName), tag)
+    /** Records (or, for an empty [tag], forgets) what we last applied to [target]. */
+    suspend fun recordAssignment(assignmentKey: String, tag: String) {
+        recordAssignments(listOf(assignmentKey), tag)
     }
 
     /** Records one bulk operation atomically so partial DataStore writes cannot split the batch. */
-    suspend fun recordAssignments(packageNames: Collection<String>, tag: String) {
+    suspend fun recordAssignments(assignmentKeys: Collection<String>, tag: String) {
         context.dataStore.edit { prefs ->
-            val current = decodeAssignments(prefs[Keys.ASSIGNMENTS]).toMutableMap()
-            for (packageName in packageNames) {
-                if (tag.isEmpty()) current.remove(packageName) else current[packageName] = tag
+            val current = migrateLegacyAssignmentKeys(
+                decodeAssignments(prefs[Keys.ASSIGNMENTS]), currentUserSerialNumber(),
+            ).toMutableMap()
+            for (key in assignmentKeys) {
+                if (tag.isEmpty()) current.remove(key) else current[key] = tag
             }
             prefs[Keys.ASSIGNMENTS] = encodeAssignments(current)
         }
     }
 
     /** Forgets successfully reset packages without discarding unrelated UI preferences. */
-    suspend fun forgetAssignments(packageNames: Collection<String>) {
-        if (packageNames.isEmpty()) return
+    suspend fun forgetAssignments(assignmentKeys: Collection<String>) {
+        if (assignmentKeys.isEmpty()) return
         context.dataStore.edit { prefs ->
-            val current = decodeAssignments(prefs[Keys.ASSIGNMENTS]).toMutableMap()
-            packageNames.forEach(current::remove)
+            val current = migrateLegacyAssignmentKeys(
+                decodeAssignments(prefs[Keys.ASSIGNMENTS]), currentUserSerialNumber(),
+            ).toMutableMap()
+            assignmentKeys.forEach(current::remove)
             prefs[Keys.ASSIGNMENTS] = encodeAssignments(current)
         }
     }
@@ -94,4 +100,15 @@ class SettingsStore(private val context: Context) {
 
     private fun encodeAssignments(map: Map<String, String>): String =
         JSONObject(map as Map<*, *>).toString()
+
+    private fun currentUserSerialNumber(): Long = context.getSystemService(UserManager::class.java)
+        .getSerialNumberForUser(Process.myUserHandle())
+
 }
+
+/** Old records used only the package name; they unambiguously belong to the app's current user. */
+internal fun migrateLegacyAssignmentKeys(assignments: Map<String, String>, currentUserSerialNumber: Long): Map<String, String> =
+    assignments.mapKeys { (key, _) ->
+        if (key.startsWith("s") && key.substringBefore(':').drop(1).toLongOrNull() != null) key
+        else "s$currentUserSerialNumber:${key.substringAfter(':', key)}"
+    }

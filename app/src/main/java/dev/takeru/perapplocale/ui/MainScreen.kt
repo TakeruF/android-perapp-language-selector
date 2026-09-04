@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import dev.takeru.perapplocale.R
 import dev.takeru.perapplocale.data.AppInfo
 import dev.takeru.perapplocale.data.LocaleOption
+import dev.takeru.perapplocale.data.AppTarget
 import dev.takeru.perapplocale.shizuku.ShizukuState
 import dev.takeru.perapplocale.util.rememberAppIcon
 
@@ -77,14 +78,14 @@ fun MainScreen(
     onOpenHelp: () -> Unit,
     onRecheckShizuku: () -> Unit,
     onAppClick: (AppInfo) -> Unit,
-    selectedPackageNames: Set<String>,
+    selectedTargets: Set<AppTarget>,
     canChangeSelection: Boolean,
     onSelectionToggle: (AppInfo) -> Unit,
     onClearSelection: () -> Unit,
     onChangeSelectedLanguage: () -> Unit,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
-    val selectionMode = selectedPackageNames.isNotEmpty()
+    val selectionMode = selectedTargets.isNotEmpty()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -93,7 +94,7 @@ fun MainScreen(
                 title = {
                     if (selectionMode) {
                         Text(
-                            stringResource(R.string.selected_apps_count, selectedPackageNames.size),
+                            stringResource(R.string.selected_apps_count, selectedTargets.size),
                             fontWeight = FontWeight.SemiBold,
                         )
                     } else {
@@ -240,11 +241,11 @@ fun MainScreen(
                     )
                 }
                 else -> LazyColumn(Modifier.fillMaxSize()) {
-                    items(state.apps, key = { it.packageName }) { app ->
+                    items(state.apps, key = { it.target.runtimeKey }) { app ->
                         AppRow(
                             app = app,
-                            busy = app.packageName in state.busyPackages,
-                            selected = app.packageName in selectedPackageNames,
+                            busy = app.target in state.busyTargets,
+                            selected = app.target in selectedTargets,
                             selectionMode = selectionMode,
                             onClick = {
                                 if (selectionMode) onSelectionToggle(app) else onAppClick(app)
@@ -327,6 +328,13 @@ private fun AppRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+            if (app.isClone) {
+                Text(
+                    stringResource(R.string.cloned_app),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
             Text(
                 app.packageName,
                 style = MaterialTheme.typography.labelSmall,

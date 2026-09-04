@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="cloned_app">Aplicación clonada</string>
     <string name="app_name">Per-App Language</string>
     <string name="app_subtitle">Cambia la configuración regional que ve una app; no traduce contenido</string>
     <string name="back">Atrás</string>
@@ -119,6 +120,7 @@
     <string name="error_force_stop_refused">La configuración regional se aplicó, pero el dispositivo rechazó detener la app. Ciérrala desde Recientes para ver el cambio.</string>
     <string name="applied_no_launcher">%1$s La app no tiene una actividad iniciable; se detuvo, pero no se pudo volver a abrir.</string>
     <string name="applied_restarting">%1$s Reiniciando…</string>
+    <string name="applied_reopen_clone_manually">%1$s Vuelve a abrir manualmente la aplicación clonada.</string>
     <string name="error_relaunch_after_applied">%1$s No se pudo volver a abrir la app: %2$s</string>
     <string name="error_locale_change">No se pudo cambiar la configuración regional.</string>
     <string name="error_locale_change_detail">No se pudo cambiar la configuración regional. %1$s</string>

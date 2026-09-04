@@ -64,6 +64,13 @@ Settings even though the underlying override works perfectly.
 
 This app writes that same override directly, for any installed package.
 
+When an OEM's app-cloner is backed by Android's standard clone-profile type (such as compatible
+ColorOS App Cloner setups), the original and cloned installation are separate rows. Their identity
+is `packageName + userId`, so each can retain a different locale override.
+Runtime system calls use that user ID, while the local assignment cache uses the Android user
+serial number plus package name. This prevents a deleted clone profile's cached choice from being
+applied if an OEM later reuses its numeric user ID.
+
 ---
 
 ## Requirements
@@ -212,6 +219,20 @@ surfaces the failure rather than working around it with device-specific hacks.
 ---
 
 ## Verification
+
+### Clone-profile diagnostics
+
+Clone discovery uses `IUserManager`'s standard `android.os.usertype.profile.CLONE` type and
+user-aware `IPackageManager` enumeration over Shizuku; it does not assume a vendor-specific user
+ID. Check the actual profile and package IDs on a device with:
+
+```bash
+adb shell pm list users
+adb shell pm list packages --user <USER_ID>
+```
+
+Some ColorOS devices expose the clone as user `999`, so `adb shell pm list packages --user 999`
+is an example diagnostic only—not a universal Android or ColorOS contract.
 
 The privileged layer is verified against live Android system services rather than assumptions or
 mocks. `app/src/debug/.../LocaleGatewayProbe.kt` runs the real `LocaleGateway` and `ProcessGateway`

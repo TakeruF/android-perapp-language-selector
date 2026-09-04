@@ -74,12 +74,16 @@ object LocaleGateway {
      */
     @Throws(LocaleGatewayException::class)
     fun getApplicationLocales(packageName: String): LocaleList {
+        return getApplicationLocales(packageName, myUserId)
+    }
+
+    fun getApplicationLocales(packageName: String, userId: Int): LocaleList {
         val binder = requireBinder()
-        reflectiveGet(binder, packageName)?.let {
+        reflectiveGet(binder, packageName, userId)?.let {
             lastPath = GatewayPath.REFLECTION
             return it
         }
-        return transactGet(binder, packageName)
+        return transactGet(binder, packageName, userId)
     }
 
     /**
@@ -88,12 +92,16 @@ object LocaleGateway {
      */
     @Throws(LocaleGatewayException::class)
     fun setApplicationLocales(packageName: String, locales: LocaleList) {
+        setApplicationLocales(packageName, myUserId, locales)
+    }
+
+    fun setApplicationLocales(packageName: String, userId: Int, locales: LocaleList) {
         val binder = requireBinder()
-        if (reflectiveSet(binder, packageName, locales)) {
+        if (reflectiveSet(binder, packageName, userId, locales)) {
             lastPath = GatewayPath.REFLECTION
             return
         }
-        transactSet(binder, packageName, locales)
+        transactSet(binder, packageName, userId, locales)
     }
 
     private fun requireBinder(): IBinder = binderProvider(SERVICE_NAME)
@@ -119,20 +127,20 @@ object LocaleGateway {
         }
     }
 
-    private fun reflectiveGet(binder: IBinder, packageName: String): LocaleList? {
+    private fun reflectiveGet(binder: IBinder, packageName: String, userId: Int): LocaleList? {
         val service = localeManagerInterface(binder) ?: return null
         val method = service.javaClass.methods.firstOrNull {
             it.name == "getApplicationLocales" && it.parameterTypes.size == 2
         } ?: return null
         return try {
-            method.invoke(service, packageName, myUserId) as? LocaleList
+            method.invoke(service, packageName, userId) as? LocaleList
                 ?: LocaleList.getEmptyLocaleList()
         } catch (t: Throwable) {
-            throw asGatewayException("read the locale of", packageName, t)
+            throw asGatewayException("read the locale of", packageName, userId, t)
         }
     }
 
-    private fun reflectiveSet(binder: IBinder, packageName: String, locales: LocaleList): Boolean {
+    private fun reflectiveSet(binder: IBinder, packageName: String, userId: Int, locales: LocaleList): Boolean {
         val service = localeManagerInterface(binder) ?: return false
         val method = service.javaClass.methods.firstOrNull {
             it.name == "setApplicationLocales" && it.parameterTypes.size in 3..4
@@ -141,26 +149,26 @@ object LocaleGateway {
             // API 34 appended `boolean fromDelegate`; false means "the user chose this", which is
             // what we want — a delegate-flagged change is attributed to another app.
             val args: Array<Any> = if (method.parameterTypes.size == 4) {
-                arrayOf(packageName, myUserId, locales, false)
+                arrayOf(packageName, userId, locales, false)
             } else {
-                arrayOf(packageName, myUserId, locales)
+                arrayOf(packageName, userId, locales)
             }
             method.invoke(service, *args)
             true
         } catch (t: Throwable) {
-            throw asGatewayException("change the locale of", packageName, t)
+            throw asGatewayException("change the locale of", packageName, userId, t)
         }
     }
 
     // ------------------------------------------------------------------ raw transaction path
 
-    private fun transactGet(binder: IBinder, packageName: String): LocaleList {
+    private fun transactGet(binder: IBinder, packageName: String, userId: Int): LocaleList {
         val data = Parcel.obtain()
         val reply = Parcel.obtain()
         try {
             data.writeInterfaceToken(DESCRIPTOR)
             data.writeString(packageName)
-            data.writeInt(myUserId)
+            data.writeInt(userId)
             binder.transact(TX_GET_APPLICATION_LOCALES, data, reply, 0)
             reply.readException()
             val result = if (reply.readInt() != 0) {
@@ -171,20 +179,20 @@ object LocaleGateway {
             lastPath = GatewayPath.RAW_TRANSACTION
             return result
         } catch (t: Throwable) {
-            throw asGatewayException("read the locale of", packageName, t)
+            throw asGatewayException("read the locale of", packageName, userId, t)
         } finally {
             reply.recycle()
             data.recycle()
         }
     }
 
-    private fun transactSet(binder: IBinder, packageName: String, locales: LocaleList) {
+    private fun transactSet(binder: IBinder, packageName: String, userId: Int, locales: LocaleList) {
         val data = Parcel.obtain()
         val reply = Parcel.obtain()
         try {
             data.writeInterfaceToken(DESCRIPTOR)
             data.writeString(packageName)
-            data.writeInt(myUserId)
+            data.writeInt(userId)
             data.writeInt(1)
             locales.writeToParcel(data, 0)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -194,7 +202,7 @@ object LocaleGateway {
             reply.readException()
             lastPath = GatewayPath.RAW_TRANSACTION
         } catch (t: Throwable) {
-            throw asGatewayException("change the locale of", packageName, t)
+            throw asGatewayException("change the locale of", packageName, userId, t)
         } finally {
             reply.recycle()
             data.recycle()
@@ -203,7 +211,7 @@ object LocaleGateway {
 
     // ------------------------------------------------------------------ errors
 
-    private fun asGatewayException(verb: String, packageName: String, t: Throwable): Throwable {
+    private fun asGatewayException(verb: String, packageName: String, userId: Int, t: Throwable): Throwable {
         if (t is LocaleGatewayException) return t
         val cause = (t as? java.lang.reflect.InvocationTargetException)?.targetException ?: t
         val hint = when {
@@ -211,11 +219,11 @@ object LocaleGateway {
                 "Shizuku is running but the shell uid was refused. Re-grant Shizuku permission " +
                     "and make sure the Shizuku service was started fresh after the last reboot."
             cause is IllegalArgumentException ->
-                "The system does not know package \"$packageName\" for this user. " +
+                "The system does not know package \"$packageName\" for user $userId. " +
                     "It may have been uninstalled, or it belongs to another profile."
             else -> cause.message ?: cause.javaClass.simpleName
         }
-        return LocaleGatewayException("Could not $verb $packageName. $hint", cause)
+        return LocaleGatewayException("Could not $verb $packageName for user $userId. $hint", cause)
     }
 }
 
