@@ -115,7 +115,7 @@ Android 的定向软件包查询无法生成这份列表，因此本应用声明
 ## 设置
 
 1. **安装 Shizuku** ——可从 [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api)、
-   F-Droid 或 [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases) 安装。
+   或 [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases) 安装。
 
 2. **启动 Shizuku 服务。**
 

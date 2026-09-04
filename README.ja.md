@@ -122,7 +122,7 @@ shell uid に呼び出しを代行してもらいます。root が不要なの�
 ## セットアップ
 
 1. **Shizuku をインストール** — [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api)、
-   F-Droid、または [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases)から
+   または [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases)から
    インストールします。
 
 2. **Shizuku サービスを起動します。**

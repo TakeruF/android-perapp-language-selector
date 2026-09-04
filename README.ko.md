@@ -88,7 +88,7 @@ Shizuku는 같은 shell uid로 작은 서비스를 실행하고 앱의 Binder �
 
 ## 설정
 
-1. **Shizuku 설치** — [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api), F-Droid 또는 [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases)에서 설치합니다.
+1. **Shizuku 설치** — [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api) 또는 [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases)에서 설치합니다.
 
 2. **Shizuku 서비스 시작**
 

@@ -127,7 +127,7 @@ share the inventory. See the [Privacy Policy](PRIVACY_POLICY.md).
 ## Setup
 
 1. **Install Shizuku** — [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api),
-   F-Droid, or [GitHub releases](https://github.com/RikkaApps/Shizuku/releases).
+   or [GitHub releases](https://github.com/RikkaApps/Shizuku/releases).
 
 2. **Start the Shizuku service.**
 

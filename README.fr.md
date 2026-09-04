@@ -89,7 +89,7 @@ La fonction principale permet de choisir **n’importe quelle application instal
 
 ## Configuration
 
-1. **Installez Shizuku** depuis [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api), F-Droid ou [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases).
+1. **Installez Shizuku** depuis [Google Play](https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api) ou [GitHub Releases](https://github.com/RikkaApps/Shizuku/releases).
 
 2. **Démarrez le service Shizuku.**
 
