@@ -27,17 +27,27 @@ class PerAppLocaleApp : Application() {
     /**
      * Lifts the non-SDK interface restrictions for this process.
      *
-     * We need two hidden entry points: `android.os.ServiceManager#getService` (Shizuku's
-     * `SystemServiceHelper` reflects on it to obtain a raw service binder) and
-     * `android.app.ILocaleManager$Stub#asInterface`. Without an exemption both would fail with
+     * We need a small set of hidden entry points: `ServiceManager` (Shizuku's
+     * `SystemServiceHelper`), the framework Binder interfaces used by the gateways, and
+     * `UserHandle.of`. Without an exemption these reflective calls fail with
      * `NoSuchMethodException` — every version we support enforces the restriction.
      *
      * This is best-effort on purpose: if a future release or an OEM build blocks the exemption,
      * [dev.takeru.perapplocale.core.LocaleGateway] still has its raw-transaction path.
      */
     private fun exemptHiddenApis() {
-        // "L" is the prefix of every JNI class signature, so this exempts everything.
-        runCatching { HiddenApiBypass.addHiddenApiExemptions("L") }
+        // Keep the exemption list scoped to the framework classes this app reflects on. The
+        // prefix intentionally omits the trailing semicolon so nested `$Stub` classes match too.
+        runCatching {
+            HiddenApiBypass.addHiddenApiExemptions(
+                "Landroid/os/ServiceManager",
+                "Landroid/app/ILocaleManager",
+                "Landroid/app/IActivityManager",
+                "Landroid/content/pm/IPackageManager",
+                "Landroid/os/IUserManager",
+                "Landroid/os/UserHandle",
+            )
+        }
             .onSuccess { if (!it) Log.w(TAG, "Hidden API exemption was refused by the runtime") }
             .onFailure { Log.w(TAG, "Could not lift hidden API restrictions", it) }
     }
