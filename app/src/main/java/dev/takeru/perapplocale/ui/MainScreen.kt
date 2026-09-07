@@ -262,6 +262,8 @@ fun MainScreen(
 
 @Composable
 private fun emptyMessage(state: MainUiState): String = when {
+    !state.packageVisibilityDisclosureAcknowledged ->
+        stringResource(R.string.package_visibility_disclosure_not_acknowledged)
     state.query.isNotBlank() -> stringResource(R.string.no_app_matches, state.query)
     state.filter == AppFilter.CONFIGURED && state.shizuku != ShizukuState.READY ->
         stringResource(R.string.nothing_recorded)

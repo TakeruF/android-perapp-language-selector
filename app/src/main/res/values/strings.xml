@@ -82,6 +82,12 @@
     <string name="limitation_reboot_body">Until it is, the list still shows what is configured but nothing can be changed.</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_body">Everything happens on the device. The app has no internet permission and sends nothing anywhere. Its core feature needs the complete installed-app list, including package names, labels, icons, current locale settings, and officially declared languages, so you can select any app. Your choices stay local, and the system remains the source of truth for locales.</string>
+    <string name="privacy_policy_link">Open privacy policy</string>
+    <string name="package_visibility_disclosure_title">About installed-app access</string>
+    <string name="package_visibility_disclosure_body">To let you choose any installed app, Per-App Language reads the installed-app list on this device. This includes package names, app names, icons, current locale settings, and officially declared languages. It is used only on this device and is never sent over the internet. Continue to open the app list, or choose Not now.</string>
+    <string name="package_visibility_disclosure_continue">Continue</string>
+    <string name="package_visibility_disclosure_not_now">Not now</string>
+    <string name="package_visibility_disclosure_not_acknowledged">The installed-app list was not read. Choose Continue in the access notice to use the app list.</string>
     <string name="about_title">About</string>
     <string name="about_version">Per-App Language %1$s · Apache License 2.0</string>
     <string name="about_without_version">Per-App Language · Apache License 2.0</string>

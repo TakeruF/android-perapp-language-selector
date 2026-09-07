@@ -9,7 +9,8 @@ English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국�
 **Google Play:** Closed testing is in progress. Coming soon.
 
 Every release is signed with the same key; the certificate fingerprint is published in the
-release notes. See the [Privacy Policy](PRIVACY_POLICY.md) for privacy details.
+release notes. Read the [Privacy Policy](https://takeruf.github.io/android-perapp-language-selector/privacy-policy.html)
+for privacy details; the editable source is [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
 
 ---
 

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy for Per-App Language</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, -apple-system, sans-serif; }
+    body { line-height: 1.6; margin: 0 auto; max-width: 760px; padding: 2rem 1.25rem 4rem; }
+    h1 { line-height: 1.2; }
+    h2 { margin-top: 2rem; }
+    a { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy for Per-App Language</h1>
+  <p><strong>Effective date:</strong> August 26, 2026</p>
+  <p>Per-App Language is developed by TakeruF. This policy explains how the app handles information.</p>
+
+  <h2>Information the app accesses</h2>
+  <p>Per-App Language reads the list of applications installed on your Android device, including package names, app names, icons, current per-app locale settings, and official language-support declarations. This access is necessary so you can select any installed app, understand its declared language support, and view or change its language setting.</p>
+  <p>Android classifies the complete installed-app inventory as sensitive information. The app therefore uses <code>QUERY_ALL_PACKAGES</code> only for this visible, user-initiated core feature. A narrower package query cannot provide a picker for arbitrary installed apps because their package names are not known in advance.</p>
+  <p>The app also stores the following information locally on your device:</p>
+  <ul>
+    <li>display preferences, such as whether system apps are shown;</li>
+    <li>package names and locale tags that you applied, so configured apps can be identified when the app starts.</li>
+  </ul>
+
+  <h2>How information is used</h2>
+  <p>The installed-app information and locally stored preferences are used only to display the app list, show declared language compatibility, and perform the language-setting actions you request. When you apply a language, the selected package name and locale tag are passed on the same device to the user-installed Shizuku service, which performs the requested Android system operation.</p>
+
+  <h2>Data collection and sharing</h2>
+  <p>Per-App Language has no Internet permission and does not transmit information off your device. The developer does not collect, sell, or share personal or device data. The app contains no advertising or analytics SDKs.</p>
+  <p>Shizuku is a separate application that you choose to install and authorize. Communication with Shizuku occurs locally on your device. You can review Shizuku's project and documentation at <a href="https://shizuku.rikka.app/">https://shizuku.rikka.app/</a>.</p>
+
+  <h2>Data retention and deletion</h2>
+  <p>The app does not retain data on developer-operated servers. Local preferences remain on your device until you clear the app's storage or uninstall the app. Removing a per-app language assignment in Per-App Language removes that assignment from the app's local record and requests Android to reset the corresponding system locale override.</p>
+
+  <h2>Security</h2>
+  <p>All processing performed by Per-App Language stays on the device. Access to Shizuku requires an explicit permission grant from you, which you can revoke in Shizuku at any time.</p>
+
+  <h2>Children</h2>
+  <p>Per-App Language is intended for users aged 18 and over and is not directed to children.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>Material changes to this policy will be published in this repository with an updated effective date.</p>
+
+  <h2>Contact</h2>
+  <p>For privacy questions or requests, contact the developer through the project's public issue tracker:</p>
+  <p><a href="https://github.com/TakeruF/android-perapp-language-selector/issues">https://github.com/TakeruF/android-perapp-language-selector/issues</a></p>
+</body>
+</html>

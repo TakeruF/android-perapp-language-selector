@@ -79,6 +79,12 @@
     <string name="limitation_reboot_body">在此之前，列表仍会显示配置，但无法进行更改。</string>
     <string name="privacy_title">隐私</string>
     <string name="privacy_body">所有操作都在设备上完成。本应用没有互联网权限，也不会向任何地方发送数据。为了让你选择任意应用，核心功能需要读取完整的已安装应用列表，包括软件包名称、显示名称、图标、当前语言区域和官方声明的支持语言。你的选择仅保存在本机，语言区域的最终真实来源始终是系统。</string>
+    <string name="privacy_policy_link">打开隐私政策</string>
+    <string name="package_visibility_disclosure_title">关于访问已安装应用</string>
+    <string name="package_visibility_disclosure_body">为了让你选择任意已安装的应用，Per-App Language 会读取本设备上的已安装应用列表，包括软件包名称、应用名称、图标、当前语言区域和官方声明的支持语言。这些信息只在本设备上使用，不会通过互联网发送。继续即可打开应用列表，也可以选择“暂不”。</string>
+    <string name="package_visibility_disclosure_continue">继续</string>
+    <string name="package_visibility_disclosure_not_now">暂不</string>
+    <string name="package_visibility_disclosure_not_acknowledged">尚未读取已安装应用列表。要使用应用列表，请在访问提示中选择“继续”。</string>
     <string name="about_title">关于</string>
     <string name="about_version">Per-App Language %1$s · Apache License 2.0</string>
     <string name="about_without_version">Per-App Language · Apache License 2.0</string>

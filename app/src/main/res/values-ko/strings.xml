@@ -79,6 +79,12 @@
     <string name="limitation_reboot_body">다시 시작하기 전에도 설정된 항목은 표시되지만 변경할 수는 없습니다.</string>
     <string name="privacy_title">개인정보 보호</string>
     <string name="privacy_body">모든 작업은 기기에서 이루어집니다. 이 앱에는 인터넷 권한이 없으며 어디에도 데이터를 전송하지 않습니다. 모든 앱을 선택할 수 있도록 핵심 기능에서 패키지 이름, 표시 이름, 아이콘, 현재 로캘, 공식 지원 언어가 포함된 전체 설치 앱 목록을 읽습니다. 선택 사항은 기기에만 저장되며 로캘의 최종 기준은 항상 시스템입니다.</string>
+    <string name="privacy_policy_link">개인정보 처리방침 열기</string>
+    <string name="package_visibility_disclosure_title">설치된 앱 접근 안내</string>
+    <string name="package_visibility_disclosure_body">설치된 모든 앱을 선택할 수 있도록 Per-App Language는 이 기기의 설치된 앱 목록을 읽습니다. 패키지 이름, 앱 이름, 아이콘, 현재 로캘 및 공식적으로 선언된 언어가 포함됩니다. 이 정보는 이 기기에서만 사용되며 인터넷으로 전송되지 않습니다. 계속하면 앱 목록이 열리고, “나중에”를 선택할 수도 있습니다.</string>
+    <string name="package_visibility_disclosure_continue">계속</string>
+    <string name="package_visibility_disclosure_not_now">나중에</string>
+    <string name="package_visibility_disclosure_not_acknowledged">설치된 앱 목록을 읽지 않았습니다. 앱 목록을 사용하려면 접근 안내에서 “계속”을 선택하세요.</string>
     <string name="about_title">정보</string>
     <string name="about_version">Per-App Language %1$s · Apache License 2.0</string>
     <string name="about_without_version">Per-App Language · Apache License 2.0</string>

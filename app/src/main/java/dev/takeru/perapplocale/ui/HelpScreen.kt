@@ -21,6 +21,8 @@ import dev.takeru.perapplocale.shizuku.ShizukuState
 import java.util.Locale
 
 private const val PROJECT_URL = "https://github.com/TakeruF/android-perapp-language-selector"
+private const val PRIVACY_POLICY_URL =
+    "https://takeruf.github.io/android-perapp-language-selector/privacy-policy.html"
 
 /**
  * What the app is, what it cannot be, and how to read a result that looks like nothing happened.
@@ -121,6 +123,9 @@ fun HelpScreen(
 
         DocSection(stringResource(R.string.privacy_title)) {
             DocBody(stringResource(R.string.privacy_body))
+            OutlinedButton(onClick = { onOpenUrl(PRIVACY_POLICY_URL) }) {
+                Text(stringResource(R.string.privacy_policy_link))
+            }
         }
 
         DocSection(stringResource(R.string.about_title)) {

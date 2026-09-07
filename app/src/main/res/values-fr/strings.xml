@@ -79,6 +79,12 @@
     <string name="limitation_reboot_body">En attendant, la liste affiche toujours les réglages, mais ils ne peuvent pas être modifiés.</string>
     <string name="privacy_title">Confidentialité</string>
     <string name="privacy_body">Tout se passe sur l’appareil. L’appli n’a pas d’autorisation Internet et n’envoie aucune donnée. Pour vous laisser choisir n’importe quelle appli, sa fonction principale lit la liste complète des applis installées, notamment les packages, noms, icônes, paramètres régionaux actuels et langues officiellement déclarées. Vos choix restent sur l’appareil et le système demeure la source de vérité.</string>
+    <string name="privacy_policy_link">Ouvrir la politique de confidentialité</string>
+    <string name="package_visibility_disclosure_title">Accès aux applications installées</string>
+    <string name="package_visibility_disclosure_body">Pour vous permettre de choisir n’importe quelle application installée, Per-App Language lit la liste des applications installées sur cet appareil. Elle comprend les noms de packages, les noms et icônes des applications, les paramètres régionaux actuels et les langues officiellement déclarées. Ces informations restent sur l’appareil et ne sont jamais envoyées sur Internet. Appuyez sur Continuer pour ouvrir la liste, ou choisissez Plus tard.</string>
+    <string name="package_visibility_disclosure_continue">Continuer</string>
+    <string name="package_visibility_disclosure_not_now">Plus tard</string>
+    <string name="package_visibility_disclosure_not_acknowledged">La liste des applications installées n’a pas été lue. Choisissez Continuer dans l’avis d’accès pour l’utiliser.</string>
     <string name="about_title">À propos</string>
     <string name="about_version">Per-App Language %1$s · Apache License 2.0</string>
     <string name="about_without_version">Per-App Language · Apache License 2.0</string>

@@ -30,9 +30,11 @@ user-authorized Shizuku service for the requested Android operation.
 ## Reviewer evidence
 
 - Video: `store-assets/query-all-packages-demo.mp4`
-- The video should show the complete app list, selection of a third-party app, its declared
-  languages, and the locale picker.
-- Reviewer instructions must explain how to install/start Shizuku and grant this app permission.
+- The video should show the app opening, the installed-app access notice, the complete app list,
+  selection of a third-party app, its declared languages, the locale picker, and the user-selected
+  locale operation. It should also show the no-consent path if the declaration flow requests it.
+- Reviewer instructions are maintained in `docs/PLAY_REVIEW.md` and explain how to install/start
+  Shizuku and grant this app permission.
 
 ## Data safety consistency
 
@@ -40,7 +42,8 @@ user-authorized Shizuku service for the requested Android operation.
 - Installed-app inventory is accessed and processed ephemerally on-device.
 - Display preferences and the local mirror of package-to-locale assignments remain on-device and
   are deleted by clearing app storage or uninstalling the app.
-- Privacy Policy: `PRIVACY_POLICY.md`
+- Privacy Policy source: `PRIVACY_POLICY.md`
+- Privacy Policy URL: `https://takeruf.github.io/android-perapp-language-selector/privacy-policy.html`
 
 ## Before each submission
 
@@ -48,5 +51,5 @@ user-authorized Shizuku service for the requested Android operation.
   equivalent functionality.
 - Update the Permissions Declaration if the use of installed-app information changes.
 - Confirm the store description prominently describes browsing and changing any installed app.
-- Confirm the Privacy Policy URL serves the current repository text publicly.
+- Confirm the GitHub Pages URL serves the current repository text publicly.
 - Re-record reviewer evidence if the relevant UI or workflow changes materially.

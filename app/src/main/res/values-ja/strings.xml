@@ -79,6 +79,12 @@
     <string name="limitation_reboot_body">再起動するまでは設定済みの内容を確認できますが、変更はできません。</string>
     <string name="privacy_title">プライバシー</string>
     <string name="privacy_body">すべて端末内で処理されます。このアプリにはインターネット権限がなく、外部へ何も送信しません。任意のアプリを選べるよう、コア機能としてパッケージ名、表示名、アイコン、現在のロケール、公式の対応言語を含む完全なインストール済みアプリ一覧を読み取ります。選択内容は端末内だけに保存され、ロケールの正しい状態は常にシステムを基準にします。</string>
+    <string name="privacy_policy_link">プライバシーポリシーを開く</string>
+    <string name="package_visibility_disclosure_title">インストール済みアプリへのアクセスについて</string>
+    <string name="package_visibility_disclosure_body">任意のインストール済みアプリを選べるよう、このアプリは端末上のインストール済みアプリ一覧を読み取ります。パッケージ名、アプリ名、アイコン、現在のロケール、公式の対応言語が含まれます。情報はこの端末内でのみ使われ、インターネット経由では送信されません。続けてアプリ一覧を開くか、「今はしない」を選んでください。</string>
+    <string name="package_visibility_disclosure_continue">続ける</string>
+    <string name="package_visibility_disclosure_not_now">今はしない</string>
+    <string name="package_visibility_disclosure_not_acknowledged">インストール済みアプリ一覧は読み取っていません。アプリ一覧を使うには、アクセスについての案内で「続ける」を選んでください。</string>
     <string name="about_title">このアプリについて</string>
     <string name="about_version">Per-App Language %1$s · Apache License 2.0</string>
     <string name="about_without_version">Per-App Language · Apache License 2.0</string>

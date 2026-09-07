@@ -79,6 +79,12 @@
     <string name="limitation_reboot_body">Hasta entonces, la lista sigue mostrando lo configurado, pero no se puede cambiar.</string>
     <string name="privacy_title">Privacidad</string>
     <string name="privacy_body">Todo ocurre en el dispositivo. La app no tiene permiso de Internet ni envía datos. Para que puedas elegir cualquier app, su función principal lee la lista completa de apps instaladas, incluidos paquetes, nombres, iconos, configuraciones regionales actuales e idiomas declarados oficialmente. Tus elecciones permanecen en el dispositivo y el sistema sigue siendo la fuente de verdad.</string>
+    <string name="privacy_policy_link">Abrir la política de privacidad</string>
+    <string name="package_visibility_disclosure_title">Acceso a las apps instaladas</string>
+    <string name="package_visibility_disclosure_body">Para que puedas elegir cualquier app instalada, Per-App Language lee la lista de apps instaladas en este dispositivo. Incluye nombres de paquetes, nombres de apps, iconos, configuraciones regionales actuales e idiomas declarados oficialmente. Solo se usa en este dispositivo y nunca se envía por Internet. Pulsa Continuar para abrir la lista o elige Ahora no.</string>
+    <string name="package_visibility_disclosure_continue">Continuar</string>
+    <string name="package_visibility_disclosure_not_now">Ahora no</string>
+    <string name="package_visibility_disclosure_not_acknowledged">No se ha leído la lista de apps instaladas. Elige Continuar en el aviso de acceso para usarla.</string>
     <string name="about_title">Acerca de</string>
     <string name="about_version">Per-App Language %1$s · Apache License 2.0</string>
     <string name="about_without_version">Per-App Language · Apache License 2.0</string>

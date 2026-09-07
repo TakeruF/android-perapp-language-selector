@@ -22,6 +22,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 data class Settings(
     val showSystemApps: Boolean = false,
     val configuredFirst: Boolean = true,
+    val packageVisibilityDisclosureAcknowledged: Boolean = false,
     /** Stable user-serial + package key -> BCP 47 tag. A cache of system state, not source of truth. */
     val assignments: Map<String, String> = emptyMap(),
 )
@@ -31,6 +32,8 @@ class SettingsStore(private val context: Context) {
     private object Keys {
         val SHOW_SYSTEM_APPS = booleanPreferencesKey("show_system_apps")
         val CONFIGURED_FIRST = booleanPreferencesKey("configured_first")
+        val PACKAGE_VISIBILITY_DISCLOSURE_ACKNOWLEDGED =
+            booleanPreferencesKey("package_visibility_disclosure_acknowledged")
         val ASSIGNMENTS = stringPreferencesKey("assignments")
     }
 
@@ -43,9 +46,17 @@ class SettingsStore(private val context: Context) {
             Settings(
                 showSystemApps = prefs[Keys.SHOW_SYSTEM_APPS] ?: false,
                 configuredFirst = prefs[Keys.CONFIGURED_FIRST] ?: true,
+                packageVisibilityDisclosureAcknowledged =
+                    prefs[Keys.PACKAGE_VISIBILITY_DISCLOSURE_ACKNOWLEDGED] ?: false,
                 assignments = migrateLegacyAssignmentKeys(decodeAssignments(prefs[Keys.ASSIGNMENTS]), currentUserSerialNumber()),
             )
         }
+
+    suspend fun acknowledgePackageVisibilityDisclosure() {
+        context.dataStore.edit {
+            it[Keys.PACKAGE_VISIBILITY_DISCLOSURE_ACKNOWLEDGED] = true
+        }
+    }
 
     suspend fun setShowSystemApps(value: Boolean) {
         context.dataStore.edit { it[Keys.SHOW_SYSTEM_APPS] = value }

@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
                 var selectedTargets by remember { mutableStateOf<Set<AppTarget>>(emptySet()) }
                 var bulkSheetOpen by remember { mutableStateOf(false) }
                 var pendingBulkOption by remember { mutableStateOf<LocaleOption?>(null) }
+                var showPackageVisibilityDisclosure by rememberSaveable { mutableStateOf(true) }
                 var screen by rememberSaveable { mutableStateOf(Screen.LIST) }
                 // The setup guide is reachable from the list and from Help, and back has to undo
                 // whichever step was actually taken. One level deep is the whole hierarchy.
@@ -168,6 +169,33 @@ class MainActivity : ComponentActivity() {
                                 enabled = !state.resettingAll,
                             ) {
                                 Text(context.getString(R.string.reset_all_confirm))
+                            }
+                        },
+                    )
+                }
+
+                if (
+                    state.settingsLoaded &&
+                    !state.packageVisibilityDisclosureAcknowledged &&
+                    showPackageVisibilityDisclosure
+                ) {
+                    AlertDialog(
+                        onDismissRequest = { showPackageVisibilityDisclosure = false },
+                        title = { Text(context.getString(R.string.package_visibility_disclosure_title)) },
+                        text = { Text(context.getString(R.string.package_visibility_disclosure_body)) },
+                        dismissButton = {
+                            TextButton(onClick = { showPackageVisibilityDisclosure = false }) {
+                                Text(context.getString(R.string.package_visibility_disclosure_not_now))
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    showPackageVisibilityDisclosure = false
+                                    viewModel.acknowledgePackageVisibilityDisclosure()
+                                },
+                            ) {
+                                Text(context.getString(R.string.package_visibility_disclosure_continue))
                             }
                         },
                     )

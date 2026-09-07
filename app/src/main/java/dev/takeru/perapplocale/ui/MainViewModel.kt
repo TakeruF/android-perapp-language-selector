@@ -42,6 +42,8 @@ enum class AppFilter { ALL, CONFIGURED }
 
 data class MainUiState(
     val shizuku: ShizukuState = ShizukuState.NOT_INSTALLED,
+    val settingsLoaded: Boolean = false,
+    val packageVisibilityDisclosureAcknowledged: Boolean = false,
     val loadingApps: Boolean = true,
     val readingLocales: Boolean = false,
     val apps: List<AppInfo> = emptyList(),
@@ -86,6 +88,7 @@ class MainViewModel(
 
     private var localeScanJob: Job? = null
     private var lastScannedForReady = false
+    private var dataLoadingStarted = false
 
     val uiState: StateFlow<MainUiState> =
         combine(
@@ -102,16 +105,15 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            refreshApps()
-            // Shizuku may already have been ready before the package list existed, in which case
-            // the collector below saw nothing to scan. Cover that ordering here.
-            if (shizukuRepository.state.value == ShizukuState.READY) scanLocales()
+            if (settingsStore.settings.first().packageVisibilityDisclosureAcknowledged) {
+                startDataLoading()
+            }
         }
         viewModelScope.launch {
             // Re-read locales when Shizuku becomes usable, and only then.
             shizukuRepository.state.collect { state ->
                 val ready = state == ShizukuState.READY
-                if (ready && !lastScannedForReady) {
+                if (ready && !lastScannedForReady && dataLoadingStarted) {
                     refreshApps()
                     if (rawApps.value.isNotEmpty()) scanLocales()
                 }
@@ -162,7 +164,9 @@ class MainViewModel(
 
         return MainUiState(
             shizuku = shizuku,
-            loadingApps = loading,
+            settingsLoaded = true,
+            packageVisibilityDisclosureAcknowledged = settings.packageVisibilityDisclosureAcknowledged,
+            loadingApps = loading && settings.packageVisibilityDisclosureAcknowledged,
             readingLocales = reading,
             apps = ordered,
             configuredCount = merged.count { it.isConfigured },
@@ -199,11 +203,20 @@ class MainViewModel(
         viewModelScope.launch { settingsStore.setConfiguredFirst(value) }
     }
 
+    fun acknowledgePackageVisibilityDisclosure() {
+        if (dataLoadingStarted) return
+        viewModelScope.launch {
+            settingsStore.acknowledgePackageVisibilityDisclosure()
+            startDataLoading()
+        }
+    }
+
     fun requestShizukuPermission() = shizukuRepository.requestPermission()
 
     fun refreshShizuku() = shizukuRepository.refresh()
 
     fun refresh() {
+        if (!dataLoadingStarted) return
         viewModelScope.launch {
             refreshApps()
             if (shizukuRepository.state.value == ShizukuState.READY) scanLocales()
@@ -305,11 +318,21 @@ class MainViewModel(
     }
 
     private suspend fun refreshApps() {
+        if (!dataLoadingStarted) return
         loadingApps.value = true
         rawApps.value = runCatching { appRepository.loadInstalledApps() }
             .onFailure { events.send(UiEvent.Error(text(R.string.error_read_apps, it.message))) }
             .getOrDefault(emptyList())
         loadingApps.value = false
+    }
+
+    private suspend fun startDataLoading() {
+        if (dataLoadingStarted) return
+        dataLoadingStarted = true
+        refreshApps()
+        // Shizuku may already have been ready before the package list existed, in which case
+        // the collector below saw nothing to scan. Cover that ordering here.
+        if (shizukuRepository.state.value == ShizukuState.READY) scanLocales()
     }
 
     /**
