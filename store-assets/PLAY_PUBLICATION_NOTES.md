@@ -5,9 +5,13 @@ Console declaration, store listing, in-app Help, README, and Privacy Policy alig
 
 ## Core-purpose statement for the store listing
 
-Per-App Language lets users browse any application installed on their device, inspect the
-languages that application officially declares, and view or change its Android per-app locale.
-The user selects the target application and language for every operation.
+Per-App Language lets users browse any app installed on their device, inspect its officially
+declared languages and current Android per-app locale, and change that locale. The user selects
+the target app and language for every operation.
+
+The short description should make the same core purpose immediately clear:
+
+> Browse any installed app and set its language with Shizuku.
 
 ## `QUERY_ALL_PACKAGES` Permissions Declaration
 

@@ -53,7 +53,7 @@ The same URL is linked from the in-app Help screen.
 - Package: `dev.takeru.perapplocale`
 - Minimum Android version: Android 13 / API 33
 - Target API: 36
-- Release version in this checkout: `1.0.3` / version code `6`
+- Release version in this checkout: `1.0.4` / version code `7`
 - The release artifact uses Shizuku for the user-authorized system-service call; it does not install, update, or modify other APKs.
 - Locale writes are user-triggered for the selected package and user profile. There is no background locale scanning or remote command path.
 - Hidden API exemptions are limited to the specific framework classes required for Shizuku's service lookup and the locale, activity, package, user, and profile calls; the app does not exempt all hidden APIs.

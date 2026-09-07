@@ -23,8 +23,8 @@ android {
         // Per-app locales (LocaleManager / ILocaleManager) only exist from Android 13.
         minSdk = 33
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.0.3"
+        versionCode = 7
+        versionName = "1.0.4"
     }
 
     signingConfigs {

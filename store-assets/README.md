@@ -11,4 +11,6 @@ This directory contains the source and exported assets used for the Google Play 
 - `review-video/*.svg`: editable caption panels used to build the reviewer video
 - `../docs/privacy-policy.html`: static GitHub Pages copy of the privacy policy
 
-The screenshots are derived from the real app. The current app icon uses the supplied generated artwork in `app-icon-source.png`.
+The phone screenshots are captures of the real app UI and were not generated with AI. The current
+app icon and feature graphic were created or edited with AI assistance and are labeled accordingly
+in Google Play Console. The app icon uses the supplied generated artwork in `app-icon-source.png`.
