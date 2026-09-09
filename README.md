@@ -6,7 +6,15 @@ English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국�
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** Closed testing is in progress. Coming soon.
+**Google Play:** Under review. Coming soon.
+
+### Moving to Google Play
+
+1. Uninstall the directly distributed version.
+2. Install Per-App Language from Google Play.
+3. If prompted, grant Shizuku permission to the Google Play version.
+
+Your existing per-app language selections remain on Android after uninstalling the directly distributed version.
 
 Every release is signed with the same key; the certificate fingerprint is published in the
 release notes. Read the [Privacy Policy](https://takeruf.github.io/android-perapp-language-selector/privacy-policy.html)

@@ -6,7 +6,15 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** 현재 비공개 테스트 중이며 곧 출시될 예정입니다.
+**Google Play:** 현재 심사 중이며 곧 출시될 예정입니다.
+
+### Google Play 버전으로 이전
+
+1. 직접 배포 버전을 제거합니다.
+2. Google Play에서 Per-App Language를 설치합니다.
+3. 요청되면 Google Play 버전에도 Shizuku 권한을 허용합니다.
+
+직접 배포 버전을 제거해도 이미 설정한 앱별 언어는 Android에 유지됩니다.
 
 모든 릴리스는 같은 키로 서명되며 인증서 지문은 릴리스 노트에 공개됩니다. 개인정보 처리 내용은 [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
 

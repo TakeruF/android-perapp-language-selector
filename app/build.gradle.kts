@@ -97,3 +97,18 @@ dependencies {
     implementation(libs.hiddenapibypass)
     testImplementation("junit:junit:4.13.2")
 }
+
+// This is the only APK intended for a GitHub Release. Keep the generic Gradle output private and
+// attach this versioned file instead. Play Console receives its AAB separately.
+val directReleaseApkName = "per-app-language-v${android.defaultConfig.versionName ?: "unknown"}.apk"
+
+tasks.register<Copy>("packageDirectReleaseApk") {
+    group = "distribution"
+    description = "Creates the versioned APK intended for direct distribution."
+    dependsOn("assembleRelease")
+    from(layout.buildDirectory.dir("outputs/apk/release")) {
+        include("app-release.apk")
+        rename("app-release.apk", directReleaseApkName)
+    }
+    into(layout.buildDirectory.dir("outputs/direct-release"))
+}

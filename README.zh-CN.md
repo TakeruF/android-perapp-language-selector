@@ -6,7 +6,15 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play：** 正在进行封闭测试，即将上线。
+**Google Play：** 正在审核中，即将上线。
+
+### 迁移到 Google Play 版
+
+1. 卸载直接分发版。
+2. 从 Google Play 安装 Per-App Language。
+3. 如有提示，请向 Google Play 版授予 Shizuku 权限。
+
+卸载直接分发版后，已设置的各应用语言仍会保留在 Android 中。
 
 每个版本都使用同一密钥签名，证书指纹会发布在发行说明中。隐私详情请参阅[隐私政策](PRIVACY_POLICY.md)。
 

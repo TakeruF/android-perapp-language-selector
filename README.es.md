@@ -6,7 +6,15 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** La prueba cerrada está en curso. Próximamente.
+**Google Play:** En revisión. Próximamente disponible.
+
+### Migrar a la versión de Google Play
+
+1. Desinstala la versión distribuida directamente.
+2. Instala Per-App Language desde Google Play.
+3. Si se te solicita, concede el permiso de Shizuku a la versión de Google Play.
+
+Las selecciones de idioma por aplicación que ya hayas establecido permanecen en Android después de desinstalar la versión distribuida directamente.
 
 Todas las versiones se firman con la misma clave y la huella del certificado se publica en las notas de la versión. Consulta la [Política de privacidad](PRIVACY_POLICY.md) para obtener más información.
 
