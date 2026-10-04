@@ -22,6 +22,8 @@ Les langues déjà définies pour chaque application sont enregistrées dans And
 
 **Vous n’avez pas besoin de désinstaller l’ancienne version au préalable.** Vous **n’avez pas non plus besoin d’utiliser « Réinitialiser toutes les langues des applis » avant de la désinstaller**. Cette fonction supprime les choix de langue par application et rétablit la langue par défaut du système.
 
+**Attention : l’ancienne et la nouvelle application ont exactement la même icône et le même nom.** Vérifiez soigneusement quelle application vous utilisez ou désinstallez pour éviter toute erreur. Nous vous prions de nous excuser pour ce désagrément et vous remercions de votre compréhension.
+
 Toutes les versions sont signées avec la même clé ; l’empreinte du certificat figure dans les notes de version. Consultez la [Politique de confidentialité](PRIVACY_POLICY.md) pour plus de détails.
 
 ---

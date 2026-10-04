@@ -22,6 +22,8 @@ Los idiomas que ya hayas configurado para cada aplicación se guardan en Android
 
 **No necesitas desinstalar primero la versión anterior.** Tampoco **necesitas usar «Restablecer todos los idiomas de las apps» antes de desinstalarla**. Esta función elimina los idiomas configurados por aplicación y los devuelve al idioma predeterminado del sistema.
 
+**Ten en cuenta que la app anterior y la nueva tienen exactamente el mismo icono y nombre.** Comprueba cuidadosamente qué app estás usando o desinstalando para evitar errores. Lamentamos las molestias y agradecemos tu comprensión.
+
 Todas las versiones se firman con la misma clave y la huella del certificado se publica en las notas de la versión. Consulta la [Política de privacidad](PRIVACY_POLICY.md) para obtener más información.
 
 ---

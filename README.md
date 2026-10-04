@@ -22,6 +22,8 @@ Your existing per-app language selections remain stored in Android and are prese
 
 **You do not need to uninstall the old version first.** You also **do not need to use “Reset all app languages” before uninstalling it**. Using that action clears your existing per-app language selections and returns those apps to the system default language.
 
+**Please note: the old and new apps have exactly the same icon and app name.** Carefully check which app you are using or uninstalling to avoid mistakes. We apologize for the inconvenience and appreciate your understanding.
+
 Every release is signed with the same key; the certificate fingerprint is published in the
 release notes. Read the [Privacy Policy](https://takeruf.com/en/projects/per-app-language/privacy)
 for privacy details; the editable source is [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
