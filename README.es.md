@@ -12,11 +12,15 @@ Desde la versión 1.0.5, el paquete es `com.takeruf.perapplocale`. Se instala co
 
 ### Migrar a la versión de Google Play
 
-1. Desinstala la versión distribuida directamente.
-2. Instala Per-App Language desde Google Play.
-3. Si se te solicita, concede el permiso de Shizuku a la versión de Google Play.
+Si descargaste y usaste una versión anterior desde GitHub, puedes migrar a la nueva versión siguiendo estos pasos:
 
-Las selecciones de idioma por aplicación que ya hayas establecido permanecen en Android después de desinstalar la versión distribuida directamente.
+1. Instala la nueva versión de Per-App Language.
+2. Concede el permiso de Shizuku a la nueva versión.
+3. Comprueba que la nueva versión funciona correctamente. Si ya no necesitas la versión anterior, puedes desinstalarla.
+
+Los idiomas que ya hayas configurado para cada aplicación se guardan en Android y se mantienen durante la migración.
+
+**No necesitas desinstalar primero la versión anterior.** Tampoco **necesitas usar «Restablecer todos los idiomas de las apps» antes de desinstalarla**. Esta función elimina los idiomas configurados por aplicación y los devuelve al idioma predeterminado del sistema.
 
 Todas las versiones se firman con la misma clave y la huella del certificado se publica en las notas de la versión. Consulta la [Política de privacidad](PRIVACY_POLICY.md) para obtener más información.
 

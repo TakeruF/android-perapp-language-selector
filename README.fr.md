@@ -12,11 +12,15 @@
 
 ### Passer à la version Google Play
 
-1. Désinstallez la version distribuée directement.
-2. Installez Per-App Language depuis Google Play.
-3. Si cela vous est demandé, accordez l’autorisation Shizuku à la version Google Play.
+Si vous avez téléchargé et utilisé une ancienne version depuis GitHub, vous pouvez passer à la nouvelle version en suivant ces étapes :
 
-Les choix de langue par application déjà appliqués restent enregistrés dans Android après la désinstallation de la version distribuée directement.
+1. Installez la nouvelle version de Per-App Language.
+2. Accordez l’autorisation Shizuku à la nouvelle version.
+3. Vérifiez que la nouvelle version fonctionne correctement. Si vous n’avez plus besoin de l’ancienne version, vous pouvez alors la désinstaller.
+
+Les langues déjà définies pour chaque application sont enregistrées dans Android et sont conservées lors de la migration.
+
+**Vous n’avez pas besoin de désinstaller l’ancienne version au préalable.** Vous **n’avez pas non plus besoin d’utiliser « Réinitialiser toutes les langues des applis » avant de la désinstaller**. Cette fonction supprime les choix de langue par application et rétablit la langue par défaut du système.
 
 Toutes les versions sont signées avec la même clé ; l’empreinte du certificat figure dans les notes de version. Consultez la [Politique de confidentialité](PRIVACY_POLICY.md) pour plus de détails.
 
