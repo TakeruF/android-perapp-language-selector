@@ -6,7 +6,9 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play：** 正在审核中，即将上线。
+**Google Play：** 正在准备新应用的上架信息，尚未公开发布。
+
+从 1.0.5 起，包名为 `com.takeruf.perapplocale`。它与旧版作为两个独立应用安装，不会迁移本地偏好设置，需要重新授予 Shizuku 权限。
 
 ### 迁移到 Google Play 版
 
@@ -217,7 +219,7 @@ LocaleManagerService  →  按软件包保存的 LocaleList 覆盖  →  下次�
 ./gradlew assembleDebug
 adb push app/build/outputs/apk/debug/app-debug.apk /data/local/tmp/probe.apk
 adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
-    --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe com.android.settings
+    --nice-name=locale-probe com.takeruf.perapplocale.probe.LocaleGatewayProbe com.android.settings
 ```
 
 它会同时测试反射路径和原始事务路径，并将每一项结果与
@@ -240,7 +242,7 @@ adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
 ## 架构
 
 ```
-app/src/main/java/dev/takeru/perapplocale/
+app/src/main/java/com/takeruf/perapplocale/
 ├── PerAppLocaleApp.kt          Application；解除隐藏 API 限制，持有 ShizukuRepository
 ├── MainActivity.kt             单 Activity、Compose 宿主与事件衔接
 ├── core/

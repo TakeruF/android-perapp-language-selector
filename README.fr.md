@@ -6,7 +6,9 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play :** En cours d’examen. Bientôt disponible.
+**Google Play :** Préparation de la fiche d’une nouvelle application. Pas encore disponible au public.
+
+À partir de la version 1.0.5, le nom du paquet est `com.takeruf.perapplocale`. Cette version s’installe comme une application distincte des anciennes versions ; les préférences locales ne sont pas transférées et l’autorisation Shizuku doit être accordée à nouveau.
 
 ### Passer à la version Google Play
 
@@ -175,7 +177,7 @@ classes `LocaleGateway` et `ProcessGateway` avec l’uid 2000 via `app_process`,
 ./gradlew assembleDebug
 adb push app/build/outputs/apk/debug/app-debug.apk /data/local/tmp/probe.apk
 adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
-    --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe com.android.settings
+    --nice-name=locale-probe com.takeruf.perapplocale.probe.LocaleGatewayProbe com.android.settings
 ```
 
 La sonde exécute la voie par réflexion et celle par transaction brute, puis compare chaque résultat avec `cmd locale get-app-locales`. Les neuf vérifications réussissent sur un émulateur API 37, confirmant les identifiants de transaction, la disposition du Parcel et l’argument `fromDelegate`.
@@ -192,7 +194,7 @@ sont suivis dans [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
 ## Architecture
 
 ```
-app/src/main/java/dev/takeru/perapplocale/
+app/src/main/java/com/takeruf/perapplocale/
 ├── PerAppLocaleApp.kt          Application ; lève les limites d’API cachées, possède ShizukuRepository
 ├── MainActivity.kt             Activité unique, hôte Compose et gestion des événements
 ├── core/

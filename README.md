@@ -6,7 +6,9 @@ English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국�
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** Under review. Coming soon.
+**Google Play:** New app listing in preparation. Not publicly available yet.
+
+Version 1.0.5 uses `com.takeruf.perapplocale`. It installs as a separate app from older releases; local preferences are not transferred, and Shizuku permission must be granted again.
 
 ### Moving to Google Play
 
@@ -17,7 +19,7 @@ English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국�
 Your existing per-app language selections remain on Android after uninstalling the directly distributed version.
 
 Every release is signed with the same key; the certificate fingerprint is published in the
-release notes. Read the [Privacy Policy](https://takeruf.github.io/android-perapp-language-selector/privacy-policy.html)
+release notes. Read the [Privacy Policy](https://takeruf.com/en/projects/per-app-language/privacy)
 for privacy details; the editable source is [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
 
 ---
@@ -252,7 +254,7 @@ Shizuku, no mocks:
 ./gradlew assembleDebug
 adb push app/build/outputs/apk/debug/app-debug.apk /data/local/tmp/probe.apk
 adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
-    --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe com.android.settings
+    --nice-name=locale-probe com.takeruf.perapplocale.probe.LocaleGatewayProbe com.android.settings
 ```
 
 It exercises the reflection path *and* the raw-transaction path, and cross-checks every result
@@ -276,7 +278,7 @@ status are tracked in [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
 ## Architecture
 
 ```
-app/src/main/java/dev/takeru/perapplocale/
+app/src/main/java/com/takeruf/perapplocale/
 ├── PerAppLocaleApp.kt          Application; lifts hidden-API restrictions, owns ShizukuRepository
 ├── MainActivity.kt             Single activity, Compose host, event plumbing
 ├── core/

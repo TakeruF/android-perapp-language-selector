@@ -6,7 +6,9 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play：** 現在審査中です。近日中に公開予定です。
+**Google Play：** 新しいアプリとして登録準備中です。一般公開はまだ行っていません。
+
+バージョン 1.0.5 からパッケージ名は `com.takeruf.perapplocale` です。旧版とは別アプリとしてインストールされ、アプリ内の設定は引き継がれません。Shizuku の権限を改めて許可してください。
 
 ### Google Play 版への移行
 
@@ -235,7 +237,7 @@ HyperOS などで動作することが期待できます。ベンダーが何ら
 ./gradlew assembleDebug
 adb push app/build/outputs/apk/debug/app-debug.apk /data/local/tmp/probe.apk
 adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
-    --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe com.android.settings
+    --nice-name=locale-probe com.takeruf.perapplocale.probe.LocaleGatewayProbe com.android.settings
 ```
 
 リフレクション経路と raw トランザクション経路の両方を実行し、すべての結果を
@@ -260,7 +262,7 @@ adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
 ## アーキテクチャ
 
 ```
-app/src/main/java/dev/takeru/perapplocale/
+app/src/main/java/com/takeruf/perapplocale/
 ├── PerAppLocaleApp.kt          Application。hidden API 制限を解除し、ShizukuRepository を所有
 ├── MainActivity.kt             単一 Activity、Compose のホスト、イベントの橋渡し
 ├── core/

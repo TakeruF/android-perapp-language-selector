@@ -23,7 +23,7 @@ to System Default before it exits:
 ./gradlew assembleDebug
 adb push app/build/outputs/apk/debug/app-debug.apk /data/local/tmp/probe.apk
 adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
-    --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe com.android.settings
+    --nice-name=locale-probe com.takeruf.perapplocale.probe.LocaleGatewayProbe com.android.settings
 adb shell cmd locale get-app-locales com.android.settings
 ```
 

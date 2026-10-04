@@ -6,7 +6,9 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** En revisión. Próximamente disponible.
+**Google Play:** Preparando la ficha de una nueva app. Aún no está disponible públicamente.
+
+Desde la versión 1.0.5, el paquete es `com.takeruf.perapplocale`. Se instala como una app independiente de las versiones anteriores; no transfiere las preferencias locales y requiere volver a conceder el permiso de Shizuku.
 
 ### Migrar a la versión de Google Play
 
@@ -174,7 +176,7 @@ conecta al `LocaleManagerService` del sistema sin pasar por Shizuku:
 ./gradlew assembleDebug
 adb push app/build/outputs/apk/debug/app-debug.apk /data/local/tmp/probe.apk
 adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
-    --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe com.android.settings
+    --nice-name=locale-probe com.takeruf.perapplocale.probe.LocaleGatewayProbe com.android.settings
 ```
 
 Ejecuta tanto la ruta de reflexión como la de transacciones directas y compara cada resultado con `cmd locale get-app-locales`. Las nueve pruebas pasan en un emulador API 37, lo que confirma los identificadores de transacción, el formato de Parcel y el argumento `fromDelegate`.
@@ -191,7 +193,7 @@ ColorOS e HyperOS se registran en [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST
 ## Arquitectura
 
 ```
-app/src/main/java/dev/takeru/perapplocale/
+app/src/main/java/com/takeruf/perapplocale/
 ├── PerAppLocaleApp.kt          Application; elimina límites de API ocultas, posee ShizukuRepository
 ├── MainActivity.kt             Actividad única, host Compose y conexión de eventos
 ├── core/

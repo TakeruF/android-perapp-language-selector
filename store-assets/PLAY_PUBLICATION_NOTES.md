@@ -47,7 +47,7 @@ user-authorized Shizuku service for the requested Android operation.
 - Display preferences and the local mirror of package-to-locale assignments remain on-device and
   are deleted by clearing app storage or uninstalling the app.
 - Privacy Policy source: `PRIVACY_POLICY.md`
-- Privacy Policy URL: `https://takeruf.github.io/android-perapp-language-selector/privacy-policy.html`
+- Privacy Policy URL: `https://takeruf.com/en/projects/per-app-language/privacy`
 
 ## Before each submission
 

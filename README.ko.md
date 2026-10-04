@@ -6,7 +6,9 @@
 
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** 현재 심사 중이며 곧 출시될 예정입니다.
+**Google Play:** 새 앱 등록을 준비 중이며 아직 일반 공개되지 않았습니다.
+
+1.0.5부터 패키지 이름은 `com.takeruf.perapplocale`입니다. 이전 버전과 별도 앱으로 설치되며 로컬 설정은 이전되지 않습니다. Shizuku 권한을 다시 허용하세요.
 
 ### Google Play 버전으로 이전
 
@@ -173,7 +175,7 @@ LocaleManagerService  →  패키지별 LocaleList 재정의  →  다음 앱 �
 ./gradlew assembleDebug
 adb push app/build/outputs/apk/debug/app-debug.apk /data/local/tmp/probe.apk
 adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
-    --nice-name=locale-probe dev.takeru.perapplocale.probe.LocaleGatewayProbe com.android.settings
+    --nice-name=locale-probe com.takeruf.perapplocale.probe.LocaleGatewayProbe com.android.settings
 ```
 
 리플렉션 경로와 원시 트랜잭션 경로를 모두 실행하고 `cmd locale get-app-locales`와 결과를 대조했습니다. API 37 에뮬레이터에서 9개 검사가 통과하여 트랜잭션 ID, Parcel 레이아웃과 `fromDelegate` 인수를 확인했습니다.
@@ -190,7 +192,7 @@ adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
 ## 구조
 
 ```
-app/src/main/java/dev/takeru/perapplocale/
+app/src/main/java/com/takeruf/perapplocale/
 ├── PerAppLocaleApp.kt          Application; 숨겨진 API 제한 해제, ShizukuRepository 소유
 ├── MainActivity.kt             단일 Activity, Compose 호스트, 이벤트 연결
 ├── core/
