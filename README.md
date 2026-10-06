@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국�
 
 **Google Play:** New app listing in preparation. Not publicly available yet.
 
-Version 1.0.5 uses `com.takeruf.perapplocale`. It installs as a separate app from older releases; local preferences are not transferred, and Shizuku permission must be granted again.
+The old app is version 1.0.4 or earlier (`dev.takeru.perapplocale`); the new app is version 1.0.5 or later (`com.takeruf.perapplocale`). It installs as a separate app from older releases; local preferences are not transferred, and Shizuku permission must be granted again.
 
 ### Moving to Google Play
 
@@ -22,7 +22,7 @@ Your existing per-app language selections remain stored in Android and are prese
 
 **You do not need to uninstall the old version first.** You also **do not need to use “Reset all app languages” before uninstalling it**. Using that action clears your existing per-app language selections and returns those apps to the system default language.
 
-**Please note: the old and new apps have exactly the same icon and app name.** Carefully check which app you are using or uninstalling to avoid mistakes. We apologize for the inconvenience and appreciate your understanding.
+**Please note: the old app (1.0.4 or earlier) and the new app (1.0.5 or later) have exactly the same icon and app name.** Carefully check which app you are using or uninstalling to avoid mistakes. We apologize for the inconvenience and appreciate your understanding.
 
 Every release is signed with the same key; the certificate fingerprint is published in the
 release notes. Read the [Privacy Policy](https://takeruf.com/en/projects/per-app-language/privacy)
@@ -276,7 +276,7 @@ One caveat, stated plainly: the only Android version available here was API 37, 
 three-argument `setApplicationLocales` branch is derived from the AOSP sources rather than executed.
 The four-argument branch (API 34+) is the one that ran.
 
-The fixed cross-OEM procedure and the current Pixel/AOSP, One UI, ColorOS, and HyperOS evidence
+The fixed cross-OEM procedure and the current Pixel/AOSP, One UI, ColorOS, HyperOS, vivo OriginOS 6, and HONOR MagicOS 10 evidence
 status are tracked in [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
 
 ---

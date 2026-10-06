@@ -8,7 +8,7 @@
 
 **Google Play：** 正在准备新应用的上架信息，尚未公开发布。
 
-从 1.0.5 起，包名为 `com.takeruf.perapplocale`。它与旧版作为两个独立应用安装，不会迁移本地偏好设置，需要重新授予 Shizuku 权限。
+旧版指 1.0.4 及更早版本（`dev.takeru.perapplocale`），新版指 1.0.5 及更新版本（`com.takeruf.perapplocale`）。它与旧版作为两个独立应用安装，不会迁移本地偏好设置，需要重新授予 Shizuku 权限。
 
 ### 迁移到 Google Play 版
 
@@ -22,7 +22,7 @@
 
 **不需要先卸载旧版。** 另外，在卸载旧版之前也 **不需要点击“重置所有应用语言”**。如果使用该功能，已经设置好的各个应用的语言设置会被清除，并恢复为系统默认语言。
 
-**请特别注意：新旧两个应用的图标和应用名称完全相同。** 请仔细区分，以免误操作。给大家添麻烦了，敬请谅解。
+**请特别注意：旧版（1.0.4 及更早版本）和新版（1.0.5 及更新版本）的图标和应用名称完全相同。** 请仔细区分，以免误操作。给大家添麻烦了，敬请谅解。
 
 每个版本都使用同一密钥签名，证书指纹会发布在发行说明中。隐私详情请参阅[隐私政策](PRIVACY_POLICY.md)。
 
@@ -240,7 +240,7 @@ adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
 `setApplicationLocales` 分支是根据 AOSP 源码实现的，并未实际执行。实际运行的是 API 34+
 的四参数分支。
 
-固定的 OEM 横向测试步骤以及 Pixel/AOSP、One UI、ColorOS、HyperOS 的当前验证状态记录在
+固定的 OEM 横向测试步骤以及 Pixel/AOSP、One UI、ColorOS、HyperOS、vivo OriginOS 6、HONOR MagicOS 10 的当前验证状态记录在
 [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md) 中。
 
 ---

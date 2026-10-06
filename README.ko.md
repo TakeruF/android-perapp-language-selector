@@ -8,7 +8,7 @@
 
 **Google Play:** 새 앱 등록을 준비 중이며 아직 일반 공개되지 않았습니다.
 
-1.0.5부터 패키지 이름은 `com.takeruf.perapplocale`입니다. 이전 버전과 별도 앱으로 설치되며 로컬 설정은 이전되지 않습니다. Shizuku 권한을 다시 허용하세요.
+이전 앱은 1.0.4 이하 버전(`dev.takeru.perapplocale`), 새 앱은 1.0.5 이상 버전(`com.takeruf.perapplocale`)입니다. 이전 버전과 별도 앱으로 설치되며 로컬 설정은 이전되지 않습니다. Shizuku 권한을 다시 허용하세요.
 
 ### Google Play 버전으로 이전
 
@@ -22,7 +22,7 @@ GitHub에서 이전 버전을 다운로드해 사용했다면 다음 순서로 �
 
 **이전 버전을 먼저 제거할 필요는 없습니다.** 또한 이전 버전을 제거하기 전에 **“모든 앱 언어 초기화”를 실행할 필요도 없습니다**. 이 기능을 실행하면 기존 앱별 언어 설정이 삭제되고 해당 앱들이 시스템 기본 언어로 돌아갑니다.
 
-**주의: 이전 앱과 새 앱의 아이콘과 앱 이름은 완전히 같습니다.** 실수로 잘못 조작하지 않도록 사용하거나 제거하려는 앱이 어느 버전인지 꼼꼼히 확인해 주세요. 불편을 드려 죄송하며, 양해 부탁드립니다.
+**주의: 이전 앱(1.0.4 이하)과 새 앱(1.0.5 이상)의 아이콘과 앱 이름은 완전히 같습니다.** 실수로 잘못 조작하지 않도록 사용하거나 제거하려는 앱이 어느 버전인지 꼼꼼히 확인해 주세요. 불편을 드려 죄송하며, 양해 부탁드립니다.
 
 모든 릴리스는 같은 키로 서명되며 인증서 지문은 릴리스 노트에 공개됩니다. 개인정보 처리 내용은 [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
 
@@ -190,7 +190,7 @@ adb shell CLASSPATH=/data/local/tmp/probe.apk app_process /system/bin \
 
 단, 사용할 수 있었던 Android 버전은 API 37뿐이므로 API 33의 인수 3개 `setApplicationLocales` 분기는 AOSP 소스에 근거하며 실제 실행되지는 않았습니다. 실행된 것은 API 34 이상의 인수 4개 분기입니다.
 
-고정된 OEM 교차 테스트 절차와 Pixel/AOSP, One UI, ColorOS, HyperOS의 현재 검증 상태는
+고정된 OEM 교차 테스트 절차와 Pixel/AOSP, One UI, ColorOS, HyperOS, vivo OriginOS 6, HONOR MagicOS 10의 현재 검증 상태는
 [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md)에서 관리합니다.
 
 ---

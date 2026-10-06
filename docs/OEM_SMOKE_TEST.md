@@ -38,5 +38,9 @@ before testing, restore that exact value instead of using the probe's default ta
 | Samsung One UI | Galaxy S26 (`SM-S942U`), Android 16 / API 36 | Pass | Pass | Pass | Pass | Pass | 2026-09-01: all fixed-flow items passed |
 | OPPO ColorOS | OPPO Find X9 Pro (China), `PLG110`, Android 16 / API 36 | Pass | Pass | Pass | Pass | Pass | 2026-08-30: ColorOS build `PLG110_16.0.10.501(CN01B110P02)`; Android security update 2026-08-01; fixed smoke-test flow verified on device |
 | Xiaomi HyperOS | Xiaomi 14 Pro (China), HyperOS 3 | Pass | Pass | Pass | Pass | Pass | 2026-08-30: HyperOS `3.0.307.0.WNBCNXM`; fixed smoke-test flow verified on device |
+| vivo OriginOS 6 | vivo X Fold3 Pro; API not recorded | — | — | — | — | — | Tested on device; recorded 2026-10-06 |
+| HONOR MagicOS 10 | Model / API unknown (user report) | — | — | — | — | — | User-reported tested; recorded 2026-10-06 |
+
+“—” means the individual fixed-flow result was not recorded.
 
 Do not turn a pending row into “supported” based only on code review or another OEM's result.

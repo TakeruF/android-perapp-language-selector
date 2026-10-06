@@ -8,7 +8,7 @@
 
 **Google Play :** Préparation de la fiche d’une nouvelle application. Pas encore disponible au public.
 
-À partir de la version 1.0.5, le nom du paquet est `com.takeruf.perapplocale`. Cette version s’installe comme une application distincte des anciennes versions ; les préférences locales ne sont pas transférées et l’autorisation Shizuku doit être accordée à nouveau.
+L’ancienne application correspond à la version 1.0.4 ou antérieure (`dev.takeru.perapplocale`) ; la nouvelle correspond à la version 1.0.5 ou ultérieure (`com.takeruf.perapplocale`). Cette version s’installe comme une application distincte des anciennes versions ; les préférences locales ne sont pas transférées et l’autorisation Shizuku doit être accordée à nouveau.
 
 ### Passer à la version Google Play
 
@@ -22,7 +22,7 @@ Les langues déjà définies pour chaque application sont enregistrées dans And
 
 **Vous n’avez pas besoin de désinstaller l’ancienne version au préalable.** Vous **n’avez pas non plus besoin d’utiliser « Réinitialiser toutes les langues des applis » avant de la désinstaller**. Cette fonction supprime les choix de langue par application et rétablit la langue par défaut du système.
 
-**Attention : l’ancienne et la nouvelle application ont exactement la même icône et le même nom.** Vérifiez soigneusement quelle application vous utilisez ou désinstallez pour éviter toute erreur. Nous vous prions de nous excuser pour ce désagrément et vous remercions de votre compréhension.
+**Attention : l’ancienne application (1.0.4 ou antérieure) et la nouvelle (1.0.5 ou ultérieure) ont exactement la même icône et le même nom.** Vérifiez soigneusement quelle application vous utilisez ou désinstallez pour éviter toute erreur. Nous vous prions de nous excuser pour ce désagrément et vous remercions de votre compréhension.
 
 Toutes les versions sont signées avec la même clé ; l’empreinte du certificat figure dans les notes de version. Consultez la [Politique de confidentialité](PRIVACY_POLICY.md) pour plus de détails.
 
@@ -192,8 +192,8 @@ Le parcours a aussi été vérifié de bout en bout sur cet émulateur avec Shiz
 
 Une réserve : la seule version Android disponible était l’API 37. La branche à trois arguments de `setApplicationLocales` pour l’API 33 provient donc du code source AOSP mais n’a pas été exécutée ; la branche à quatre arguments pour l’API 34+ l’a été.
 
-La procédure inter-OEM fixe et l’état actuel des validations Pixel/AOSP, One UI, ColorOS et HyperOS
-sont suivis dans [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
+La procédure inter-OEM fixe et l’état actuel des validations Pixel/AOSP, One UI, ColorOS, HyperOS,
+vivo OriginOS 6 et HONOR MagicOS 10 sont suivis dans [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
 
 ---
 

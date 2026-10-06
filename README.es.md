@@ -8,7 +8,7 @@
 
 **Google Play:** Preparando la ficha de una nueva app. Aún no está disponible públicamente.
 
-Desde la versión 1.0.5, el paquete es `com.takeruf.perapplocale`. Se instala como una app independiente de las versiones anteriores; no transfiere las preferencias locales y requiere volver a conceder el permiso de Shizuku.
+La app anterior corresponde a la versión 1.0.4 o anteriores (`dev.takeru.perapplocale`); la nueva app corresponde a la versión 1.0.5 o posteriores (`com.takeruf.perapplocale`). Se instala como una app independiente de las versiones anteriores; no transfiere las preferencias locales y requiere volver a conceder el permiso de Shizuku.
 
 ### Migrar a la versión de Google Play
 
@@ -22,7 +22,7 @@ Los idiomas que ya hayas configurado para cada aplicación se guardan en Android
 
 **No necesitas desinstalar primero la versión anterior.** Tampoco **necesitas usar «Restablecer todos los idiomas de las apps» antes de desinstalarla**. Esta función elimina los idiomas configurados por aplicación y los devuelve al idioma predeterminado del sistema.
 
-**Ten en cuenta que la app anterior y la nueva tienen exactamente el mismo icono y nombre.** Comprueba cuidadosamente qué app estás usando o desinstalando para evitar errores. Lamentamos las molestias y agradecemos tu comprensión.
+**Ten en cuenta que la app anterior (1.0.4 o anteriores) y la nueva (1.0.5 o posteriores) tienen exactamente el mismo icono y nombre.** Comprueba cuidadosamente qué app estás usando o desinstalando para evitar errores. Lamentamos las molestias y agradecemos tu comprensión.
 
 Todas las versiones se firman con la misma clave y la huella del certificado se publica en las notas de la versión. Consulta la [Política de privacidad](PRIVACY_POLICY.md) para obtener más información.
 
@@ -192,7 +192,7 @@ También se verificó de extremo a extremo en ese emulador con Shizuku 13.6.0 re
 Una salvedad: la única versión de Android disponible fue API 37. La rama de tres argumentos de `setApplicationLocales` para API 33 se deriva del código AOSP, pero no se ejecutó; sí se ejecutó la rama de cuatro argumentos para API 34+.
 
 El procedimiento fijo entre fabricantes y el estado actual de las pruebas en Pixel/AOSP, One UI,
-ColorOS e HyperOS se registran en [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
+ColorOS, HyperOS, vivo OriginOS 6 y HONOR MagicOS 10 se registran en [`docs/OEM_SMOKE_TEST.md`](docs/OEM_SMOKE_TEST.md).
 
 ---
 
