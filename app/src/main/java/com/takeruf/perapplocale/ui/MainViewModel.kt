@@ -14,6 +14,8 @@ import com.takeruf.perapplocale.core.LocaleGateway
 import com.takeruf.perapplocale.core.LocaleGatewayException
 import com.takeruf.perapplocale.core.ProcessGateway
 import com.takeruf.perapplocale.data.AppInfo
+import com.takeruf.perapplocale.data.AppFilter
+import com.takeruf.perapplocale.data.filterCounts
 import com.takeruf.perapplocale.data.AppRepository
 import com.takeruf.perapplocale.data.AppTarget
 import com.takeruf.perapplocale.data.isOwnTarget
@@ -38,8 +40,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.Collator
 
-enum class AppFilter { ALL, CONFIGURED }
-
 data class MainUiState(
     val shizuku: ShizukuState = ShizukuState.NOT_INSTALLED,
     val settingsLoaded: Boolean = false,
@@ -48,6 +48,8 @@ data class MainUiState(
     val readingLocales: Boolean = false,
     val apps: List<AppInfo> = emptyList(),
     val configuredCount: Int = 0,
+    val unconfiguredCount: Int = 0,
+    val languageCounts: Map<String, Int> = emptyMap(),
     val query: String = "",
     val filter: AppFilter = AppFilter.ALL,
     val showSystemApps: Boolean = false,
@@ -79,7 +81,7 @@ class MainViewModel(
     private val loadingApps = MutableStateFlow(true)
     private val readingLocales = MutableStateFlow(false)
     private val query = MutableStateFlow("")
-    private val filter = MutableStateFlow(AppFilter.ALL)
+    private val filter = MutableStateFlow<AppFilter>(AppFilter.ALL)
     private val busyTargets = MutableStateFlow<Set<AppTarget>>(emptySet())
     private val resettingAll = MutableStateFlow(false)
 
@@ -100,7 +102,10 @@ class MainViewModel(
                 Triple(loading, reading, resetting)
             },
         ) { shizuku, apps, settings, (q, f, busy), (loading, reading, resetting) ->
-            buildState(shizuku, apps, settings, q, f, busy, loading, reading, resetting)
+            buildState(shizuku, apps, settings, q, f, busy, loading, reading, resetting).also { state ->
+                // A language tab disappears after its last assignment is removed.
+                if (state.filter != f) filter.compareAndSet(f, state.filter)
+            }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MainUiState())
 
     init {
@@ -140,9 +145,11 @@ class MainViewModel(
             else settings.assignments[app.assignmentKey]?.let { app.copy(localeTag = it) } ?: app
         }
 
-        val visible = merged.asSequence()
-            .filter { settings.showSystemApps || !it.isSystemApp }
-            .filter { f == AppFilter.ALL || it.isConfigured }
+        val eligible = merged.filter { settings.showSystemApps || !it.isSystemApp }
+        val counts = eligible.filterCounts()
+        val activeFilter = counts.availableFilter(f)
+        val visible = eligible.asSequence()
+            .filter { activeFilter.matches(it) }
             .filter { matchesQuery(it, q) }
             .toList()
 
@@ -169,9 +176,11 @@ class MainViewModel(
             loadingApps = loading && settings.packageVisibilityDisclosureAcknowledged,
             readingLocales = reading,
             apps = ordered,
-            configuredCount = merged.count { it.isConfigured },
+            configuredCount = counts.configured,
+            unconfiguredCount = counts.unconfigured,
+            languageCounts = counts.languages,
             query = q,
-            filter = f,
+            filter = activeFilter,
             showSystemApps = settings.showSystemApps,
             configuredFirst = settings.configuredFirst,
             busyTargets = busy,
@@ -320,7 +329,17 @@ class MainViewModel(
     private suspend fun refreshApps() {
         if (!dataLoadingStarted) return
         loadingApps.value = true
+        val previousApps = rawApps.value.associateBy { it.assignmentKey }
         rawApps.value = runCatching { appRepository.loadInstalledApps() }
+            .map { installed ->
+                // Keep known locales until the next scan answers, so refreshing the package
+                // list does not briefly remove language tabs or reset the active filter.
+                installed.map { app ->
+                    previousApps[app.assignmentKey]?.let { previous ->
+                        app.copy(localeTag = previous.localeTag, localeKnown = previous.localeKnown)
+                    } ?: app
+                }
+            }
             .onFailure { events.send(UiEvent.Error(text(R.string.error_read_apps, it.message))) }
             .getOrDefault(emptyList())
         loadingApps.value = false

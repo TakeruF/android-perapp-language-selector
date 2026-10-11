@@ -167,4 +167,13 @@
     <string name="bulk_change_complete">La langue de %1$d applis a été modifiée.</string>
     <string name="bulk_change_failed">Impossible de modifier les %1$d applis.</string>
     <string name="bulk_change_partial">%1$d applis sur %2$d ont été modifiées ; %3$d ont échoué.</string>
+
+    <string name="unconfigured_apps_count">Non configurées (%1$d)</string>
+    <string name="language_apps_count">%1$s (%2$d)</string>
+    <string name="no_unconfigured_apps">Aucune appli ne suit la langue par défaut du système.</string>
+    <string name="unconfigured_requires_shizuku">Connectez Shizuku pour vérifier quelles applis suivent la langue par défaut du système.</string>
+    <string name="help_support_title">Un problème ?</string>
+    <string name="help_support_body">En cas de problème, contactez support@takeruf.com. Joignez une description du problème et les informations de diagnostic ci-dessous.</string>
+    <string name="help_contact_support">Contacter le support</string>
+    <string name="no_email_app_available">Aucune appli de messagerie disponible. Vous pouvez copier l’adresse.</string>
 </resources>

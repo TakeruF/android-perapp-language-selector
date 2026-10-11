@@ -373,10 +373,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun openUrl(url: String) {
+        val isEmail = url.startsWith("mailto:")
         try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            startActivity(Intent(if (isEmail) Intent.ACTION_SENDTO else Intent.ACTION_VIEW, Uri.parse(url)))
         } catch (_: ActivityNotFoundException) {
-            Toast.makeText(this, getString(R.string.no_browser_available), Toast.LENGTH_SHORT).show()
+            val message = if (isEmail) R.string.no_email_app_available else R.string.no_browser_available
+            Toast.makeText(this, getString(message), Toast.LENGTH_SHORT).show()
         }
     }
 

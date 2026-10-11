@@ -172,4 +172,13 @@
     <string name="bulk_change_complete">Changed the language for %1$d apps.</string>
     <string name="bulk_change_failed">Could not change any of the %1$d apps.</string>
     <string name="bulk_change_partial">Changed %1$d of %2$d apps; %3$d failed.</string>
+
+    <string name="unconfigured_apps_count">Unconfigured (%1$d)</string>
+    <string name="language_apps_count">%1$s (%2$d)</string>
+    <string name="no_unconfigured_apps">No apps follow the system default.</string>
+    <string name="unconfigured_requires_shizuku">Connect Shizuku to check which apps follow the system default.</string>
+    <string name="help_support_title">Having trouble?</string>
+    <string name="help_support_body">If you encounter a problem, contact support@takeruf.com. Include a description of the issue and the diagnostics below.</string>
+    <string name="help_contact_support">Contact support</string>
+    <string name="no_email_app_available">No email app available. You can copy the address instead.</string>
 </resources>

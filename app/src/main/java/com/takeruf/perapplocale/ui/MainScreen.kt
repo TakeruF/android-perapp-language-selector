@@ -7,6 +7,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,6 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.takeruf.perapplocale.R
 import com.takeruf.perapplocale.data.AppInfo
+import com.takeruf.perapplocale.data.AppFilter
 import com.takeruf.perapplocale.data.LocaleOption
 import com.takeruf.perapplocale.data.AppTarget
 import com.takeruf.perapplocale.shizuku.ShizukuState
@@ -208,23 +211,49 @@ fun MainScreen(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                FilterChip(
-                    selected = state.filter == AppFilter.ALL,
-                    onClick = { onFilterChange(AppFilter.ALL) },
-                    label = { Text(stringResource(R.string.all_apps)) },
-                )
-                FilterChip(
-                    selected = state.filter == AppFilter.CONFIGURED,
-                    onClick = { onFilterChange(AppFilter.CONFIGURED) },
-                    label = { Text(stringResource(R.string.configured_apps_count, state.configuredCount)) },
-                )
+                item {
+                    FilterChip(
+                        selected = state.filter == AppFilter.ALL,
+                        onClick = { onFilterChange(AppFilter.ALL) },
+                        label = { Text(stringResource(R.string.all_apps)) },
+                    )
+                }
+                item {
+                    FilterChip(
+                        selected = state.filter == AppFilter.CONFIGURED,
+                        onClick = { onFilterChange(AppFilter.CONFIGURED) },
+                        label = { Text(stringResource(R.string.configured_apps_count, state.configuredCount)) },
+                    )
+                }
+                item {
+                    FilterChip(
+                        selected = state.filter == AppFilter.UNCONFIGURED,
+                        onClick = { onFilterChange(AppFilter.UNCONFIGURED) },
+                        label = { Text(stringResource(R.string.unconfigured_apps_count, state.unconfiguredCount)) },
+                    )
+                }
+                items(state.languageCounts.keys.toList(), key = { it }) { tag ->
+                    val languageFilter = AppFilter.Language(tag)
+                    FilterChip(
+                        selected = state.filter == languageFilter,
+                        onClick = { onFilterChange(languageFilter) },
+                        label = {
+                            Text(
+                                stringResource(
+                                    R.string.language_apps_count,
+                                    LocaleOption.labelFor(tag),
+                                    state.languageCounts.getValue(tag),
+                                ),
+                            )
+                        },
+                    )
+                }
             }
 
             if (state.readingLocales) {
@@ -268,6 +297,9 @@ private fun emptyMessage(state: MainUiState): String = when {
     state.filter == AppFilter.CONFIGURED && state.shizuku != ShizukuState.READY ->
         stringResource(R.string.nothing_recorded)
     state.filter == AppFilter.CONFIGURED -> stringResource(R.string.no_configured_apps)
+    state.filter == AppFilter.UNCONFIGURED && state.shizuku != ShizukuState.READY ->
+        stringResource(R.string.unconfigured_requires_shizuku)
+    state.filter == AppFilter.UNCONFIGURED -> stringResource(R.string.no_unconfigured_apps)
     else -> stringResource(R.string.no_apps_to_show)
 }
 

@@ -167,4 +167,13 @@
     <string name="bulk_change_complete">%1$d個のアプリの言語を変更しました。</string>
     <string name="bulk_change_failed">%1$d個のアプリを変更できませんでした。</string>
     <string name="bulk_change_partial">%2$d個中%1$d個のアプリを変更しました。%3$d個は変更できませんでした。</string>
+
+    <string name="unconfigured_apps_count">未設定（%1$d）</string>
+    <string name="language_apps_count">%1$s（%2$d）</string>
+    <string name="no_unconfigured_apps">システムのデフォルトを使用しているアプリはありません。</string>
+    <string name="unconfigured_requires_shizuku">未設定のアプリを確認するには、Shizukuに接続してください。</string>
+    <string name="help_support_title">問題がある場合</string>
+    <string name="help_support_body">問題がある場合は support@takeruf.com までご連絡ください。問題の内容と、下の診断情報を添えてください。</string>
+    <string name="help_contact_support">サポートに連絡</string>
+    <string name="no_email_app_available">メールアプリがありません。アドレスをコピーしてご利用ください。</string>
 </resources>

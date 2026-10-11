@@ -21,6 +21,7 @@ import com.takeruf.perapplocale.shizuku.ShizukuState
 import java.util.Locale
 
 private const val PROJECT_URL = "https://github.com/TakeruF/android-perapp-language-selector"
+private const val SUPPORT_EMAIL = "support@takeruf.com"
 private const val PRIVACY_POLICY_URL =
     "https://takeruf.com/en/projects/per-app-language/privacy"
 
@@ -119,6 +120,14 @@ fun HelpScreen(
                 stringResource(R.string.limitation_reboot_title),
                 stringResource(R.string.limitation_reboot_body),
             )
+        }
+
+        DocSection(stringResource(R.string.help_support_title)) {
+            DocBody(stringResource(R.string.help_support_body))
+            DocCommand(SUPPORT_EMAIL) { onCopy(SUPPORT_EMAIL) }
+            OutlinedButton(onClick = { onOpenUrl("mailto:$SUPPORT_EMAIL") }) {
+                Text(stringResource(R.string.help_contact_support))
+            }
         }
 
         DocSection(stringResource(R.string.privacy_title)) {

@@ -167,4 +167,13 @@
     <string name="bulk_change_complete">已更改 %1$d 个应用的语言。</string>
     <string name="bulk_change_failed">无法更改这 %1$d 个应用。</string>
     <string name="bulk_change_partial">已更改 %2$d 个应用中的 %1$d 个，%3$d 个失败。</string>
+
+    <string name="unconfigured_apps_count">未配置（%1$d）</string>
+    <string name="language_apps_count">%1$s（%2$d）</string>
+    <string name="no_unconfigured_apps">没有使用系统默认语言的应用。</string>
+    <string name="unconfigured_requires_shizuku">请连接 Shizuku 以确认哪些应用尚未配置语言。</string>
+    <string name="help_support_title">遇到问题？</string>
+    <string name="help_support_body">如遇到问题，请联系 support@takeruf.com，并附上问题描述和下方的诊断信息。</string>
+    <string name="help_contact_support">联系支持</string>
+    <string name="no_email_app_available">没有可用的邮件应用。你可以复制邮箱地址。</string>
 </resources>

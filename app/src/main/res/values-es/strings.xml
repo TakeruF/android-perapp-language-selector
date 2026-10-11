@@ -167,4 +167,13 @@
     <string name="bulk_change_complete">Se cambió el idioma de %1$d apps.</string>
     <string name="bulk_change_failed">No se pudo cambiar ninguna de las %1$d apps.</string>
     <string name="bulk_change_partial">Se cambiaron %1$d de %2$d apps; %3$d fallaron.</string>
+
+    <string name="unconfigured_apps_count">Sin configurar (%1$d)</string>
+    <string name="language_apps_count">%1$s (%2$d)</string>
+    <string name="no_unconfigured_apps">Ninguna app usa el idioma predeterminado del sistema.</string>
+    <string name="unconfigured_requires_shizuku">Conecta Shizuku para comprobar qué apps usan el idioma predeterminado del sistema.</string>
+    <string name="help_support_title">¿Tienes algún problema?</string>
+    <string name="help_support_body">Si encuentras un problema, contacta con support@takeruf.com. Incluye una descripción del problema y la información de diagnóstico que aparece abajo.</string>
+    <string name="help_contact_support">Contactar con soporte</string>
+    <string name="no_email_app_available">No hay ninguna app de correo disponible. Puedes copiar la dirección.</string>
 </resources>
