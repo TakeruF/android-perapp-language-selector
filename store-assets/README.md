@@ -2,6 +2,9 @@
 
 This directory contains the source and exported assets used for the Google Play listing.
 
+Published app: [Per-App Language on Google Play](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale).
+See [publication notes](PLAY_PUBLICATION_NOTES.md) for listing copy and the update checklist.
+
 - `app-icon-source.png`: source artwork for the app icon
 - `app-icon-512.png`: 512 x 512 store icon
 - `app-icon-monochrome-source.png`: measured monochrome mask for Android themed icons

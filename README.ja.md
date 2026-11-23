@@ -4,25 +4,17 @@
 
 ## ダウンロード
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/ja_badge_web_generic.png" alt="Google Play で手に入れよう" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play：** 新しいアプリとして登録準備中です。一般公開はまだ行っていません。
+<details>
+<summary>1.0.4 以前をお使いの方への注意</summary>
 
-旧版は 1.0.4 以下（`dev.takeru.perapplocale`）、新版は 1.0.5 以上（`com.takeruf.perapplocale`）です。旧版とは別アプリとしてインストールされ、アプリ内の設定は引き継がれません。Shizuku の権限を改めて許可してください。
+1.0.5 でパッケージ名が `dev.takeru.perapplocale` から `com.takeruf.perapplocale` に変わったため、別アプリとしてインストールされます。アプリ内の設定は引き継がれず、Shizuku の権限を再度許可する必要があります。設定済みのアプリごとの言語は Android に保持されるため、**移行時に「すべてのアプリ言語をリセット」を実行しないでください**。
 
-### Google Play 版への移行
+旧版は現行版の動作を確認してからアンインストールできます。名前とアイコンが同じなので、削除前にバージョンを確認してください。
 
-GitHub から旧版をダウンロードして使っていた方は、次の手順で新版へ移行できます。
-
-1. 新版の Per-App Language をインストールします。
-2. 新版に Shizuku の権限を許可します。
-3. 新版が正常に動作することを確認します。旧版が不要になったら、アンインストールできます。
-
-すでに設定したアプリごとの言語は Android に保存されており、移行後も保持されます。
-
-**旧版を先にアンインストールする必要はありません。** また、旧版をアンインストールする前に **「すべてのアプリ言語をリセット」を実行する必要もありません**。実行すると、設定済みのアプリごとの言語が解除され、システムのデフォルト言語に戻ります。
-
-**旧版（1.0.4 以下）と新版（1.0.5 以上）は、アイコンとアプリ名がまったく同じです。** 誤操作を避けるため、操作やアンインストールの対象を慎重に確認してください。お手数をおかけしますが、ご理解いただけますと幸いです。
+</details>
 
 すべてのリリースは同じ鍵で署名され、証明書のフィンガープリントはリリースノートに掲載されます。
 プライバシーについては[プライバシーポリシー](PRIVACY_POLICY.md)を参照してください。

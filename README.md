@@ -4,25 +4,17 @@ English | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국�
 
 ## Download
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** New app listing in preparation. Not publicly available yet.
+<details>
+<summary>Note for users of version 1.0.4 or earlier</summary>
 
-The old app is version 1.0.4 or earlier (`dev.takeru.perapplocale`); the new app is version 1.0.5 or later (`com.takeruf.perapplocale`). It installs as a separate app from older releases; local preferences are not transferred, and Shizuku permission must be granted again.
+Version 1.0.5 changed the package from `dev.takeru.perapplocale` to `com.takeruf.perapplocale`, so it installs as a separate app. Local preferences do not carry over; grant Shizuku permission again. Existing per-app languages remain stored in Android; **do not use “Reset all app languages” during migration**.
 
-### Moving to Google Play
+You can keep the old app until you confirm the current app works, then uninstall it. Both have the same name and icon, so check the version before uninstalling.
 
-If you previously downloaded and used an older version from GitHub, follow these steps to move to the new version:
-
-1. Install the new version of Per-App Language.
-2. Grant Shizuku permission to the new version.
-3. Confirm that the new version works correctly. If you no longer need the old version, you can then uninstall it.
-
-Your existing per-app language selections remain stored in Android and are preserved during migration.
-
-**You do not need to uninstall the old version first.** You also **do not need to use “Reset all app languages” before uninstalling it**. Using that action clears your existing per-app language selections and returns those apps to the system default language.
-
-**Please note: the old app (1.0.4 or earlier) and the new app (1.0.5 or later) have exactly the same icon and app name.** Carefully check which app you are using or uninstalling to avoid mistakes. We apologize for the inconvenience and appreciate your understanding.
+</details>
 
 Every release is signed with the same key; the certificate fingerprint is published in the
 release notes. Read the [Privacy Policy](https://takeruf.com/en/projects/per-app-language/privacy)

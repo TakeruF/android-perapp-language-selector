@@ -4,25 +4,17 @@
 
 ## 다운로드
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/ko_badge_web_generic.png" alt="Google Play에서 다운로드" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** 새 앱 등록을 준비 중이며 아직 일반 공개되지 않았습니다.
+<details>
+<summary>1.0.4 이하 버전 사용자를 위한 안내</summary>
 
-이전 앱은 1.0.4 이하 버전(`dev.takeru.perapplocale`), 새 앱은 1.0.5 이상 버전(`com.takeruf.perapplocale`)입니다. 이전 버전과 별도 앱으로 설치되며 로컬 설정은 이전되지 않습니다. Shizuku 권한을 다시 허용하세요.
+1.0.5에서 패키지 이름이 `dev.takeru.perapplocale`에서 `com.takeruf.perapplocale`로 변경되어 별도 앱으로 설치됩니다. 로컬 설정은 이전되지 않으며 Shizuku 권한을 다시 허용해야 합니다. 기존 앱별 언어는 Android에 유지되므로 **이전할 때 “모든 앱 언어 초기화”를 실행하지 마세요**.
 
-### Google Play 버전으로 이전
+현재 버전이 정상 작동하는지 확인한 뒤 이전 버전을 제거할 수 있습니다. 이름과 아이콘이 같으므로 제거 전에 버전을 확인하세요.
 
-GitHub에서 이전 버전을 다운로드해 사용했다면 다음 순서로 새 버전으로 이전할 수 있습니다.
-
-1. 새 버전의 Per-App Language를 설치합니다.
-2. 새 버전에 Shizuku 권한을 허용합니다.
-3. 새 버전이 정상적으로 작동하는지 확인합니다. 이전 버전이 더 이상 필요하지 않으면 제거할 수 있습니다.
-
-이미 설정한 앱별 언어는 Android에 저장되어 있으며 이전 후에도 유지됩니다.
-
-**이전 버전을 먼저 제거할 필요는 없습니다.** 또한 이전 버전을 제거하기 전에 **“모든 앱 언어 초기화”를 실행할 필요도 없습니다**. 이 기능을 실행하면 기존 앱별 언어 설정이 삭제되고 해당 앱들이 시스템 기본 언어로 돌아갑니다.
-
-**주의: 이전 앱(1.0.4 이하)과 새 앱(1.0.5 이상)의 아이콘과 앱 이름은 완전히 같습니다.** 실수로 잘못 조작하지 않도록 사용하거나 제거하려는 앱이 어느 버전인지 꼼꼼히 확인해 주세요. 불편을 드려 죄송하며, 양해 부탁드립니다.
+</details>
 
 모든 릴리스는 같은 키로 서명되며 인증서 지문은 릴리스 노트에 공개됩니다. 개인정보 처리 내용은 [개인정보 처리방침](PRIVACY_POLICY.md)을 참고하세요.
 

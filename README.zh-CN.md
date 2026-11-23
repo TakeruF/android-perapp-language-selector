@@ -4,27 +4,19 @@
 
 ## 下载
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png" alt="立即在 Google Play 下载" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play：** 正在准备新应用的上架信息，尚未公开发布。
+<details>
+<summary>1.0.4 及更早版本用户须知</summary>
 
-旧版指 1.0.4 及更早版本（`dev.takeru.perapplocale`），新版指 1.0.5 及更新版本（`com.takeruf.perapplocale`）。它与旧版作为两个独立应用安装，不会迁移本地偏好设置，需要重新授予 Shizuku 权限。
+1.0.5 将包名从 `dev.takeru.perapplocale` 改为 `com.takeruf.perapplocale`，因此会作为独立应用安装。本地偏好设置不会迁移，需要重新授予 Shizuku 权限。已设置的各应用语言保存在 Android 中，**迁移时请勿使用“重置所有应用语言”**。
 
-### 迁移到 Google Play 版
+确认当前版本正常运行后，再卸载旧版即可。两者的名称和图标相同，卸载前请确认版本。
 
-如果你已经从 GitHub 下载并使用过旧版，可以按照以下步骤迁移到新版：
+</details>
 
-1. 安装新版 Per-App Language。
-2. 授予新版 Shizuku 权限。
-3. 确认新版可以正常运行后，如果不再需要旧版，可以将其卸载。
-
-之前已经为各个应用设置好的语言保存在 Android 中，迁移后会保持不变。
-
-**不需要先卸载旧版。** 另外，在卸载旧版之前也 **不需要点击“重置所有应用语言”**。如果使用该功能，已经设置好的各个应用的语言设置会被清除，并恢复为系统默认语言。
-
-**请特别注意：旧版（1.0.4 及更早版本）和新版（1.0.5 及更新版本）的图标和应用名称完全相同。** 请仔细区分，以免误操作。给大家添麻烦了，敬请谅解。
-
-每个版本都使用同一密钥签名，证书指纹会发布在发行说明中。隐私详情请参阅[隐私政策](PRIVACY_POLICY.md)。
+每个版本都使用同一密钥签名，证书指纹会发布在发行说明中。隐私详情请参阅[隐私政策](PRIVACY_POLICY.zh-CN.md)。
 
 ---
 
@@ -124,7 +116,7 @@ Shizuku 以同一个 shell uid 运行一个小型服务，并允许应用通过�
 核心功能是让用户选择**任意已安装应用** ，而这些应用的软件包名称无法预先得知。
 Android 的定向软件包查询无法生成这份列表，因此本应用声明了 `QUERY_ALL_PACKAGES`。
 获取的软件包名称、显示名称、图标、语言区域设置和官方支持语言声明只在设备本地使用；
-本应用没有互联网权限，也不会共享应用清单。详见[隐私政策](PRIVACY_POLICY.md)。
+本应用没有互联网权限，也不会共享应用清单。详见[隐私政策](PRIVACY_POLICY.zh-CN.md)。
 
 ---
 

@@ -3,6 +3,14 @@
 This file is the canonical wording for the app's use of broad package visibility. Keep the Play
 Console declaration, store listing, in-app Help, README, and Privacy Policy aligned with it.
 
+## Published listing
+
+- App: [Per-App Language on Google Play](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
+- Package: `com.takeruf.perapplocale`
+- Direct APK distribution continues through [GitHub Releases](https://github.com/TakeruF/android-perapp-language-selector/releases/latest).
+
+Use this existing Play listing for future updates.
+
 ## Core-purpose statement for the store listing
 
 Per-App Language lets users browse any app installed on their device, inspect its officially

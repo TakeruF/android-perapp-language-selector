@@ -1,6 +1,11 @@
 # Release artifacts
 
-This project has two independent distribution channels. Do not mix their artifacts.
+Per-App Language is publicly available through two distribution channels:
+
+- [Google Play](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
+- [GitHub Releases](https://github.com/TakeruF/android-perapp-language-selector/releases/latest) (APK)
+
+Build the appropriate artifact for each channel as described below.
 
 ## Direct distribution
 
@@ -29,12 +34,12 @@ package, so never attach it to a public GitHub Release.
 ## Package migration (1.0.5)
 
 The release application ID and Kotlin namespace are `com.takeruf.perapplocale`; debug builds use
-`com.takeruf.perapplocale.debug`. Version 1.0.5 (versionCode 9) starts a separate Google Play app.
-Previous releases used `dev.takeru.perapplocale`, so Android installs this version as a separate app
-and does not migrate the old selector's preferences or Shizuku permission. Grant Shizuku access to
-the new app after installation. Existing target-app locale settings are managed by Android.
-Use the existing store descriptions and assets for the new listing, and confirm its package by
-uploading the signed release AAB.
+`com.takeruf.perapplocale.debug`. Version 1.0.5 (versionCode 9) introduced the current package.
+Versions 1.0.4 and earlier used `dev.takeru.perapplocale`, so Android installs the current package
+as a separate app and does not migrate the old selector's preferences or Shizuku permission.
+Grant Shizuku access to the current app after installation. Existing target-app locale settings
+are managed by Android. Publish future Play updates to the existing `com.takeruf.perapplocale`
+listing.
 
 The canonical product website is `https://takeruf.com/en/projects/per-app-language` and the
 privacy policy is `https://takeruf.com/en/projects/per-app-language/privacy`. The previous

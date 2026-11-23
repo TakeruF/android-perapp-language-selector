@@ -1,6 +1,8 @@
-# Google Play review preparation
+# Google Play reviewer instructions
 
-This document is the source for the Play Console App content and Permissions Declaration entries. It does not submit or publish anything.
+Per-App Language is [published on Google Play](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale).
+This document maintains the reviewer instructions and the source wording for Play Console App
+content and Permissions Declaration entries used in future updates.
 
 ## App access
 

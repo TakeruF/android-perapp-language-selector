@@ -4,25 +4,17 @@
 
 ## Téléchargement
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/fr_badge_web_generic.png" alt="Disponible sur Google Play" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play :** Préparation de la fiche d’une nouvelle application. Pas encore disponible au public.
+<details>
+<summary>Note pour les utilisateurs de la version 1.0.4 ou antérieure</summary>
 
-L’ancienne application correspond à la version 1.0.4 ou antérieure (`dev.takeru.perapplocale`) ; la nouvelle correspond à la version 1.0.5 ou ultérieure (`com.takeruf.perapplocale`). Cette version s’installe comme une application distincte des anciennes versions ; les préférences locales ne sont pas transférées et l’autorisation Shizuku doit être accordée à nouveau.
+La version 1.0.5 a changé le nom du package de `dev.takeru.perapplocale` à `com.takeruf.perapplocale` : elle s’installe donc comme une application distincte. Les préférences locales ne sont pas transférées ; accordez à nouveau l’autorisation Shizuku. Les langues déjà configurées restent enregistrées dans Android ; **n’utilisez pas « Réinitialiser toutes les langues des applis » pendant la migration**.
 
-### Passer à la version Google Play
+Vous pouvez conserver l’ancienne application jusqu’à avoir vérifié que la version actuelle fonctionne, puis la désinstaller. Les deux ont le même nom et la même icône : vérifiez la version avant la désinstallation.
 
-Si vous avez téléchargé et utilisé une ancienne version depuis GitHub, vous pouvez passer à la nouvelle version en suivant ces étapes :
-
-1. Installez la nouvelle version de Per-App Language.
-2. Accordez l’autorisation Shizuku à la nouvelle version.
-3. Vérifiez que la nouvelle version fonctionne correctement. Si vous n’avez plus besoin de l’ancienne version, vous pouvez alors la désinstaller.
-
-Les langues déjà définies pour chaque application sont enregistrées dans Android et sont conservées lors de la migration.
-
-**Vous n’avez pas besoin de désinstaller l’ancienne version au préalable.** Vous **n’avez pas non plus besoin d’utiliser « Réinitialiser toutes les langues des applis » avant de la désinstaller**. Cette fonction supprime les choix de langue par application et rétablit la langue par défaut du système.
-
-**Attention : l’ancienne application (1.0.4 ou antérieure) et la nouvelle (1.0.5 ou ultérieure) ont exactement la même icône et le même nom.** Vérifiez soigneusement quelle application vous utilisez ou désinstallez pour éviter toute erreur. Nous vous prions de nous excuser pour ce désagrément et vous remercions de votre compréhension.
+</details>
 
 Toutes les versions sont signées avec la même clé ; l’empreinte du certificat figure dans les notes de version. Consultez la [Politique de confidentialité](PRIVACY_POLICY.md) pour plus de détails.
 

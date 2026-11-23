@@ -4,25 +4,17 @@
 
 ## Descarga
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png" alt="Disponible en Google Play" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
-**Google Play:** Preparando la ficha de una nueva app. Aún no está disponible públicamente.
+<details>
+<summary>Nota para usuarios de la versión 1.0.4 o anteriores</summary>
 
-La app anterior corresponde a la versión 1.0.4 o anteriores (`dev.takeru.perapplocale`); la nueva app corresponde a la versión 1.0.5 o posteriores (`com.takeruf.perapplocale`). Se instala como una app independiente de las versiones anteriores; no transfiere las preferencias locales y requiere volver a conceder el permiso de Shizuku.
+La versión 1.0.5 cambió el paquete de `dev.takeru.perapplocale` a `com.takeruf.perapplocale`, por lo que se instala como una app independiente. Las preferencias locales no se transfieren; vuelve a conceder el permiso de Shizuku. Los idiomas ya configurados se conservan en Android; **no uses «Restablecer todos los idiomas de las apps» durante la migración**.
 
-### Migrar a la versión de Google Play
+Puedes conservar la app anterior hasta comprobar que la actual funciona y desinstalarla después. Ambas tienen el mismo nombre e icono, así que comprueba la versión antes de desinstalar.
 
-Si descargaste y usaste una versión anterior desde GitHub, puedes migrar a la nueva versión siguiendo estos pasos:
-
-1. Instala la nueva versión de Per-App Language.
-2. Concede el permiso de Shizuku a la nueva versión.
-3. Comprueba que la nueva versión funciona correctamente. Si ya no necesitas la versión anterior, puedes desinstalarla.
-
-Los idiomas que ya hayas configurado para cada aplicación se guardan en Android y se mantienen durante la migración.
-
-**No necesitas desinstalar primero la versión anterior.** Tampoco **necesitas usar «Restablecer todos los idiomas de las apps» antes de desinstalarla**. Esta función elimina los idiomas configurados por aplicación y los devuelve al idioma predeterminado del sistema.
-
-**Ten en cuenta que la app anterior (1.0.4 o anteriores) y la nueva (1.0.5 o posteriores) tienen exactamente el mismo icono y nombre.** Comprueba cuidadosamente qué app estás usando o desinstalando para evitar errores. Lamentamos las molestias y agradecemos tu comprensión.
+</details>
 
 Todas las versiones se firman con la misma clave y la huella del certificado se publica en las notas de la versión. Consulta la [Política de privacidad](PRIVACY_POLICY.md) para obtener más información.
 
