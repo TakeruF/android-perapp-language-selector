@@ -7,6 +7,8 @@
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/ko_badge_web_generic.png" alt="Google Play에서 다운로드" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
+[ShizuStore](https://shizustore.com/apps/android-perapp-language-selector)에서도 다운로드할 수 있으며, GitHub에 게시된 APK로 연결됩니다. Google Play 버전과 직접 다운로드하는 APK 버전 모두 지속적으로 개발하고 지원합니다.
+
 <details>
 <summary>1.0.4 이하 버전 사용자를 위한 안내</summary>
 

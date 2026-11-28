@@ -7,6 +7,8 @@
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png" alt="Disponible en Google Play" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
+También está disponible en [ShizuStore](https://shizustore.com/apps/android-perapp-language-selector), que enlaza a los APK publicados en GitHub. Seguiremos desarrollando y dando soporte tanto a la versión de Google Play como a la versión APK de descarga directa.
+
 <details>
 <summary>Nota para usuarios de la versión 1.0.4 o anteriores</summary>
 

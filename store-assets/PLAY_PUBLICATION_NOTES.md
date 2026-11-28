@@ -7,7 +7,8 @@ Console declaration, store listing, in-app Help, README, and Privacy Policy alig
 
 - App: [Per-App Language on Google Play](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 - Package: `com.takeruf.perapplocale`
-- Direct APK distribution continues through [GitHub Releases](https://github.com/TakeruF/android-perapp-language-selector/releases/latest).
+- Direct APK distribution continues through [GitHub Releases](https://github.com/TakeruF/android-perapp-language-selector/releases/latest) and [ShizuStore](https://shizustore.com/apps/android-perapp-language-selector), which links to the GitHub APKs.
+- Both Google Play and direct APK distribution will continue to receive development and support.
 
 Use this existing Play listing for future updates.
 

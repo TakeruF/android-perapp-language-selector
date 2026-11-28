@@ -3,8 +3,10 @@
 Per-App Language is publicly available through two distribution channels:
 
 - [Google Play](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
-- [GitHub Releases](https://github.com/TakeruF/android-perapp-language-selector/releases/latest) (APK)
+- Direct APKs through [GitHub Releases](https://github.com/TakeruF/android-perapp-language-selector/releases/latest) or [ShizuStore](https://shizustore.com/apps/android-perapp-language-selector)
 
+ShizuStore links to the APKs published on GitHub; it does not host a separate build.
+Both Google Play and direct APK distribution will continue to receive development and support.
 Build the appropriate artifact for each channel as described below.
 
 ## Direct distribution

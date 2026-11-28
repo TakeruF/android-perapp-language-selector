@@ -7,6 +7,8 @@
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/zh-cn_badge_web_generic.png" alt="立即在 Google Play 下载" height="60">](https://play.google.com/store/apps/details?id=com.takeruf.perapplocale)
 [<img src="https://raw.githubusercontent.com/machiav3lli/oandbackupx/main/badge_github.png" alt="Get it on GitHub" height="60">](https://github.com/TakeruF/android-perapp-language-selector/releases/latest)
 
+也可通过 [ShizuStore](https://shizustore.com/apps/android-perapp-language-selector) 下载，下载链接指向 GitHub 发布的 APK。我们将继续开发和支持 Google Play 版和直接下载的 APK 版。
+
 <details>
 <summary>1.0.4 及更早版本用户须知</summary>
 
